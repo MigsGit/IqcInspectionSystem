@@ -1,0 +1,75 @@
+[33mcommit 814ae155754c4e64a92a322fe57f1dfc4a10328b[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Christian Pagtalunan <christianpagtalunan@gmail.com>
+Date:   Tue Jan 9 15:50:06 2024 +0800
+
+    another push
+
+[33mcommit 2c341e598920d312af829d0e66b3e2af8d01bd01[m
+Author: MigsGit <miguellgsp12345@gmail.com>
+Date:   Tue Jan 9 15:43:46 2024 +0800
+
+    Rules Branch
+
+[33mcommit 96eff53feec2c5774c4481532eedec8bb654b00b[m
+Author: Christian Pagtalunan <christianpagtalunan@gmail.com>
+Date:   Tue Jan 9 15:23:00 2024 +0800
+
+    additional QR Code
+
+[33mcommit 44adf1b527f780bfb95490c4acf0a7f605df7da3[m
+Merge: b9d8da9 ea8a468
+Author: MigsGit <miguellgsp12345@gmail.com>
+Date:   Tue Jan 9 14:16:57 2024 +0800
+
+    Merge | OQC
+
+[33mcommit b9d8da9f72f7f8cc3e9014d8678931956572be73[m
+Author: MigsGit <miguellgsp12345@gmail.com>
+Date:   Tue Jan 9 14:15:43 2024 +0800
+
+    OQC Process
+
+[33mcommit 65bc22657b714139f68a7f1ddba27b74145ce38d[m
+Author: Christian Pagtalunan <christianpagtalunan@gmail.com>
+Date:   Tue Jan 9 14:06:50 2024 +0800
+
+    second push
+
+[33mcommit ea8a468f9ce2e3dfbcf43b9dd62d8fc7fb4d993c[m
+Merge: de75b05 4987fb1
+Author: Christian Pagtalunan <67097383+cdpagtalunan@users.noreply.github.com>
+Date:   Tue Jan 9 14:04:29 2024 +0800
+
+    Merge pull request #3 from cdpagtalunan/migz_v1
+    
+    Migz v1
+
+[33mcommit 4987fb18a7c6df93d209970da1d1d601afe4e4b0[m[33m ([m[1;31morigin/migz_v1[m[33m)[m
+Merge: ce10afb fc236f3
+Author: MigsGit <miguellgsp12345@gmail.com>
+Date:   Tue Jan 9 14:03:28 2024 +0800
+
+    Merge | Git Ignore
+
+[33mcommit ce10afb8a783edcf7c51787d968986f8e80446bd[m
+Merge: c62d186 80759e3
+Author: MigsGit <miguellgsp12345@gmail.com>
+Date:   Tue Jan 9 13:48:14 2024 +0800
+
+    Git Ignore Changes
+
+[33mcommit de75b05626e8a39cab7f5c6a7e679caae7097da0[m
+Merge: 16fb4e4 fc236f3
+Author: Christian Pagtalunan <67097383+cdpagtalunan@users.noreply.github.com>
+Date:   Tue Jan 9 13:55:04 2024 +0800
+
+    Merge pull request #2 from cdpagtalunan/migz_v1
+    
+    Migz v1
+
+[33mcommit fc236f3e351948eea529953957c3b6c5ca166ebe[m
+Merge: c62d186 80759e3
+Author: MigsGit <miguellgsp12345@gmail.com>
+Date:   Tue Jan 9 13:48:14 2024 +0800
+
+    Git Ignore Changes
