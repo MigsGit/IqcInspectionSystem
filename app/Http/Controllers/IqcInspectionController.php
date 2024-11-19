@@ -61,7 +61,7 @@ class IqcInspectionController extends Controller
         ->addColumn('action', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1' style='display: none;' whs-trasaction-id='".$row->whs_transaction_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= "<button class='btn btn-info btn-sm mr-1 d-none' whs-trasaction-id='".$row->whs_transaction_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
             $result .= '</center>';
             return $result;
         })
@@ -144,7 +144,7 @@ class IqcInspectionController extends Controller
             $tbl_iqc_inspected = DB::connection('mysql')
             ->select('
                 SELECT *
-                FROM iqc_inspections
+                FROM ts_iqc_inspections
                 WHERE deleted_at IS NULL AND judgement >= 1 AND lot_no = "'.$request->lotNum.'"
                 ORDER BY created_at DESC
             ');
@@ -152,7 +152,7 @@ class IqcInspectionController extends Controller
             $tbl_iqc_inspected = DB::connection('mysql')
             ->select('
                 SELECT *
-                FROM iqc_inspections
+                FROM ts_iqc_inspections
                 WHERE deleted_at IS NULL AND judgement >= 1
                 ORDER BY created_at DESC
             ');

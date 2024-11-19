@@ -30,7 +30,7 @@ Route::view('/dashboard','dashboard')->name('dashboard');
 
 // * ADMIN VIEW
 Route::view('/user','user')->name('user');
-Route::view('/iqc_inspection_ts','iqc_inspection_ts')->name('iqc_inspection_ts');
+Route::view('/ts_iqc_inspection','ts_iqc_inspection')->name('ts_iqc_inspection');
 
 // Route::middleware('CheckSessionExist')->group(function(){
 // });

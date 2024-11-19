@@ -2,7 +2,7 @@
 {{-- @auth --}}
     @extends($layout)
 
-    @section('title', 'IQC Inspection')
+    @section('title', 'TS IQC Inspection')
 
     @section('content_page')
 
@@ -31,13 +31,13 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>IQC Inspection</h1>
+                            <h1>TS IQC Inspection</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
                                 </li>
-                                <li class="breadcrumb-item active">IQC Inspection</li>
+                                <li class="breadcrumb-item active">TS IQC Inspection</li>
                             </ol>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                             <!-- general form elements -->
                             <div class="card card-primary">
                                 <div class="card-header">
-                                    <h3 class="card-title">1st Stamping Table</h3>
+                                    <h3 class="card-title">TS IQC Table</h3>
                                 </div>
                                 <!-- Start Page Content -->
                                 <div class="card-body">
@@ -65,7 +65,7 @@
                                         </div>
                                     </div> --}}
 
-                                  {{-- <div class="row">
+                                    <div class="row">
                                         <div class="col-sm-2">
                                             <label class="form-label">Lot Number</label>
                                             <div class="input-group mb-3">
@@ -73,7 +73,7 @@
                                                 <input type="search" class="form-control" placeholder="Lot Number" id="txtSearchLotNum" readonly>
                                             </div>
                                         </div>
-                                    </div> --}}
+                                    </div>
 
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
@@ -253,57 +253,66 @@
     @section('js_content')
         <script type="text/javascript">
             $(document).ready(function () {
-                const tbl = {
-                    iqcInspection:'#tblIqcInspection',
-                    iqcWhsDetails :'#tblWhsDetails',
-                    iqcInspected:'#tblIqcInspected'
-                };
-                /*
-                    $('a[href="#menu1"]').click(function (e) {
-                        e.preventDefault();
-                        $('#txtSearchLotNum').val('');
+            const tbl = {
+                iqcInspection:'#tblIqcInspection',
+                iqcWhsDetails :'#tblWhsDetails',
+                iqcInspected:'#tblIqcInspected'
+            };
+            
+            /**/
+                $('a[href="#menu1"]').click(function (e) {
+                    e.preventDefault();
+                    $('#txtSearchLotNum').val('');
 
-                        dataTable.iqcInspection.draw();
-                    });
-                    $('a[href="#menu2"]').click(function (e) {
-                        e.preventDefault();
-                        $('#txtSearchLotNum').val('');
-                        dataTable.iqcInspected.draw();
-                    });
+                    dataTable.iqcInspection.draw();
+                });
+                $('a[href="#menu2"]').click(function (e) {
+                    e.preventDefault();
+                    $('#txtSearchLotNum').val('');
+                    dataTable.iqcInspected.draw();
+                });
 
-                    $('#modalLotNum').on('shown.bs.modal', function () {
-                        $('#txtLotNum').focus();
-                        const mdlScanLotNum = document.querySelector("#modalLotNum");
-                        const inptScanLotNum = document.querySelector("#txtLotNum");
-                        let focus = false
+                $('#modalLotNum').on('shown.bs.modal', function () {
+                    $('#txtLotNum').focus();
+                    const mdlScanLotNum = document.querySelector("#modalLotNum");
+                    const inptScanLotNum = document.querySelector("#txtLotNum");
+                    let focus = false
 
-                        mdlScanLotNum.addEventListener("mouseover", () => {
-                            if (inptScanLotNum === document.activeElement) {
-                                focus = true
-                            } else {
-                                focus = false
-                            }
-                        });
-
-                        mdlScanLotNum.addEventListener("click", () => {
-                            if (focus) {
-                                inptScanLotNum.focus()
-                            }
-                        });
-                    });
-
-                    $('#txtLotNum').on('keyup', function(e){
-
-                        if(e.keyCode == 13){
-                            // getSecondStampReq($(this).val());
-                            $('#txtSearchLotNum').val($(this).val());
-                            dataTable.iqcInspection.draw();
-                            dataTable.iqcInspected.draw();
-                            $('#txtLotNum').val('');
-                            $('#modalLotNum').modal('hide');
+                    mdlScanLotNum.addEventListener("mouseover", () => {
+                        if (inptScanLotNum === document.activeElement) {
+                            focus = true
+                        } else {
+                            focus = false
                         }
                     });
-                */
+
+                    mdlScanLotNum.addEventListener("click", () => {
+                        if (focus) {
+                            inptScanLotNum.focus()
+                        }
+                    });
+                });
+
+                $('#txtLotNum').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        // getSecondStampReq($(this).val());
+                        $('#txtSearchLotNum').val($(this).val());
+                        dataTable.iqcInspection.draw();
+                        dataTable.iqcInspected.draw();                        
+
+                        $('#txtLotNum').val('');
+                        $('#modalLotNum').modal('hide');
+                    }
+                });
+                dataTable.iqcInspection.on('draw', function () {
+                    if($('#txtSearchLotNum').val() != ""){
+                        $('#tblIqcInspection tbody #btnEditIqcInspection').each(function(index, tr){
+                            $(this).removeClass('d-none');
+                        })
+                    }
+                });
+
+                //**************    
                 // $('#modal-loading').modal('show');
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
@@ -451,7 +460,6 @@
                         $(this).val('');
                     }
                 });
-
             });
 
         </script>

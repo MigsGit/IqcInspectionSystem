@@ -8,7 +8,7 @@
         <img src="" class="brand-image img-circle elevation-3" style="opacity: .8">
 
         <span class="brand-text font-weight-light font-size">
-            <h5>PATS PPD-CN171</h5>
+            <h5>IQC Inspection System</h5>
         </span>
     </a> <!-- System title and logo -->
 
@@ -34,7 +34,7 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('iqc_inspection_ts') }}" class="nav-link">
+                                    <a href="{{ route('ts_iqc_inspection') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
                                         <p>IQC</p>
                                     </a>

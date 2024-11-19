@@ -364,3 +364,21 @@
         </div>
     </div>
 </div>
+
+{{-- Modal Scan Lot Number --}}
+<div class="modal fade" id="modalLotNum" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-top" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0 pb-0">
+                {{-- <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> --}}
+            </div>
+            <div class="modal-body pt-2">
+                {{-- hidden_scanner_input --}}
+                <input type="text" class="w-100 hidden_scanner_input" id="txtLotNum"  autocomplete="off" is_inspected="false">
+                {{-- <input type="text" class="scanner w-100" id="txtScanPO"  autocomplete="off"> --}}
+                {{-- <input type="text" class="scanner w-100" id="txtScanQrCode" name="scan_qr_code" autocomplete="off"> --}}
+                <div class="text-center text-secondary">Please scan Lot Number.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+            </div>
+        </div>
+    </div>
+</div>
