@@ -63,7 +63,7 @@
                                         <div class="col-12">
                                             <button class="btn btn-lg btn-outline-info float-end"><i class="fa fa-users" aria-hidden="true"></i>  Group by</button>
                                         </div>
-                                    </div> --}}
+                                    </div> txtScanVerifyData modalVerifyData --}} 
 
                                     <div class="row">
                                         <div class="col-sm-2">
@@ -85,11 +85,6 @@
                                     </ul>
                                     <br>
                                     <div class="tab-content" id="myTabContent">
-                                        {{-- Pending Tab --}}
-                                        <button  class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#modalVerifyData" id="btnVerifyScanLotNumber"><i
-                                            class="fa-solid fa-qrcode"></i>&nbsp; Validation of Lot #
-                                        </button><br><br>
                                         <div class="tab-pane fade show active" id="menu1" role="tabpanel" aria-labelledby="menu1-tab">
                                             <div class="table-responsive">
                                                 <!-- style="max-height: 600px; overflow-y: auto;" -->
@@ -231,23 +226,7 @@
                 </div>
             </div>
         </div>
-
-        <!-- MODALS -->
-        <div class="modal fade" id="modalVerifyData">
-            <div class="modal-dialog modal-dialog-center">
-                <div class="modal-content modal-sm">
-                    <div class="modal-body">
-                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanVerifyData" name="scan_packing_lot_number" autocomplete="off">
-                        {{-- <input type="text" class="scanner w-100 " id="txtScanVerifyData" name="scan_packing_lot_number" autocomplete="off"> --}}
-                        <div class="text-center text-secondary"><span id="modalScanLotNumberIdText">Scan Lot Number</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
-                    </div>
-                </div>
-            <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
-        <!-- /.modal -->
-
+        
     @endsection
 
     @section('js_content')
@@ -426,39 +405,6 @@
                     e.preventDefault();
                     // saveIqcInspection();
                     $('#modalScanQRSave').modal('show');
-                });
-
-                $('#modalVerifyData').on('shown.bs.modal', function () {
-                    $('#txtScanVerifyData').focus();
-                });
-
-                $('#txtScanVerifyData').on('keyup', function(e){
-                    if(e.keyCode == 13){
-                        try{
-                            // scannedItem = JSON.parse($(this).val());
-                            scannedItem = $('#txtScanVerifyData').val().toUpperCase();
-                            console.log('scannedItem', scannedItem);
-                            $('#tblIqcInspection tbody tr').each(function(index, tr){
-                                let lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
-
-                                let powerOff = $(this).find('td:nth-child(1)').children().children();
-
-                                console.log('tblIqcInspection', lot_no);
-                                console.log('scannedItem', scannedItem);
-                                if(scannedItem === lot_no){
-                                    $(tr).addClass('checked-ok');
-                                    powerOff.removeAttr('style');
-                                    $('#modalVerifyData').modal('hide');
-                                }
-                                // console.log(lot_no);
-                            })
-                        }
-                        catch (e){
-                            toastr.error('Invalid Sticker');
-                            console.log(e);
-                        }
-                        $(this).val('');
-                    }
                 });
             });
 
