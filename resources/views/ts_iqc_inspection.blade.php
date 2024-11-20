@@ -63,7 +63,7 @@
                                         <div class="col-12">
                                             <button class="btn btn-lg btn-outline-info float-end"><i class="fa fa-users" aria-hidden="true"></i>  Group by</button>
                                         </div>
-                                    </div> txtScanVerifyData modalVerifyData --}} 
+                                    </div> txtScanVerifyData modalVerifyData --}}
 
                                     <div class="row">
                                         <div class="col-sm-2">
@@ -226,19 +226,18 @@
                 </div>
             </div>
         </div>
-        
+
     @endsection
 
     @section('js_content')
         <script type="text/javascript">
             $(document).ready(function () {
-            const tbl = {
-                iqcInspection:'#tblIqcInspection',
-                iqcWhsDetails :'#tblWhsDetails',
-                iqcInspected:'#tblIqcInspected'
-            };
-            
-            /**/
+                const tbl = {
+                    iqcInspection:'#tblIqcInspection',
+                    iqcWhsDetails :'#tblWhsDetails',
+                    iqcInspected:'#tblIqcInspected'
+                };
+
                 $('a[href="#menu1"]').click(function (e) {
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
@@ -277,12 +276,13 @@
                         // getSecondStampReq($(this).val());
                         $('#txtSearchLotNum').val($(this).val());
                         dataTable.iqcInspection.draw();
-                        dataTable.iqcInspected.draw();                        
+                        dataTable.iqcInspected.draw();
 
                         $('#txtLotNum').val('');
                         $('#modalLotNum').modal('hide');
                     }
                 });
+
                 dataTable.iqcInspection.on('draw', function () {
                     if($('#txtSearchLotNum').val() != ""){
                         $('#tblIqcInspection tbody #btnEditIqcInspection').each(function(index, tr){
@@ -291,7 +291,7 @@
                     }
                 });
 
-                //**************    
+                //**************
                 // $('#modal-loading').modal('show');
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
@@ -403,9 +403,10 @@
                 /*Submit*/
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
-                    // saveIqcInspection();
-                    $('#modalScanQRSave').modal('show');
+                    saveIqcInspection();
+                    // $('#modalScanQRSave').modal('show');
                 });
+                $('select').val(1);
             });
 
         </script>

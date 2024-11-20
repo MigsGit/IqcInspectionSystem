@@ -26,9 +26,6 @@ $('input[type="number"]').on('keydown', function(e){
 });
 
 
-
-
-
 function resetFormProcessValues() {
     // Reset values
     $("#formProcess")[0].reset();
