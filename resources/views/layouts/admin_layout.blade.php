@@ -1,7 +1,4 @@
 
-@php
-    session_start();
-@endphp
   {{-- @if(Auth::user()->is_password_changed == 0)
     <script type="text/javascript">
       window.location = "{{ url('change_pass_view') }}";
@@ -18,7 +15,7 @@
       window.location = "{{ url('dashboard') }}";
     </script>
   @endif --}}
-@if(isset($_SESSION['rapidx_name']))
+
 
 <!DOCTYPE html>
 <html>
@@ -61,9 +58,3 @@
       });
   });
 </script>
-@else
-  <script type="text/javascript">
-    // window.location = "{{ url('/') }}";
-    window.location = "../";
-  </script>
-@endif

@@ -72,13 +72,14 @@
     });
 </script>
 
-<script src="{{ asset('public/js/main/Common.js') }}"></script>
-<script src="{{ asset('public/js/main/User.js') }}"></script>
+<script src="{{ asset('public/js/main/Common.js') }}?t=<?=time()?>"></script>
+<script src="{{ asset('public/js/main/User.js') }}?t=<?=time()?>"></script>
 
-<script src="{{ asset('public/js/main/UserLevel.js') }}"></script>
+<script src="{{ asset('public/js/main/UserLevel.js') }}?t=<?=time()?>"></script>
 
 {{-- IQC --}}
-<script src="{{ asset('public/js/main/IqcInspection.js') }}"></script>
+<script src="{{ asset('public/js/main/IqcInspection.js') }}?t=<?=time()?>"></script>
+
 
 
 

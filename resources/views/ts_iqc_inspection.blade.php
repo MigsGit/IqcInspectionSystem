@@ -1,3 +1,4 @@
+
 @php $layout = 'layouts.admin_layout'; @endphp
 {{-- @auth --}}
     @extends($layout)
@@ -238,6 +239,7 @@
                     iqcInspected:'#tblIqcInspected'
                 };
 
+            
                 $('a[href="#menu1"]').click(function (e) {
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');

@@ -13,7 +13,7 @@ class User extends Authenticatable // Authenticatable this will allow the use of
     use HasFactory;
 
     protected $table = "users";
-    protected $connection = "mysql";
+    protected $connection = "rapidx";
 
     public function user_level(){
         return $this->hasOne(UserLevel::class, 'id', 'user_level_id');

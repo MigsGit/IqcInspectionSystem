@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Helpers;
 use DataTables;
 use App\Models\User;
 use App\Models\TblWarehouse;
@@ -226,9 +227,10 @@ class IqcInspectionController extends Controller
 
     public function getIqcInspectionById(Request $request)
     {
-        return $tbl_whs_trasanction = IqcInspection::with('IqcInspectionsMods')
+        $tbl_whs_trasanction = IqcInspection::with('IqcInspectionsMods','user_iqc')
         ->where('id',$request->iqc_inspection_id)
         ->get(['ts_iqc_inspections.id as iqc_inspection_id','ts_iqc_inspections.*']);
+        return response()->json(['tbl_whs_trasanction'=>$tbl_whs_trasanction]);
     }
 
     public function getWhsReceivingById(Request $request)
@@ -331,9 +333,7 @@ class IqcInspectionController extends Controller
     }
 
     public function saveIqcInspection(IqcInspectionRequest $request)
-    {
-
-
+    {   
         date_default_timezone_set('Asia/Manila');
         DB::beginTransaction();
         try {
@@ -350,8 +350,7 @@ class IqcInspectionController extends Controller
                 ->update([
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
-                    // 'inspector' => Auth::user()->id,
-                    'inspector' => 1,
+                    'inspector' => session('rapidx_user_id'),
                 ]);
 
                 $iqc_inspections_id = $request->iqc_inspection_id;

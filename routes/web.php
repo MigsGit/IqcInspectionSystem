@@ -10,6 +10,7 @@ use App\Http\Controllers\IqcInspectionController;
 
 
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,30 +27,36 @@ use App\Http\Controllers\IqcInspectionController;
 // })->name('link');
 
 Route::view('/','index')->name('login');
+Route::middleware('CheckSessionExist')->group(function(){
+
 Route::view('/dashboard','dashboard')->name('dashboard');
 
 // * ADMIN VIEW
 Route::view('/user','user')->name('user');
 Route::view('/ts_iqc_inspection','ts_iqc_inspection')->name('ts_iqc_inspection');
-
+});
 // Route::middleware('CheckSessionExist')->group(function(){
 // });
 
 Route::get('check_user', function (Request $request) {
     session_start();
     if($_SESSION){
-
-        return $_SESSION;
-        // $_SESSION["rapidx_user_id"] = $user_info->id;
-        // $_SESSION["rapidx_user_level_id"] = $user_info->user_level_id;
-        // $_SESSION["rapidx_username"] = $user_info->username;
-        // $_SESSION["rapidx_name"] = $user_info->name;
-        // $_SESSION["rapidx_email"] = $user_info->email;
-        // $_SESSION["rapidx_department_id"] = $user_info->department_id;
-        // $_SESSION["rapidx_employee_number"] =  $user_info->employee_number;
+        session([
+            'rapidx_user_id' => $_SESSION["rapidx_user_id"],
+            'rapidx_user_id' => $_SESSION["rapidx_name"],
+            'rapidx_user_id' => $_SESSION["rapidx_username"],
+            'rapidx_user_id' => $_SESSION["rapidx_user_level_id"],
+            'rapidx_user_id' => $_SESSION["rapidx_email"],
+            'rapidx_user_id' => $_SESSION["rapidx_department_id"],
+            'rapidx_user_id' => $_SESSION["rapidx_employee_number"],
+        
+        ]);
+    
+        // return session()->all();
+        return true;
     }
     else{
-        return 'false';
+        return false;
     }
 });
 

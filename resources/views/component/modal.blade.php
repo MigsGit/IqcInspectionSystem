@@ -221,9 +221,12 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Inspector</span>
                                 </div>
-                                <select class="form-select" name="inspector" id="inspector">
-                                    {{-- <option value="{{ Auth::user()->id }}" selected>{{Auth::user()->firstname.' '.Auth::user()->lastname}}</option> --}}
-                                </select>
+                                {{-- @php echo $_SESSION['rapidx_name']; @endphp --}}
+                                <input class="form-control" value= "<?php echo htmlspecialchars($_SESSION['rapidx_user_id']); ?>" type="hidden" name="inspector" id="inspector">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="inspector_name"><?php echo htmlspecialchars($_SESSION['rapidx_name']); ?></span>
+                                </div>
+                            
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
