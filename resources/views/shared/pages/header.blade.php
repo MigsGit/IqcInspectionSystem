@@ -14,19 +14,15 @@
     <div class="navbar-nav">
         <li class="nav-item dropdown">
             <button class="btn dropdown-toggle theme-color" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                @php
+                        echo $_SESSION["rapidx_name"];
+                        echo '&nbsp;<i class="far fa-user"></i>';
+                @endphp
                 {{-- {{ ucwords($_SESSION["session_firstname"]) .' '. ucwords($_SESSION["session_lastname"]) }}&nbsp;<i class="far fa-user"></i> --}}
-                {{-- {{ Auth::user()->firstname." ".Auth::user()->lastname}}
-                MIGZ --}}
-                MIGZ
+                {{-- {{ Auth::user()->firstname." ".Auth::user()->lastname}} --}}
+                {{-- {{ Auth::user()->rapidx_user_id }} --}}
+                {{-- MIGZ --}}
             </button>
-            <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-left">
-                {{-- <li>
-                    <a class="dropdown-item theme-color" href="#" style="cursor: not-allowed"><i class="fas fa-user mr-2"></i>Profile</a>
-                </li> --}}
-                <li>
-                    <a class="dropdown-item theme-color" data-bs-toggle="modal" data-bs-target="#modalLogout"><i class="fa-solid fa-arrow-right mr-2"></i>Logout</a>
-                </li>
-            </ul>
         </li>
     </div>
 </nav>

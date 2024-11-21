@@ -68,6 +68,19 @@
     //   SignInAdmin();
     });
 
+    $.ajax({
+        type: 'GET',
+        url: 'check_user',
+        dataType: 'json',
+        success: function (response) {
+            console.log(response);
+            if(response.is_success === 'true'){
+            }else{
+            }
+        },error: function (data, xhr, status){
+           toastr.error(`Error: ${data.status}`);
+        }
+    });
     // Sign In
     function SignIn(){
         window.location = "{{ url('dashboard') }}";

@@ -35,6 +35,24 @@ Route::view('/ts_iqc_inspection','ts_iqc_inspection')->name('ts_iqc_inspection')
 // Route::middleware('CheckSessionExist')->group(function(){
 // });
 
+Route::get('check_user', function (Request $request) {
+    session_start();
+    if($_SESSION){
+
+        return $_SESSION;
+        // $_SESSION["rapidx_user_id"] = $user_info->id;
+        // $_SESSION["rapidx_user_level_id"] = $user_info->user_level_id;
+        // $_SESSION["rapidx_username"] = $user_info->username;
+        // $_SESSION["rapidx_name"] = $user_info->name;
+        // $_SESSION["rapidx_email"] = $user_info->email;
+        // $_SESSION["rapidx_department_id"] = $user_info->department_id;
+        // $_SESSION["rapidx_employee_number"] =  $user_info->employee_number;
+    }
+    else{
+        return 'false';
+    }
+});
+
 Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/load_iqc_inspection', 'loadIqcInspection')->name('load_iqc_inspection');
     Route::get('/get_iqc_inspection_by_judgement', 'getIqcInspectionByJudgement')->name('get_iqc_inspection_by_judgement');

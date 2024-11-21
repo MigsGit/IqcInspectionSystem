@@ -1,7 +1,7 @@
 
-
-{{-- @auth --}}
- 
+@php
+    session_start();
+@endphp
   {{-- @if(Auth::user()->is_password_changed == 0)
     <script type="text/javascript">
       window.location = "{{ url('change_pass_view') }}";
@@ -18,6 +18,8 @@
       window.location = "{{ url('dashboard') }}";
     </script>
   @endif --}}
+@if(isset($_SESSION['rapidx_name']))
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -40,7 +42,7 @@
   @include('shared.pages.admin_nav')
 
   @yield('content_page')
-  
+
   @include('shared.pages.footer')
 </div>
 
@@ -57,14 +59,11 @@
       $('#btnLogout').click(function(){
           SignOut();
       });
-
-
   });
 </script>
-{{-- @else --}}
-  {{-- <script type="text/javascript">
-    window.location = "{{ url('/') }}";
+@else
+  <script type="text/javascript">
+    // window.location = "{{ url('/') }}";
+    window.location = "../";
   </script>
-  
-  MIGZ--}}
-{{-- @endauth --}}
+@endif
