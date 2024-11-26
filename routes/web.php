@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommonController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\IqcInspectionController;
 
 
@@ -26,14 +27,13 @@ use App\Http\Controllers\IqcInspectionController;
 //     return 'link';
 // })->name('link');
 
-Route::view('/','index')->name('login');
+Route::view('/','dashboard')->name('dashboard');
 Route::middleware('CheckSessionExist')->group(function(){
-
-Route::view('/dashboard','dashboard')->name('dashboard');
-
-// * ADMIN VIEW
-Route::view('/user','user')->name('user');
-Route::view('/ts_iqc_inspection','ts_iqc_inspection')->name('ts_iqc_inspection');
+    Route::view('/dashboard','dashboard')->name('dashboard');
+    // * ADMIN VIEW
+    Route::view('/user','user')->name('user');
+    Route::view('/ts_iqc_inspection','ts_iqc_inspection')->name('ts_iqc_inspection');
+    Route::view('/dropdown_maintenance','dropdown_maintenance')->name('dropdown_maintenance');
 });
 // Route::middleware('CheckSessionExist')->group(function(){
 // });
@@ -49,9 +49,8 @@ Route::get('check_user', function (Request $request) {
             'rapidx_user_id' => $_SESSION["rapidx_email"],
             'rapidx_user_id' => $_SESSION["rapidx_department_id"],
             'rapidx_user_id' => $_SESSION["rapidx_employee_number"],
-        
+
         ]);
-    
         // return session()->all();
         return true;
     }
@@ -97,6 +96,12 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/reset_password', 'reset_password');
     Route::get('/generate_user_qrcode', 'generate_user_qrcode');
     Route::post('/import_user', 'import_user');
-
     Route::get('/get_emp_details_by_id', 'get_emp_details_by_id')->name('get_emp_details_by_id');
 });
+Route::controller(SettingController::class)->group(function () {
+    Route::get('/read_dropdown_details_by_category', 'readDropdownDetailsByCategory')->name('read_dropdown_details_by_category');
+
+});
+
+//readDropdownDetailsByCategory
+

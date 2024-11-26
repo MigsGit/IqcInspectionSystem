@@ -33,6 +33,15 @@
                         </a>
                     </li>
                 {{-- @endif --}}
+                {{-- @if ( in_array(Auth::user()->position, [0,2,5])) --}}
+                    <li class="nav-header mt-3"><strong>Settings</strong></li>
+                    <li class="nav-item">
+                        <a href="{{ route('dropdown_maintenance') }}" class="nav-link">
+                            <i class="far fa-circle nav-icon ml-2"> </i>
+                            <p>Dropdown Maintenance</p>
+                        </a>
+                    </li>
+                {{-- @endif --}}
             </ul>
         </nav>
     </div><!-- Sidebar -->

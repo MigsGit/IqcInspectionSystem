@@ -239,7 +239,9 @@
                     iqcInspected:'#tblIqcInspected'
                 };
 
-            
+                
+
+
                 $('a[href="#menu1"]').click(function (e) {
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');

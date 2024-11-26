@@ -60,6 +60,14 @@ class ResourceJob implements ResourceInterface
         }
     }
 
+    public function readAllRelationsAndConditions($model,$relations,$conditions=null){
+        try {
+            return $data = $model::with($relations)->get();
+        } catch (Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
+
     public function update($model,$data_id,array $data){
         date_default_timezone_set('Asia/Manila');
         DB::beginTransaction();

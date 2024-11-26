@@ -20,7 +20,8 @@
                 @endphp
                 {{-- {{ ucwords($_SESSION["session_firstname"]) .' '. ucwords($_SESSION["session_lastname"]) }}&nbsp;<i class="far fa-user"></i> --}}
                 {{-- {{ Auth::user()->firstname." ".Auth::user()->lastname}} --}}
-                {{-- {{ Auth::user()->rapidx_user_id }} --}}
+                {{-- {{ session('rapidx_name') }}
+                <i class="far fa-user"></i> --}}
                 {{-- MIGZ --}}
             </button>
         </li>

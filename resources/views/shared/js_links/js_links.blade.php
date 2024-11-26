@@ -57,6 +57,7 @@
         "hideMethod": "fadeOut",
         "iconClass":  "toast-custom"
     };
+
     $.ajax({
         type: 'GET',
         url: 'check_user',
@@ -79,6 +80,7 @@
 
 {{-- IQC --}}
 <script src="{{ asset('public/js/main/IqcInspection.js') }}?t=<?=time()?>"></script>
+<script src="{{ asset('public/js/main/Setting.js') }}?t=<?=time()?>"></script>
 
 
 

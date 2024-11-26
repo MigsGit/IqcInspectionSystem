@@ -1,3 +1,99 @@
+/* Call basic ajax for submit */
+function call_ajax(data, handler, fn) {
+    data = $.param(data);
+    $.ajax({
+        type: "post",
+        dataType: "json",
+        data: data,
+        url: handler,
+        beforeSend: function(){
+            $('#modal-loading').modal('show');
+        },
+        success: function (result) {
+            fn(result);
+        },
+        error: function (result) {
+            fn(result);
+        }
+    });
+}
+
+function call_ajax_serialize(data, serialized_data, handler, fn) {
+    data = $.param(data) + '&' + serialized_data;
+	$.ajax({
+        type: "post",
+        dataType: "json",
+        data: data,
+        url: handler,
+        success: function (result) {
+            fn(result);
+        },
+        error: function (result) {
+            alert('error ajax');
+        }
+    });
+}
+
+function call_ajax_async_false(data, handler, fn) {
+    data = $.param(data);
+    $.ajax({
+        type: "post",
+        dataType: "json",
+        data: data,
+        url: handler,
+		async: false,
+        success: function (result) {
+            fn(result);
+        },
+        error: function (result) {
+            alert('error ajax');
+        }
+    });
+}
+
+function create_table(table_id, table_class, array_theader, array_tbody) {
+    var html = '<table id="' + table_id + '" class="' + table_class + '">';
+    /* Generate table header */
+	html += '	<thead>';
+	for(x=0;x<array_theader.length;x++){
+		html += '	<th>' + array_theader[x] + '</th>';
+    }
+	html += '	</thead>'
+	/* Generate table body */
+	html += '	<tbody>';
+	for(x=0;x<array_theader.length;x++){
+		html += '	<td>' + array_tbody[x] + '</td>';
+    }
+	html += '	</tbody>';
+	html += '</table>';
+	return html;
+}
+
+function call_ajax_attachment(serialized_data, handler, fn) {
+	$.ajax({
+		url				: handler,
+		type			: "POST",
+		data			: serialized_data,
+		contentType		: false,
+		dataType		: 'json',
+		cache			: false,
+		processData		: false,
+		success			: function(result)
+		{
+			fn(result);
+		}, error : function (result) {
+			// alert('ERROR: '+result['upload_msg']);
+			/**
+			 * TODO: Debug the for disposition in SAR
+			 */
+			// alert('Error: Please contact ISS');
+			alert('Email Sent');
+		}
+	});
+}
+
+
+
 function resetFormValues() {
     // Reset values
     $("#formAddUser")[0].reset();
