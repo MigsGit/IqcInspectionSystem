@@ -11,11 +11,14 @@ use App\Models\IqcInspection;
 use App\Models\DropdownIqcAql;
 use App\Models\ReceivingDetails;
 use App\Models\DropdownIqcFamily;
+use App\Models\IqcDropdownDetail;
 use App\Models\IqcInspectionsMod;
 use Illuminate\Support\Facades\DB;
+use App\Models\IqcDropdownCategory;
 use App\Models\DropdownIqcTargetLar;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Interfaces\ResourceInterface;
 use App\Models\DropdownIqcTargetDppm;
 use App\Models\DropdownIqcModeOfDefect;
 use App\Models\TblWarehouseTransaction;
@@ -25,6 +28,10 @@ use App\Http\Requests\IqcInspectionRequest;
 
 class IqcInspectionController extends Controller
 {
+    protected $resourceInterface;
+    public function __construct(ResourceInterface $resourceInterface) {
+        $this->resourceInterface = $resourceInterface;
+    }
     public function getIqcInspectionByJudgement(Request $request)
     {
         return $iqc_inspection_by = IqcInspection::where('judgement',1)->get();
@@ -445,6 +452,41 @@ class IqcInspectionController extends Controller
     {
         $iqc_coc_file_name = IqcInspection::where('id',$iqc_inspection_id)->get('iqc_coc_file');
         return Storage::response( 'public/iqc_inspection_coc/' . $iqc_inspection_id . $iqc_coc_file_name[0][ 'iqc_coc_file' ] );
+    }
+
+    public function getDropdownDetailsByOptValue(Request $request){
+        try {
+            /**
+             * Add Relations as many as you want
+             * 
+             * @param array $relations
+            */
+            $relations = [
+                'iqc_dropdown_details',
+            ];
+
+            /**
+             * Add Conditions as many as you want
+             * 
+             * @param array $conditions
+            */
+            $conditions = [
+                'iqc_inspection_column_ref' => $request->iqc_inspection_column_ref,
+            ];
+        
+            return $iqcDropdownDetail = $this->resourceInterface->readAllRelationsAndConditions(IqcDropdownCategory::class,$relations,$conditions);
+            foreach ($iqcDropdownDetail as $key => $valueIqcDropdownDetail) {
+                $arrIqcDropdownDetailId[] =$valueIqcDropdownDetail['id'];
+                $arrIqcDropdownDetailValue[] =$valueIqcDropdownDetail['dropdown_details'];
+            }
+            return response()->json([
+                'id'    =>  $arrIqcDropdownDetailId,
+                'value' =>  $arrIqcDropdownDetailValue
+            ]);
+            // return response()->json(['is_success' => 'true','iqcDropdownDetail'=>$iqcDropdownDetail]);
+        } catch (Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
     }
 
     public function Slug($string, $slug = '-', $extra = null)

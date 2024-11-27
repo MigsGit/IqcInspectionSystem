@@ -32,3 +32,34 @@
 //         { "data" : "Lot_number" },
 //     ],
 // });
+
+const readDropdownCategoryById = function (DropdownCategoryId){
+    let data = {
+        'DropdownCategoryId' : DropdownCategoryId
+    }
+    call_ajax(data, 'read_dropdown_category_by_id', function(response){
+        console.log(response.readDropdownCategoryById[0]);
+        let data = response.readDropdownCategoryById[0];
+        if(response.isSuccess === 'true'){
+            form.saveDropdownCategory.find('#dropdown_category_id').val(data.id);
+            form.saveDropdownCategory.find('#dropdown_category').val(data.dropdown_category);
+            setTimeout(() => {
+                form.saveDropdownCategory.find('#section').val(data.section);
+            }, 300);
+        }
+    })
+}
+const readDropdownDetailsById = function (DropdownDetailsId){
+    let data = {
+        'DropdownDetailsId' : DropdownDetailsId
+    }
+    call_ajax(data, 'read_dropdown_details_by_id', function(response){
+        console.log(response.readDropdownDetailsById[0]);
+        // return;
+        let data = response.readDropdownDetailsById[0];
+        if(response.isSuccess === 'true'){
+            form.saveDropdownDetails.find('#dropdown_details_id').val(data.id);
+            form.saveDropdownDetails.find('#dropdown_details').val(data.dropdown_details);
+        }
+    })
+}

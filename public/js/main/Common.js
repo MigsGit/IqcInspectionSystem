@@ -1,7 +1,29 @@
 /* Call basic ajax for submit */
-function call_ajax(data, handler, fn) {
+function call_ajax(data = null, handler, fn) {
     data = $.param(data);
     $.ajax({
+        type: "GET",
+        dataType: "json",
+        data: data,
+        url: handler,
+        beforeSend: function(){
+            $('#modal-loading').modal('show');
+        },
+        success: function (result) {
+            fn(result);
+            $('#modal-loading').modal('hide');
+
+        },
+        error: function (result) {
+            fn(result);
+            $('#modal-loading').modal('hide');
+        }
+    });
+}
+
+function call_ajax_serialize(data = null, serialized_data, handler, fn) {
+    data = $.param(data) + '&' + serialized_data;
+	$.ajax({
         type: "post",
         dataType: "json",
         data: data,
@@ -11,25 +33,13 @@ function call_ajax(data, handler, fn) {
         },
         success: function (result) {
             fn(result);
-        },
-        error: function (result) {
-            fn(result);
-        }
-    });
-}
+            $('#modal-loading').modal('hide');
 
-function call_ajax_serialize(data, serialized_data, handler, fn) {
-    data = $.param(data) + '&' + serialized_data;
-	$.ajax({
-        type: "post",
-        dataType: "json",
-        data: data,
-        url: handler,
-        success: function (result) {
-            fn(result);
         },
         error: function (result) {
             alert('error ajax');
+            $('#modal-loading').modal('hide');
+
         }
     });
 }

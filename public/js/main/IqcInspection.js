@@ -12,8 +12,7 @@
         iqcWshDetails: '',
         iqcInspected: ''
     };
-
-    const form = {
+    form = {
         iqcInspection : $('#formSaveIqcInspection')
     };
     const strDatTime = {
@@ -169,7 +168,8 @@
 
         getWhsDetailsById(receivingDetailId,whsTransactionId);
         getFamily();
-        getAql();
+        // getAql();
+        
         getInspectionLevel();
         getDieNo();
         getLarDppm();
@@ -207,7 +207,7 @@
 
                 let partCode = response[0]['partcode'];
                 let partName = response[0]['partname'];
-                let supplier = response[0]['supplier'];
+                let supplier = response[0]['supplier']; // aql
                 let lotNo = response[0]['lot_no'];
                 let lotQty = response[0]['total_lot_qty'];
 
@@ -235,7 +235,7 @@
                 form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
                 form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
                 form.iqcInspection.find('#isUploadCoc').prop('required',true);
-
+                getDropdownDetailsById(form.iqcInspection.find('#aql'),'aql')
 
                 if( iqcCocFile === undefined || iqcCocFile === null ){
                     form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
@@ -408,6 +408,25 @@
             }
         });
     }
+    const getDropdownDetailsById = function (cmb_element,iqc_inspection_column_ref,opt_value = null) {
+        cmb_element.empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+        $.ajax({
+            type: "GET",
+            url: "get_dropdown_details_by_opt_value",
+            data: {"iqc_inspection_column_ref" : iqc_inspection_column_ref},
+            dataType: "json",
+            success: function (response) {
+                let id = response['id'];
+                let value = response['value'];
+                console.log('value',value);
+                for (let i = 0; i < id.length; i++) {
+                    let opt = `<option value="${id[i]}">${value[i]}</option>`;
+                    cmb_element.append(opt);
+                }
+            }
+        });
+    }
+
     const getAql = function () {
         form.iqcInspection.find('#aql').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
         $.ajax({

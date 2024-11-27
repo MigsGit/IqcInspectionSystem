@@ -72,7 +72,8 @@ Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/get_lar_dppm', 'getLarDppm')->name('get_lar_dppm');
     Route::get('/get_mode_of_defect', 'getModeOfDefect')->name('get_mode_of_defect');
     Route::get('/view_coc_file_attachment/{id}', 'viewCocFileAttachment')->name('view_coc_file_attachment');
-
+    
+    Route::get('/get_dropdown_details_by_opt_value', 'getDropdownDetailsByOptValue')->name('get_dropdown_details_by_opt_value');
     Route::post('/save_iqc_inspection', 'saveIqcInspection')->name('save_iqc_inspection');
 });
 
@@ -99,8 +100,13 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/get_emp_details_by_id', 'get_emp_details_by_id')->name('get_emp_details_by_id');
 });
 Route::controller(SettingController::class)->group(function () {
+    Route::get('/read_dropdown_category', 'readDropdownCategory')->name('read_dropdown_category');
     Route::get('/read_dropdown_details_by_category', 'readDropdownDetailsByCategory')->name('read_dropdown_details_by_category');
-
+    Route::get('/read_dropdown_category_by_id', 'readDropdownCategoryById')->name('read_dropdown_category_by_id');
+    Route::get('/read_dropdown_details_by_id', 'readDropdownDetailsById')->name('read_dropdown_details_by_id');
+    
+    Route::post('/save_dropdown_category_by_id', 'saveDropdownCategoryById')->name('save_dropdown_category_by_id');
+    Route::post('/save_dropdown_details_by_id', 'saveDropdownDetailsById')->name('save_dropdown_details_by_id');
 });
 
 //readDropdownDetailsByCategory
