@@ -83,7 +83,12 @@ class SettingController extends Controller
         }
     }
     public function saveDropdownCategoryById(IqcDropdownCategoryRequest $IqcDropdownCategoryRequest){
-        return $readDropdownCategoryById = $this->resourceInterface->createOrUpdate(IqcDropdownCategory::class,$IqcDropdownCategoryRequest->dropdown_category_id,$IqcDropdownCategoryRequest->validated());
+        $readDropdownCategoryById = $this->resourceInterface->createOrUpdate(IqcDropdownCategory::class,$IqcDropdownCategoryRequest->dropdown_category_id,$IqcDropdownCategoryRequest->validated());
+        $arrData = [
+            'updated_by' => session('rapidx_user_id'),
+            'iqc_inspection_column_ref' => $IqcDropdownCategoryRequest->iqc_inspection_column_ref
+        ];
+        return $readDropdownCategoryById = $this->resourceInterface->update(IqcDropdownCategory::class,$readDropdownCategoryById['dataId'],$arrData);
     }
     public function saveDropdownDetailsById(IqcDropdownDetailRequest $IqcDropdownDetailRequest)
     {

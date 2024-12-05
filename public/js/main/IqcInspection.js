@@ -1,152 +1,47 @@
 
 // $(document).ready(function () {
-
-    const tbl = {
+    var tbl = {
         iqcInspection:'#tblIqcInspection',
         iqcWhsDetails :'#tblWhsDetails',
         iqcInspected:'#tblIqcInspected'
     };
 
-    const dataTable = {
+    var dataTable = {
         iqcInspection:'', //iqcInspection
         iqcWshDetails: '',
         iqcInspected: ''
     };
-    form = {
+    var form = {
         iqcInspection : $('#formSaveIqcInspection')
     };
-    const strDatTime = {
+
+    var strDatTime = {
         dateToday : new Date(), // By default Date empty constructor give you Date.now
         currentDate : new Date().toJSON().slice(0, 10),
         currentTime : new Date().toLocaleTimeString('en-GB', { hour: "numeric",minute: "numeric"}),
         currentHours : new Date().getHours(),
         currentMinutes : new Date().getMinutes(),
     }
-    const arrCounter= {
+
+    var arrCounter= {
         ctr : 0
     }
-    const btn = {
+
+    var btn = {
         removeModLotNumber : $('#btnRemoveModLotNumber'),
         saveComputation : $('#btnSaveComputation')
     }
-    const arrTableMod = {
+
+    arrTableMod = {
         lotNo : [],
         modeOfDefects : [],
         lotQty : []
     };
 
-    dataTable.iqcInspection = $(tbl.iqcInspection).DataTable({
-        "processing" : true,
-        "serverSide" : true,
-        "ajax" : {
-            url: "load_whs_transaction",
-            data: function (param){
-                param.firstStamping = "true" //DT for 1st Stamping
-                param.lotNum = $('#txtSearchLotNum').val()
-            },
-        },
-        fixedHeader: true,
-        "columns":[
-            { "data" : "action", orderable:false, searchable:false },
-            { "data" : "status", orderable:false, searchable:false },
-            { "data" : "InvoiceNo" },
-            { "data" : "Supplier" },
-            { "data" : "PartNumber" },
-            { "data" : "MaterialType" },
-            { "data" : "Lot_number" },
-        ],
-    });
-
-    dataTable.iqcWshDetails = $(tbl.iqcWhsDetails).DataTable({
-        "processing" : true,
-        "serverSide" : true,
-        "ajax" : {
-            url: "load_whs_details",
-            data: function (param){
-                param.lotNum = $('#txtSearchLotNum').val()
-            },
-        },
-        fixedHeader: true,
-        "columns":[
-
-            { "data" : "action", orderable:false, searchable:false },
-            { "data" : "status", orderable:false, searchable:false },
-            { "data" : "po_no" },
-            { "data" : "Supplier" },
-            { "data" : "PartNumber" },
-            { "data" : "MaterialType" },
-            { "data" : "Lot_number" },
-
-        ],
-    });
-
-    dataTable.iqcInspected = $(tbl.iqcInspected).DataTable({
-        "processing" : true,
-        "serverSide" : true,
-        "ajax" : {
-            url: "load_iqc_inspection",
-            data: function (param){
-                param.lotNum = $('#txtSearchLotNum').val()
-            },
-        },
-        fixedHeader: true,
-        "columns":[
-            { "data" : "action", orderable:false, searchable:false },
-            { "data" : "status", orderable:false, searchable:false },
-            { "data" : "date_inspected" },
-            { "data" : "time_inspected" }, //
-            { "data" : "app_ctrl_no" }, //
-            { "data": "supplier" },
-            // { "data" : "classification" },//
-            // { "data" : "family" },//
-            // { "data" : "category" },//
-            { "data" : "partcode" },
-            { "data" : "partname" },
-            { "data" : "lot_no" },
-            { "data" : "total_lot_qty" },
-            // { "data" : "aql" }, //
-            { "data" : "qc_inspector" }, //
-            { "data" : "created_at" },
-            { "data" : "updated_at" },
-        ],
-    });
-
-    const getFamily = function () {
-        $.ajax({
-            url: "get_family",
-            method: "get",
-            dataType: "json",
-            beforeSend: function(){
-                result = '<option value="" selected disabled> -- Loading -- </option>';
-                form.iqcInspection.find('select[name=family]').html(result);
-            },
-            success: function(response){
-                result = '';
-                let families_id = response['id'];
-                let families_name = response['value'];
-
-                if(response['id'].length > 0){
-                    result = '<option selected disabled> --- Select --- </option>';
-                    for(let index = 0; index < response['id'].length; index++){
-                        result += '<option value="' + response['id'][index]+'">'+ response['value'][index]+'</option>';
-                    }
-                }
-                else{
-                    result = '<option value="0" selected disabled> No record found </option>';
-                }
-                form.iqcInspection.find('select[name="family"]').html(result);
-            }
-        });
-    }
     const editIqcInspection = function () {
         let iqcInpectionId = $(this).attr('iqc-inspection-id')
         getIqcInspectionById(iqcInpectionId);
-        getFamily();
-        getAql();
-        getInspectionLevel();
         getDieNo();
-        getLarDppm();
-        getModeOfDefect();
 
         form.iqcInspection.find('input').removeClass('is-valid');
         form.iqcInspection.find('input').removeClass('is-invalid');
@@ -167,13 +62,7 @@
         let whsTransactionId = ($(this).attr('whs-trasaction-id') != undefined) ?  $(this).attr('whs-trasaction-id') : 0;
 
         getWhsDetailsById(receivingDetailId,whsTransactionId);
-        getFamily();
-        // getAql();
-        
-        getInspectionLevel();
         getDieNo();
-        getLarDppm();
-        getModeOfDefect();
 
         form.iqcInspection.find('input').removeClass('is-valid');
         form.iqcInspection.find('input').removeClass('is-invalid');
@@ -235,7 +124,13 @@
                 form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
                 form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
                 form.iqcInspection.find('#isUploadCoc').prop('required',true);
-                getDropdownDetailsById(form.iqcInspection.find('#aql'),'aql')
+                getDropdownDetailsById(form.iqcInspection.find('#aql'),'aql');
+                getDropdownDetailsById(form.iqcInspection.find('#family'),'family');
+                getDropdownDetailsById(form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');
+                getDropdownDetailsById(form.iqcInspection.find('#target_dppm'),'target_dppm');
+                getDropdownDetailsById(form.iqcInspection.find('#target_lar'),'target_lar');
+                getDropdownDetailsById($('#mode_of_defect'),'mode_of_defects');
+
 
                 if( iqcCocFile === undefined || iqcCocFile === null ){
                     form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
@@ -331,11 +226,12 @@
                 form.iqcInspection.find('#iqc_coc_file').val('');
                 form.iqcInspection.find('#isUploadCoc').prop('required',false);
 
-                setTimeout(() => {
-                    form.iqcInspection.find('#family').val(tblWhsTrasanction['family']).trigger("change");
-                    form.iqcInspection.find('#inspection_lvl').val(tblWhsTrasanction['inspection_lvl']).trigger("change");
-                    form.iqcInspection.find('#aql').val(tblWhsTrasanction['aql']).trigger("change");
-                }, 300);
+                getDropdownDetailsById(form.iqcInspection.find('#aql'),'aql',tblWhsTrasanction['aql'])
+                getDropdownDetailsById(form.iqcInspection.find('#family'),'family',tblWhsTrasanction['family'])
+                getDropdownDetailsById(form.iqcInspection.find('#inspection_lvl'),'inspection_lvl',tblWhsTrasanction['inspection_lvl'])
+                getDropdownDetailsById(form.iqcInspection.find('#target_dppm'),'target_dppm');
+                getDropdownDetailsById(form.iqcInspection.find('#target_lar'),'target_lar');
+                getDropdownDetailsById($('#mode_of_defect'),'mode_of_defects');
 
                 if( iqcCocFile === undefined || iqcCocFile === null ){
                     form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
@@ -409,7 +305,9 @@
         });
     }
     const getDropdownDetailsById = function (cmb_element,iqc_inspection_column_ref,opt_value = null) {
-        cmb_element.empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+        let opt = `<option value="N/A" selected disabled>N/A</option>`;
+            opt += `<option value="N/A" selected disabled>N/A</option>`;
+        cmb_element.empty().append(opt)
         $.ajax({
             type: "GET",
             url: "get_dropdown_details_by_opt_value",
@@ -418,29 +316,21 @@
             success: function (response) {
                 let id = response['id'];
                 let value = response['value'];
+                if(iqc_inspection_column_ref =='target_lar' || iqc_inspection_column_ref == 'target_dppm'){
+                    cmb_element.val(value[0]);
+                    return;
+                }
                 console.log('value',value);
                 for (let i = 0; i < id.length; i++) {
                     let opt = `<option value="${id[i]}">${value[i]}</option>`;
                     cmb_element.append(opt);
                 }
-            }
-        });
-    }
+                console.log(opt_value);
 
-    const getAql = function () {
-        form.iqcInspection.find('#aql').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
-        $.ajax({
-            type: "GET",
-            url: "get_aql",
-            data: "data",
-            dataType: "json",
-            success: function (response) {
-                let dropdown_aql_id = response['id'];
-                let dropdown_aql_name = response['value'];
-                for (let i = 0; i < dropdown_aql_id.length; i++) {
-                    let opt = `<option value="${dropdown_aql_name[i]}">${dropdown_aql_name[i]}</option>`;
-                    form.iqcInspection.find('#aql').append(opt);
+                if(opt_value != null){
+                    cmb_element.val(opt_value).trigger("change");
                 }
+
             }
         });
     }
@@ -450,37 +340,6 @@
             let opt = `<option value="${i+1}">${i+1}</option>`;
             form.iqcInspection.find('#die_no').append(opt);
         }
-    }
-    const getLarDppm = function (){
-        $.ajax({
-            type: "GET",
-            url: "get_lar_dppm",
-            data: "data",
-            dataType: "json",
-            success: function (response) {
-                // console.log(response['lar_value'][0]);
-                // console.log(response['dppm_value'][0]);
-                form.iqcInspection.find('#target_dppm').val(response['lar_value'][0]);
-                form.iqcInspection.find('#target_lar').val(response['dppm_value'][0]);
-            }
-        });
-    }
-    const getModeOfDefect = function (){
-        $.ajax({
-            type: "GET",
-            url: "get_mode_of_defect",
-            data: "data",
-            dataType: "json",
-            success: function (response) {
-                let dropdown_iqc_mode_of_defect_id = response['id'];
-                let dropdown_iqc_mode_of_defect = response['value'];
-                $('#mode_of_defect').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
-                for (let i = 0; i < dropdown_iqc_mode_of_defect_id.length; i++) {
-                    let opt = `<option value="${dropdown_iqc_mode_of_defect[i]}">${dropdown_iqc_mode_of_defect[i]}</option>`;
-                    $('#mode_of_defect').append(opt);
-                }
-            }
-        });
     }
     const disabledEnabledButton = function(arrCounter){
         if(arrCounter === 0 ){

@@ -43,6 +43,7 @@ const readDropdownCategoryById = function (DropdownCategoryId){
         if(response.isSuccess === 'true'){
             form.saveDropdownCategory.find('#dropdown_category_id').val(data.id);
             form.saveDropdownCategory.find('#dropdown_category').val(data.dropdown_category);
+            form.saveDropdownCategory.find('#iqc_inspection_column_ref').val(data.iqc_inspection_column_ref);
             setTimeout(() => {
                 form.saveDropdownCategory.find('#section').val(data.section);
             }, 300);

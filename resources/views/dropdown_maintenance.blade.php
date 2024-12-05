@@ -202,9 +202,13 @@ table.table thead th{
                                     <option value="PPD">PPD</option>
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label>Iqc Inspection Column Reference</label>
+                                <input type="text" class="form-control" name="iqc_inspection_column_ref" id="iqc_inspection_column_ref">
                             </div>
                         </div>
                     </div>
+                </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
                     <button type="submit" id="btnAddDropdownCategory" class="btn btn-dark"><i id="iBtnAddDropdownCategoryIcon"

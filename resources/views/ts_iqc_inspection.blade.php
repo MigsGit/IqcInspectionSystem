@@ -233,14 +233,81 @@
     @section('js_content')
         <script type="text/javascript">
             $(document).ready(function () {
-                const tbl = {
-                    iqcInspection:'#tblIqcInspection',
-                    iqcWhsDetails :'#tblWhsDetails',
-                    iqcInspected:'#tblIqcInspected'
-                };
+                dataTable.iqcInspection = $(tbl.iqcInspection).DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "load_whs_transaction",
+                        data: function (param){
+                            param.firstStamping = "true" //DT for 1st Stamping
+                            param.lotNum = $('#txtSearchLotNum').val()
+                        },
+                    },
+                    fixedHeader: true,
+                    "columns":[
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "status", orderable:false, searchable:false },
+                        { "data" : "InvoiceNo" },
+                        { "data" : "Supplier" },
+                        { "data" : "PartNumber" },
+                        { "data" : "MaterialType" },
+                        { "data" : "Lot_number" },
+                    ],
+                });
 
-                
+                dataTable.iqcWshDetails = $(tbl.iqcWhsDetails).DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "load_whs_details",
+                        data: function (param){
+                            param.lotNum = $('#txtSearchLotNum').val()
+                        },
+                    },
+                    fixedHeader: true,
+                    "columns":[
 
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "status", orderable:false, searchable:false },
+                        { "data" : "po_no" },
+                        { "data" : "Supplier" },
+                        { "data" : "PartNumber" },
+                        { "data" : "MaterialType" },
+                        { "data" : "Lot_number" },
+
+                    ],
+                });
+
+                dataTable.iqcInspected = $(tbl.iqcInspected).DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "load_iqc_inspection",
+                        data: function (param){
+                            param.lotNum = $('#txtSearchLotNum').val()
+                        },
+                    },
+                    fixedHeader: true,
+                    "columns":[
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "status", orderable:false, searchable:false },
+                        { "data" : "date_inspected" },
+                        { "data" : "time_inspected" }, //
+                        { "data" : "app_ctrl_no" }, //
+                        { "data": "supplier" },
+                        // { "data" : "classification" },//
+                        // { "data" : "family" },//
+                        // { "data" : "category" },//
+                        { "data" : "partcode" },
+                        { "data" : "partname" },
+                        { "data" : "lot_no" },
+                        { "data" : "total_lot_qty" },
+                        // { "data" : "aql" }, //
+                        { "data" : "qc_inspector" }, //
+                        { "data" : "created_at" },
+                        { "data" : "updated_at" },
+                    ],
+                });
 
                 $('a[href="#menu1"]').click(function (e) {
                     e.preventDefault();

@@ -75,7 +75,6 @@
 
 <script src="{{ asset('public/js/main/Common.js') }}?t=<?=time()?>"></script>
 <script src="{{ asset('public/js/main/User.js') }}?t=<?=time()?>"></script>
-
 <script src="{{ asset('public/js/main/UserLevel.js') }}?t=<?=time()?>"></script>
 
 {{-- IQC --}}

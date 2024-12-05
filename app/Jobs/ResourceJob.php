@@ -37,7 +37,7 @@ class ResourceJob implements ResourceInterface
                 $dataId = $insert_by_id;
             }
             DB::commit();
-            return response()->json(['isSuccess' => 'true','dataId'=>$dataId]);
+            return ['isSuccess' => 'true','dataId'=>$dataId];
         } catch (Exception $e) {
             DB::rollback();
             return response()->json(['isSuccess' => 'false', 'exceptionError' => $e->getMessage()]);
@@ -47,7 +47,6 @@ class ResourceJob implements ResourceInterface
     public function readByID($model,$id){
         try {
             return $data = $model::where('id',$id)->whereNull('deleted_at')->get();
-            // return response()->json(['isSuccess' => 'true','data'=> $data]);
         } catch (Exception $e) {
             return response()->json(['isSuccess' => 'false', 'exceptionError' => $e->getMessage()]);
         }
