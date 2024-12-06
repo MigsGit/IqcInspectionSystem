@@ -53,7 +53,7 @@ class YieldDataRepository implements YieldDataRepositoryInterface
         try {
             $data['created_by'] = Auth::user()->id;
             $data['created_at'] = date('Y-m-d H:i:s');
-            $id = YieldData::insertGetId($data);
+            $id = YieldData::insertGetId($data);On-going
 
             DB::commit();
             return response()->json(['hasError' => false, 'id' => $id]);

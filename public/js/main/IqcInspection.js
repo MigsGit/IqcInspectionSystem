@@ -3,13 +3,15 @@
     var tbl = {
         iqcInspection:'#tblIqcInspection',
         iqcWhsDetails :'#tblWhsDetails',
-        iqcInspected:'#tblIqcInspected'
+        iqcInspected:'#tblIqcInspected',
+        iqcYeuDetails:'#iqcYeuDetails',
     };
 
     var dataTable = {
         iqcInspection:'', //iqcInspection
         iqcWshDetails: '',
-        iqcInspected: ''
+        iqcInspected: '',
+        iqcYeuDetails: '',
     };
     var form = {
         iqcInspection : $('#formSaveIqcInspection')
@@ -335,7 +337,10 @@
         });
     }
     const getDieNo = function () {
-        form.iqcInspection.find('#die_no').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+        let opt = ``;
+            opt += `<option value="" selected disabled>-Select-</option>`;
+            opt += `<option value="">N/A</option>`;
+        form.iqcInspection.find('#die_no').empty().prepend(opt)
         for (let i = 0; i < 15; i++) {
             let opt = `<option value="${i+1}">${i+1}</option>`;
             form.iqcInspection.find('#die_no').append(opt);
