@@ -226,7 +226,7 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="inspector_name"><?php echo htmlspecialchars($_SESSION['rapidx_name']); ?></span>
                                 </div>
-                            
+
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
@@ -369,7 +369,7 @@
 </div>
 
 {{-- Modal Scan Lot Number --}}
-<div class="modal fade" id="modalLotNum" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="modalLotNum" el-modal-attr="" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-sm modal-dialog-top" role="document">
         <div class="modal-content">
             <div class="modal-header border-bottom-0 pb-0">

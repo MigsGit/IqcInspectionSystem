@@ -49,107 +49,200 @@
             <section class="content">
                 <div class="container-fluid">
                     <div class="row">
-                        <!-- left column -->
-                        <div class="col-12">
-                            <!-- general form elements -->
-                            <div class="card card-primary">
-                                <div class="card-header">
-                                    <h3 class="card-title">TS IQC Table</h3>
-                                </div>
-                                <!-- Start Page Content -->
-                                <div class="card-body">
-                                    {{-- <br><br> --}}
-                                    {{-- TABS --}}
-                                    {{-- <div class="row">
-                                        <div class="col-12">
-                                            <button class="btn btn-lg btn-outline-info float-end"><i class="fa fa-users" aria-hidden="true"></i>  Group by</button>
-                                        </div>
-                                    </div> txtScanVerifyData modalVerifyData --}}
-
-                                    <div class="row">
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Lot Number</label>
-                                            <div class="input-group mb-3">
-                                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLotNum"><i class="fa-solid fa-qrcode"></i></button>
-                                                <input type="search" class="form-control" placeholder="Lot Number" id="txtSearchLotNum" readonly>
-                                            </div>
-                                        </div>
-                                    </div>
-
+                            <!-- left column -->
+                            <div class="col-12">
+                                    <!-- Start Page Content -->
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">On-going</a>
+                                            <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">WHSE Transaction</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">Inspected</a>
+                                            <a class="nav-link .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">YEU</a>
                                         </li>
                                     </ul>
-                                    <br>
                                     <div class="tab-content" id="myTabContent">
+                                        <div class="row">
+                                            <div class="col-sm-2">
+                                                <label class="form-label">Lot Number</label>
+                                                <div class="input-group mb-3">
+                                                    <button class="btn btn-primary" id="btnModalLotNum" el-btn-attr="whseTransaction"><i class="fa-solid fa-qrcode"></i></button>
+                                                    <input type="search" class="form-control" placeholder="Lot Number" id="txtSearchLotNum" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="tab-pane fade show active" id="menu1" role="tabpanel" aria-labelledby="menu1-tab">
-                                            <div class="table-responsive">
-                                                <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                                <table id="tblIqcInspection" class="table table-sm table-bordered table-striped table-hover"
-                                                    style="width: 100%;">
-                                                    <thead>
-                                                        <tr>
-                                                            <th><center><i  class="fa fa-cog"></i></center></th>
-                                                            <th>Status</th>
-                                                            <th>Invoice</th>
-                                                            {{-- <th>Date Inspected</th> --}}
-                                                            {{-- <th>Time Inspected</th> --}}
-                                                            {{-- <th>App Ctrl No.</th> --}}
-                                                            {{-- <th>Classification</th> --}}
-                                                            {{-- <th>Family</th> --}}
-                                                            {{-- <th>Category</th> --}}
-                                                            <th>Supplier</th>
-                                                            <th>Part Code</th>
-                                                            <th>Part Name</th>
-                                                            <th>Lot No.</th>
-                                                            {{-- <th>Lot Qty.</th> --}}
-                                                            {{-- <th>Total Lot Size</th> --}}
-                                                            {{-- <th>AQL</th> --}}
-                                                        </tr>
-                                                    </thead>
-                                                </table>
+                                            <div class="card card-primary">
+                                                <div class="card-header">
+                                                    <h3 class="card-title">WHSE Transaction</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    {{-- <br><br> --}}
+                                                    {{-- TABS --}}
+                                                    {{-- <div class="row">
+                                                        <div class="col-12">
+                                                            <button class="btn btn-lg btn-outline-info float-end"><i class="fa fa-users" aria-hidden="true"></i>  Group by</button>
+                                                        </div>
+                                                    </div> txtScanVerifyData modalVerifyData --}}
+                                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                                        <li class="nav-item">
+                                                            <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1_1" role="tab" aria-controls="menu1_1" aria-selected="true">On-going</a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2_2" role="tab" aria-controls="menu2_2" aria-selected="false">Inspected</a>
+                                                        </li>
+                                                    </ul>
+                                                    <br>
+                                                    <div class="tab-content" id="myTabContent">
+                                                        <div class="tab-pane fade show active" id="menu1_1" role="tabpanel" aria-labelledby="menu1_1-tab">
+                                                            <div class="table-responsive">
+                                                                <!-- style="max-height: 600px; overflow-y: auto;" -->
+                                                                <table id="tblIqcInspection" class="table table-sm table-bordered table-striped table-hover"
+                                                                    style="width: 100%;">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th><center><i  class="fa fa-cog"></i></center></th>
+                                                                            <th>Status</th>
+                                                                            <th>Invoice</th>
+                                                                            {{-- <th>Date Inspected</th> --}}
+                                                                            {{-- <th>Time Inspected</th> --}}
+                                                                            {{-- <th>App Ctrl No.</th> --}}
+                                                                            {{-- <th>Classification</th> --}}
+                                                                            {{-- <th>Family</th> --}}
+                                                                            {{-- <th>Category</th> --}}
+                                                                            <th>Supplier</th>
+                                                                            <th>Part Code</th>
+                                                                            <th>Part Name</th>
+                                                                            <th>Lot No.</th>
+                                                                            {{-- <th>Lot Qty.</th> --}}
+                                                                            {{-- <th>Total Lot Size</th> --}}
+                                                                            {{-- <th>AQL</th> --}}
+                                                                        </tr>
+                                                                    </thead>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane fade" id="menu2_2" role="tabpanel" aria-labelledby="menu2_2-tab">
+                                                            <div class="table-responsive">
+                                                                <!-- style="max-height: 600px; overflow-y: auto;" -->
+                                                                <table id="tblIqcInspected" class="table table-sm table-bordered table-striped table-hover"
+                                                                    style="width: 100%;">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th><center><i  class="fa fa-cog"></i></center></th>
+                                                                            <th>Status</th>
+                                                                            <th>Date Inspected</th>
+                                                                            <th>Time Inspected</th>
+                                                                            <th>Supplier</th>
+                                                                            <th>App Ctrl No.</th>
+                                                                            {{-- <th>Classification</th> --}}
+                                                                            {{-- <th>Family</th> --}}
+                                                                            {{-- <th>Category</th> --}}
+                                                                            <th>Part Code</th>
+                                                                            <th>Part Name</th>
+                                                                            <th>Lot No.</th>
+                                                                            <th>Lot Qty.</th>
+                                                                            {{-- <th>AQL</th> --}}
+                                                                            <th>Inspector</th>
+                                                                            <th>Date Created</th>
+                                                                            <th>Date Updated</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="tab-pane fade" id="menu2" role="tabpanel" aria-labelledby="menu2-tab">
-                                            <div class="table-responsive">
-                                                <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                                <table id="tblIqcInspected" class="table table-sm table-bordered table-striped table-hover"
-                                                    style="width: 100%;">
-                                                    <thead>
-                                                        <tr>
-                                                            <th><center><i  class="fa fa-cog"></i></center></th>
-                                                            <th>Status</th>
-                                                            <th>Date Inspected</th>
-                                                            <th>Time Inspected</th>
-                                                            <th>Supplier</th>
-                                                            <th>App Ctrl No.</th>
-                                                            {{-- <th>Classification</th> --}}
-                                                            {{-- <th>Family</th> --}}
-                                                            {{-- <th>Category</th> --}}
-                                                            <th>Part Code</th>
-                                                            <th>Part Name</th>
-                                                            <th>Lot No.</th>
-                                                            <th>Lot Qty.</th>
-                                                            {{-- <th>AQL</th> --}}
-                                                            <th>Inspector</th>
-                                                            <th>Date Created</th>
-                                                            <th>Date Updated</th>
-                                                        </tr>
-                                                    </thead>
-                                                </table>
+                                            <div class="card card-primary">
+                                                <div class="card-header">
+                                                    <h3 class="card-title">WHSE Transaction</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    {{-- <br><br> --}}
+                                                    {{-- TABS --}}
+                                                    {{-- <div class="row">
+                                                        <div class="col-12">
+                                                            <button class="btn btn-lg btn-outline-info float-end"><i class="fa fa-users" aria-hidden="true"></i>  Group by</button>
+                                                        </div>
+                                                    </div> txtScanVerifyData modalVerifyData --}}
+                                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                                        <li class="nav-item">
+                                                            <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1_1" role="tab" aria-controls="menu1_1" aria-selected="true">On-going</a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2_2" role="tab" aria-controls="menu2_2" aria-selected="false">Inspected</a>
+                                                        </li>
+                                                    </ul>
+                                                    <br>
+                                                    <div class="tab-content" id="myTabContent">
+                                                        <div class="tab-pane fade show active" id="menu1_1" role="tabpanel" aria-labelledby="menu1_1-tab">
+                                                            <div class="table-responsive">
+                                                                <!-- style="max-height: 600px; overflow-y: auto;" -->
+                                                                <table id="tblIqcInspectionYeu" class="table table-sm table-bordered table-striped table-hover"
+                                                                    style="width: 100%;">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th><center><i  class="fa fa-cog"></i></center></th>
+                                                                            <th>Status</th>
+                                                                            <th>Invoice</th>
+                                                                            {{-- <th>Date Inspected</th> --}}
+                                                                            {{-- <th>Time Inspected</th> --}}
+                                                                            {{-- <th>App Ctrl No.</th> --}}
+                                                                            {{-- <th>Classification</th> --}}
+                                                                            {{-- <th>Family</th> --}}
+                                                                            {{-- <th>Category</th> --}}
+                                                                            <th>Supplier</th>
+                                                                            <th>Part Code</th>
+                                                                            <th>Part Name</th>
+                                                                            <th>Lot No.</th>
+                                                                            {{-- <th>Lot Qty.</th> --}}
+                                                                            {{-- <th>Total Lot Size</th> --}}
+                                                                            {{-- <th>AQL</th> --}}
+                                                                        </tr>
+                                                                    </thead>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane fade" id="menu2_2" role="tabpanel" aria-labelledby="menu2_2-tab">
+                                                            <div class="table-responsive">
+                                                                <!-- style="max-height: 600px; overflow-y: auto;" -->
+                                                                <table id="tblIqcInspectedYeu" class="table table-sm table-bordered table-striped table-hover"
+                                                                    style="width: 100%;">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th><center><i  class="fa fa-cog"></i></center></th>
+                                                                            <th>Status</th>
+                                                                            <th>Date Inspected</th>
+                                                                            <th>Time Inspected</th>
+                                                                            <th>Supplier</th>
+                                                                            <th>App Ctrl No.</th>
+                                                                            {{-- <th>Classification</th> --}}
+                                                                            {{-- <th>Family</th> --}}
+                                                                            {{-- <th>Category</th> --}}
+                                                                            <th>Part Code</th>
+                                                                            <th>Part Name</th>
+                                                                            <th>Lot No.</th>
+                                                                            <th>Lot Qty.</th>
+                                                                            {{-- <th>AQL</th> --}}
+                                                                            <th>Inspector</th>
+                                                                            <th>Date Created</th>
+                                                                            <th>Date Updated</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-
                             </div>
                         </div>
                     </div>
-                </div>
+            </div>
             </section>
         </div>
 
@@ -254,12 +347,54 @@
                         { "data" : "Lot_number" },
                     ],
                 });
-
-                dataTable.iqcWshDetails = $(tbl.iqcWhsDetails).DataTable({
+                dataTable.iqcInspection = $(tbl.iqcInspection).DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
-                        url: "load_whs_details",
+                        url: "load_whs_transaction",
+                        data: function (param){
+                            param.firstStamping = "true" //DT for 1st Stamping
+                            param.lotNum = $('#txtSearchLotNum').val()
+                        },
+                    },
+                    fixedHeader: true,
+                    "columns":[
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "status", orderable:false, searchable:false },
+                        { "data" : "InvoiceNo" },
+                        { "data" : "Supplier" },
+                        { "data" : "PartNumber" },
+                        { "data" : "MaterialType" },
+                        { "data" : "Lot_number" },
+                    ],
+                });
+                dataTable.iqcInspection = $(tbl.iqcInspection).DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "load_whs_transaction",
+                        data: function (param){
+                            param.firstStamping = "true" //DT for 1st Stamping
+                            param.lotNum = $('#txtSearchLotNum').val()
+                        },
+                    },
+                    fixedHeader: true,
+                    "columns":[
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "status", orderable:false, searchable:false },
+                        { "data" : "InvoiceNo" },
+                        { "data" : "Supplier" },
+                        { "data" : "PartNumber" },
+                        { "data" : "MaterialType" },
+                        { "data" : "Lot_number" },
+                    ],
+                });
+
+                dataTable.iqcYeuDetails = $(tbl.iqcYeuDetails).DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "load_yeu_details",
                         data: function (param){
                             param.lotNum = $('#txtSearchLotNum').val()
                         },
@@ -269,11 +404,11 @@
 
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "status", orderable:false, searchable:false },
-                        { "data" : "po_no" },
-                        { "data" : "Supplier" },
-                        { "data" : "PartNumber" },
-                        { "data" : "MaterialType" },
-                        { "data" : "Lot_number" },
+                        // { "data" : "po_no" },
+                        // { "data" : "Supplier" },
+                        // { "data" : "PartNumber" },
+                        // { "data" : "MaterialType" },
+                        // { "data" : "Lot_number" },
 
                     ],
                 });
@@ -309,13 +444,36 @@
                     ],
                 });
 
+
+                $('#btnModalLotNum').click(function (e) {
+                    e.preventDefault();
+                    let elModalAttr = $(this).attr('el-btn-attr');
+                    $('#modalLotNum').attr('el-modal-attr',elModalAttr).modal('show')
+                });
+
+
                 $('a[href="#menu1"]').click(function (e) {
                     e.preventDefault();
+                    $('#btnModalLotNum').attr('el-btn-attr','whseTransaction')
                     $('#txtSearchLotNum').val('');
+                    dataTable.iqcInspection.draw();
+                    dataTable.iqcInspected.draw();
+                });
 
+                $('a[href="#menu2"]').click(function (e) {
+                    e.preventDefault();
+                    $('#btnModalLotNum').attr('el-btn-attr','yeu')
+                    $('#txtSearchLotNum').val('');
+                    dataTable.iqcInspection.draw();
+                    dataTable.iqcInspected.draw();
+                });
+
+                $('a[href="#menu1_1"]').click(function (e) {
+                    e.preventDefault();
+                    $('#txtSearchLotNum').val('');
                     dataTable.iqcInspection.draw();
                 });
-                $('a[href="#menu2"]').click(function (e) {
+                $('a[href="#menu2_2"]').click(function (e) {
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
                     dataTable.iqcInspected.draw();
@@ -344,11 +502,28 @@
 
                 $('#txtLotNum').on('keyup', function(e){
                     if(e.keyCode == 13){
-                        // getSecondStampReq($(this).val());
-                        $('#txtSearchLotNum').val($(this).val());
-                        dataTable.iqcInspection.draw();
-                        dataTable.iqcInspected.draw();
+                        $('#modalLotNum').modal('hide');
+                        var modalId = $("#modalLotNum").attr('el-modal-attr');
+                        // console.log(modalId);
+                        // return;
+                        if ( ( modalId ).indexOf('#') > -1){
+                            $( modalId ).submit();
+                        }else{
+                            switch (modalId) {
+                                case 'whseTransaction':
+                                        $('#txtSearchLotNum').val($(this).val());
+                                        dataTable.iqcInspection.draw();
+                                        dataTable.iqcInspected.draw();
+                                    	alert('whseTransaction')
+                                    break;
+                                case 'yeu':
+                                        alert('yeu')
+                                    break;
 
+                                default:
+                                    break;
+                            }
+                        }
                         $('#txtLotNum').val('');
                         $('#modalLotNum').modal('hide');
                     }
