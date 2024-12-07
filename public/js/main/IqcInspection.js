@@ -4,7 +4,9 @@
         iqcInspection:'#tblIqcInspection',
         iqcWhsDetails :'#tblWhsDetails',
         iqcInspected:'#tblIqcInspected',
-        iqcYeuDetails:'#iqcYeuDetails',
+        iqcYeuDetails:'#tblIqcYeuDetails',
+        iqcYeuInspected:'#tblIqcYeuInspected',
+
     };
 
     var dataTable = {
@@ -12,6 +14,7 @@
         iqcWshDetails: '',
         iqcInspected: '',
         iqcYeuDetails: '',
+        iqcYeuInspected: '',
     };
     var form = {
         iqcInspection : $('#formSaveIqcInspection')
@@ -288,24 +291,7 @@
             }
         });
     }
-    const getInspectionLevel = function () {
-        $.ajax({
-            type: "GET",
-            url: "get_inspection_level",
-            data: "data",
-            dataType: "json",
-            success: function (response) {
-                let dropdown_inspection_level_id = response['id'];
-                let dropdown_inspection_level_name = response['value'];
-                form.iqcInspection.find('#inspection_lvl').empty();
-                form.iqcInspection.find('#inspection_lvl').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
-                for (let i = 0; i < dropdown_inspection_level_id.length; i++) {
-                    let opt = `<option value="${dropdown_inspection_level_id[i]}">${dropdown_inspection_level_name[i]}</option>`;
-                    form.iqcInspection.find('#inspection_lvl').append(opt);
-                }
-            }
-        });
-    }
+
     const getDropdownDetailsById = function (cmb_element,iqc_inspection_column_ref,opt_value = null) {
         let opt = `<option value="N/A" selected disabled>N/A</option>`;
             opt += `<option value="N/A" selected disabled>N/A</option>`;

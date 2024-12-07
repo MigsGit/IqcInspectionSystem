@@ -42,7 +42,7 @@ class IqcInspectionController extends Controller
         /*  Get the data only with whs_transaction.inspection_class = 1 - For Inspection, while
             Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
         */
-
+        // return 'true';
         if( isset( $request->lotNum ) ){
             $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
             ->select(' SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
@@ -105,8 +105,11 @@ class IqcInspectionController extends Controller
         */
 
         if( isset( $request->lotNum ) ){
-            $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
-            ->select('');
+            $tbl_whs_trasanction = DB::connection('mysql_rapidx_yeu')
+            ->select('SELECT *  FROM yeu_receives
+                WHERE 1=1
+                ORDER BY item_code DESC
+            ');
             // ->select(' SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
             //     FROM tbl_WarehouseTransaction whs_transaction
             //     INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
@@ -116,8 +119,12 @@ class IqcInspectionController extends Controller
             //     ORDER BY whs.PartNumber DESC
             // ');
         }else{
-            $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
-            ->select('');
+            $tbl_whs_trasanction = DB::connection('mysql_rapidx_yeu')
+            ->select('SELECT *  FROM yeu_receives
+                WHERE 1=1
+                ORDER BY item_code DESC
+
+            ');
             // ->select('SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
             //     FROM tbl_WarehouseTransaction whs_transaction
             //     INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
@@ -132,7 +139,7 @@ class IqcInspectionController extends Controller
         ->addColumn('action', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1 d-none' whs-trasaction-id='".$row->whs_transaction_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= "<button class='btn btn-info btn-sm mr-1 d-none' whs-trasaction-id='".$row->id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
             $result .= '</center>';
             return $result;
         })
@@ -212,18 +219,22 @@ class IqcInspectionController extends Controller
 
         if( isset( $request->lotNum ) ){
             $tbl_iqc_inspected = DB::connection('mysql')
-            ->select('
-                SELECT *
+            ->select(' SELECT *
                 FROM ts_iqc_inspections
-                WHERE deleted_at IS NULL AND judgement >= 1 AND lot_no = "'.$request->lotNum.'"
+                WHERE 1=1
+                AND iqc_category_material_id = "'.$request->category_material.'"
+                AND deleted_at IS NULL AND judgement >= 1
+                AND lot_no = "'.$request->lotNum.'"
                 ORDER BY created_at DESC
             ');
         }else{
             $tbl_iqc_inspected = DB::connection('mysql')
-            ->select('
-                SELECT *
+            ->select('SELECT *
                 FROM ts_iqc_inspections
-                WHERE deleted_at IS NULL AND judgement >= 1
+                WHERE 1=1
+                AND iqc_category_material_id = "'.$request->category_material.'"
+                AND deleted_at IS NULL
+                AND judgement >= 1
                 ORDER BY created_at DESC
             ');
         }
@@ -472,7 +483,7 @@ class IqcInspectionController extends Controller
             */
             $conditions = [
                 'iqc_inspection_column_ref' => $request->iqc_inspection_column_ref,
-                'status' => $request->iqc_inspection_column_ref,
+                'status' => 1,
             ];
 
             $iqcDropdownDetail = $this->resourceInterface->readAllRelationsAndConditions(IqcDropdownCategory::class,$relations,$conditions);
@@ -490,6 +501,7 @@ class IqcInspectionController extends Controller
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
     }
+    //categoryMaterial
 
     public function Slug($string, $slug = '-', $extra = null)
 	{

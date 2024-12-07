@@ -69,6 +69,13 @@
                                                     <input type="search" class="form-control" placeholder="Lot Number" id="txtSearchLotNum" readonly>
                                                 </div>
                                             </div>
+                                            <div class="col-sm-2">
+                                                <label class="form-label">Material Category</label>
+                                                <div class="input-group mb-3">
+                                                    <select class="form-control" id="txtCategoryMaterial" readonly>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="tab-pane fade show active" id="menu1" role="tabpanel" aria-labelledby="menu1-tab">
                                             <div class="card card-primary">
@@ -88,7 +95,7 @@
                                                             <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1_1" role="tab" aria-controls="menu1_1" aria-selected="true">On-going</a>
                                                         </li>
                                                         <li class="nav-item">
-                                                            <a class="nav-link .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2_2" role="tab" aria-controls="menu2_2" aria-selected="false">Inspected</a>
+                                                            <a class="nav-link .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2_1" role="tab" aria-controls="menu2_1" aria-selected="false">Inspected</a>
                                                         </li>
                                                     </ul>
                                                     <br>
@@ -121,7 +128,7 @@
                                                                 </table>
                                                             </div>
                                                         </div>
-                                                        <div class="tab-pane fade" id="menu2_2" role="tabpanel" aria-labelledby="menu2_2-tab">
+                                                        <div class="tab-pane fade" id="menu2_1" role="tabpanel" aria-labelledby="menu2_1-tab">
                                                             <div class="table-responsive">
                                                                 <!-- style="max-height: 600px; overflow-y: auto;" -->
                                                                 <table id="tblIqcInspected" class="table table-sm table-bordered table-striped table-hover"
@@ -169,7 +176,7 @@
                                                     </div> txtScanVerifyData modalVerifyData --}}
                                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                                         <li class="nav-item">
-                                                            <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1_1" role="tab" aria-controls="menu1_1" aria-selected="true">On-going</a>
+                                                            <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1_2" role="tab" aria-controls="menu1_2" aria-selected="true">On-going</a>
                                                         </li>
                                                         <li class="nav-item">
                                                             <a class="nav-link .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2_2" role="tab" aria-controls="menu2_2" aria-selected="false">Inspected</a>
@@ -177,10 +184,10 @@
                                                     </ul>
                                                     <br>
                                                     <div class="tab-content" id="myTabContent">
-                                                        <div class="tab-pane fade show active" id="menu1_1" role="tabpanel" aria-labelledby="menu1_1-tab">
+                                                        <div class="tab-pane fade show active" id="menu1_2" role="tabpanel" aria-labelledby="menu1_2-tab">
                                                             <div class="table-responsive">
                                                                 <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                                                <table id="tblIqcInspectionYeu" class="table table-sm table-bordered table-striped table-hover"
+                                                                <table id="tblIqcYeuDetails" class="table table-sm table-bordered table-striped table-hover"
                                                                     style="width: 100%;">
                                                                     <thead>
                                                                         <tr>
@@ -207,8 +214,7 @@
                                                         </div>
                                                         <div class="tab-pane fade" id="menu2_2" role="tabpanel" aria-labelledby="menu2_2-tab">
                                                             <div class="table-responsive">
-                                                                <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                                                <table id="tblIqcInspectedYeu" class="table table-sm table-bordered table-striped table-hover"
+                                                                <table id="tblIqcYeuInspected" class="table table-sm table-bordered table-striped table-hover"
                                                                     style="width: 100%;">
                                                                     <thead>
                                                                         <tr>
@@ -330,51 +336,8 @@
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
-                        url: "load_whs_transaction",
+                        url: "load_whs_transaction", //Rapid PPS WHS Transaction
                         data: function (param){
-                            param.firstStamping = "true" //DT for 1st Stamping
-                            param.lotNum = $('#txtSearchLotNum').val()
-                        },
-                    },
-                    fixedHeader: true,
-                    "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status", orderable:false, searchable:false },
-                        { "data" : "InvoiceNo" },
-                        { "data" : "Supplier" },
-                        { "data" : "PartNumber" },
-                        { "data" : "MaterialType" },
-                        { "data" : "Lot_number" },
-                    ],
-                });
-                dataTable.iqcInspection = $(tbl.iqcInspection).DataTable({
-                    "processing" : true,
-                    "serverSide" : true,
-                    "ajax" : {
-                        url: "load_whs_transaction",
-                        data: function (param){
-                            param.firstStamping = "true" //DT for 1st Stamping
-                            param.lotNum = $('#txtSearchLotNum').val()
-                        },
-                    },
-                    fixedHeader: true,
-                    "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status", orderable:false, searchable:false },
-                        { "data" : "InvoiceNo" },
-                        { "data" : "Supplier" },
-                        { "data" : "PartNumber" },
-                        { "data" : "MaterialType" },
-                        { "data" : "Lot_number" },
-                    ],
-                });
-                dataTable.iqcInspection = $(tbl.iqcInspection).DataTable({
-                    "processing" : true,
-                    "serverSide" : true,
-                    "ajax" : {
-                        url: "load_whs_transaction",
-                        data: function (param){
-                            param.firstStamping = "true" //DT for 1st Stamping
                             param.lotNum = $('#txtSearchLotNum').val()
                         },
                     },
@@ -394,7 +357,7 @@
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
-                        url: "load_yeu_details",
+                        url: "load_yeu_details", //Rapidx TS YEU Receiving
                         data: function (param){
                             param.lotNum = $('#txtSearchLotNum').val()
                         },
@@ -404,11 +367,11 @@
 
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "status", orderable:false, searchable:false },
-                        // { "data" : "po_no" },
-                        // { "data" : "Supplier" },
-                        // { "data" : "PartNumber" },
-                        // { "data" : "MaterialType" },
-                        // { "data" : "Lot_number" },
+                        { "data" : "invoice_no" },
+                        { "data" : "supplier" },
+                        { "data" : "item_code" },
+                        { "data" : "item_name" },
+                        { "data" : "lot_no" },
 
                     ],
                 });
@@ -420,6 +383,39 @@
                         url: "load_iqc_inspection",
                         data: function (param){
                             param.lotNum = $('#txtSearchLotNum').val()
+                            // param.categoryMaterial = $('#txtCategoryMaterial').val()
+                        },
+                    },
+                    fixedHeader: true,
+                    "columns":[
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "status", orderable:false, searchable:false },
+                        { "data" : "date_inspected" },
+                        { "data" : "time_inspected" }, //
+                        { "data" : "app_ctrl_no" }, //
+                        { "data": "supplier" },
+                        // { "data" : "classification" },//
+                        // { "data" : "family" },//
+                        // { "data" : "category" },//
+                        { "data" : "partcode" },
+                        { "data" : "partname" },
+                        { "data" : "lot_no" },
+                        { "data" : "total_lot_qty" },
+                        // { "data" : "aql" }, //
+                        { "data" : "qc_inspector" }, //
+                        { "data" : "created_at" },
+                        { "data" : "updated_at" },
+                    ],
+                });
+
+                dataTable.iqcYeuInspected = $(tbl.iqcYeuInspected).DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "load_iqc_inspection",
+                        data: function (param){
+                            param.lotNum = $('#txtSearchLotNum').val()
+                            // param.categoryMaterial = $('#txtCategoryMaterial').val()
                         },
                     },
                     fixedHeader: true,
@@ -451,21 +447,27 @@
                     $('#modalLotNum').attr('el-modal-attr',elModalAttr).modal('show')
                 });
 
+                getDropdownDetailsById($('#txtCategoryMaterial'),'iqc_category_material_id','37');
 
                 $('a[href="#menu1"]').click(function (e) {
                     e.preventDefault();
                     $('#btnModalLotNum').attr('el-btn-attr','whseTransaction')
                     $('#txtSearchLotNum').val('');
+                    let categoryMaterial = '37';
                     dataTable.iqcInspection.draw();
-                    dataTable.iqcInspected.draw();
+                    dataTable.iqcInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
+                    getDropdownDetailsById($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
                 });
 
                 $('a[href="#menu2"]').click(function (e) {
                     e.preventDefault();
                     $('#btnModalLotNum').attr('el-btn-attr','yeu')
                     $('#txtSearchLotNum').val('');
-                    dataTable.iqcInspection.draw();
-                    dataTable.iqcInspected.draw();
+                    let categoryMaterial = '38';
+
+                    dataTable.iqcYeuDetails.draw();
+                    dataTable.iqcYeuInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
+                    getDropdownDetailsById($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
                 });
 
                 $('a[href="#menu1_1"]').click(function (e) {
@@ -473,10 +475,26 @@
                     $('#txtSearchLotNum').val('');
                     dataTable.iqcInspection.draw();
                 });
+
+                $('a[href="#menu2_1"]').click(function (e) {
+                    e.preventDefault();
+                    $('#txtSearchLotNum').val('');
+                    let categoryMaterial = '37';
+                    dataTable.iqcInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
+                });
+
+                $('a[href="#menu1_2"]').click(function (e) {
+                    e.preventDefault();
+                    $('#txtSearchLotNum').val('');
+                    dataTable.iqcYeuDetails.draw();
+                });
+
                 $('a[href="#menu2_2"]').click(function (e) {
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
-                    dataTable.iqcInspected.draw();
+                    console.log('menu2_2');
+                    let categoryMaterial = '38';
+                    dataTable.iqcYeuInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                 });
 
                 $('#modalLotNum').on('shown.bs.modal', function () {
