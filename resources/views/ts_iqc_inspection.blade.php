@@ -72,7 +72,7 @@
                                             <div class="col-sm-2">
                                                 <label class="form-label">Material Category</label>
                                                 <div class="input-group mb-3">
-                                                    <select class="form-control" id="txtCategoryMaterial" readonly>
+                                                    <select class="form-control" id="txtCategoryMaterial" disabled>
                                                     </select>
                                                 </div>
                                             </div>
@@ -440,14 +440,77 @@
                     ],
                 });
 
+                getDropdownDetailsById($('#txtCategoryMaterial'),'iqc_category_material_id','37');
+
+                $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
+                $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
+
+                $('#btnLotNo').click(function (e) {
+                    e.preventDefault();
+                    $('#modalLotNo').modal('show');
+                });
+
+                $('#btnMod').click(function (e) {
+                    e.preventDefault();
+                    $('#modalModeOfDefect').modal('show');
+                });
+
+                $('#btnAddModLotNumber').click(function (e) {
+                    e.preventDefault();
+
+                    /* Selected Value */
+                    let selectedLotNo = $('#mod_lot_no').val();
+                    let selectedMod = $('#mode_of_defect').val();
+                    let selectedLotQty = $('#mod_quantity').val();
+
+                    if(selectedLotNo === null || selectedMod === null || selectedLotQty <= 0){
+                        toastr.error('Error: Please Fill up all fields !');
+                        return false;
+                    }
+
+                    /* Counter and Disabled Removed Button */
+                    arrCounter.ctr++;
+                    disabledEnabledButton(arrCounter.ctr)
+
+                    /* Get selected array to the table */
+                    var html_body  = '<tr>';
+                        html_body += '<td>'+arrCounter.ctr+'</td>';
+                        html_body += '<td>'+selectedLotNo+'</td>';
+                        html_body += '<td>'+selectedMod+'</td>';
+                        html_body += '<td>'+selectedLotQty+'</td>';
+                        html_body += '</tr>';
+                    $('#tblModeOfDefect tbody').append(html_body);
+
+                    arrTableMod.lotNo.push(selectedLotNo);
+                    arrTableMod.modeOfDefects.push(selectedMod);
+                    arrTableMod.lotQty.push(selectedLotQty);
+                    console.log('click',arrTableMod.lotQty);
+                    // console.log('check',arrTableMod);
+                });
+
+                btn.saveComputation.click(function (e) {
+                    e.preventDefault();
+                    $('#modalModeOfDefect').modal('hide');
+                    form.iqcInspection.find('#no_of_defects').val(arrTableMod.lotQty.reduce(getSum, 0));
+                });
+
+                btn.removeModLotNumber.click(function() {
+                    arrCounter.ctr --;
+                    disabledEnabledButton(arrCounter.ctr)
+
+                    $('#tblModeOfDefect tr:last').remove();
+                    arrTableMod.lotNo.splice(arrCounter.ctr, 1);
+                    arrTableMod.modeOfDefects.splice(arrCounter.ctr, 1);
+                    arrTableMod.lotQty.splice(arrCounter.ctr, 1);
+                    console.log('deleted',arrTableMod.lotQty);
+                    // console.log(arrTableMod);
+                });
 
                 $('#btnModalLotNum').click(function (e) {
                     e.preventDefault();
                     let elModalAttr = $(this).attr('el-btn-attr');
                     $('#modalLotNum').attr('el-modal-attr',elModalAttr).modal('show')
                 });
-
-                getDropdownDetailsById($('#txtCategoryMaterial'),'iqc_category_material_id','37');
 
                 $('a[href="#menu1"]').click(function (e) {
                     e.preventDefault();
@@ -521,9 +584,9 @@
                 $('#txtLotNum').on('keyup', function(e){
                     if(e.keyCode == 13){
                         $('#modalLotNum').modal('hide');
-                        var modalId = $("#modalLotNum").attr('el-modal-attr');
-                        // console.log(modalId);
-                        // return;
+                        let modalId = $("#modalLotNum").attr('el-modal-attr');
+                        let categoryMaterial = $('#txtCategoryMaterial').val();
+
                         if ( ( modalId ).indexOf('#') > -1){
                             $( modalId ).submit();
                         }else{
@@ -531,11 +594,14 @@
                                 case 'whseTransaction':
                                         $('#txtSearchLotNum').val($(this).val());
                                         dataTable.iqcInspection.draw();
-                                        dataTable.iqcInspected.draw();
+                                        dataTable.iqcInspectedurl("load_iqc_inspection?category_material="+categoryMaterial).draw();
                                     	alert('whseTransaction')
                                     break;
                                 case 'yeu':
-                                        alert('yeu')
+                                        // alert('yeu')
+                                        $('#txtSearchLotNum').val($(this).val());
+                                        dataTable.iqcYeuDetails.draw();
+                                        dataTable.iqcYeuInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                                     break;
 
                                 default:
@@ -547,6 +613,7 @@
                     }
                 });
 
+
                 dataTable.iqcInspection.on('draw', function () {
                     if($('#txtSearchLotNum').val() != ""){
                         $('#tblIqcInspection tbody #btnEditIqcInspection').each(function(index, tr){
@@ -555,71 +622,14 @@
                     }
                 });
 
-                //**************
-                // $('#modal-loading').modal('show');
-                $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
-                $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
-
-                $('#btnLotNo').click(function (e) {
-                    e.preventDefault();
-                    $('#modalLotNo').modal('show');
-                });
-
-                $('#btnMod').click(function (e) {
-                    e.preventDefault();
-                    $('#modalModeOfDefect').modal('show');
-                });
-
-                $('#btnAddModLotNumber').click(function (e) {
-                    e.preventDefault();
-
-                    /* Selected Value */
-                    let selectedLotNo = $('#mod_lot_no').val();
-                    let selectedMod = $('#mode_of_defect').val();
-                    let selectedLotQty = $('#mod_quantity').val();
-
-                    if(selectedLotNo === null || selectedMod === null || selectedLotQty <= 0){
-                        toastr.error('Error: Please Fill up all fields !');
-                        return false;
+                dataTable.iqcYeuDetails.on('draw', function () {
+                    if($('#txtSearchLotNum').val() != ""){
+                        $('#tblIqcYeuDetails tbody #btnEditIqcInspection').each(function(index, tr){
+                            $(this).removeClass('d-none');
+                        })
                     }
-
-                    /* Counter and Disabled Removed Button */
-                    arrCounter.ctr++;
-                    disabledEnabledButton(arrCounter.ctr)
-
-                    /* Get selected array to the table */
-                    var html_body  = '<tr>';
-                        html_body += '<td>'+arrCounter.ctr+'</td>';
-                        html_body += '<td>'+selectedLotNo+'</td>';
-                        html_body += '<td>'+selectedMod+'</td>';
-                        html_body += '<td>'+selectedLotQty+'</td>';
-                        html_body += '</tr>';
-                    $('#tblModeOfDefect tbody').append(html_body);
-
-                    arrTableMod.lotNo.push(selectedLotNo);
-                    arrTableMod.modeOfDefects.push(selectedMod);
-                    arrTableMod.lotQty.push(selectedLotQty);
-                    console.log('click',arrTableMod.lotQty);
-                    // console.log('check',arrTableMod);
                 });
 
-                btn.saveComputation.click(function (e) {
-                    e.preventDefault();
-                    $('#modalModeOfDefect').modal('hide');
-                    form.iqcInspection.find('#no_of_defects').val(arrTableMod.lotQty.reduce(getSum, 0));
-                });
-
-                btn.removeModLotNumber.click(function() {
-                    arrCounter.ctr --;
-                    disabledEnabledButton(arrCounter.ctr)
-
-                    $('#tblModeOfDefect tr:last').remove();
-                    arrTableMod.lotNo.splice(arrCounter.ctr, 1);
-                    arrTableMod.modeOfDefects.splice(arrCounter.ctr, 1);
-                    arrTableMod.lotQty.splice(arrCounter.ctr, 1);
-                    console.log('deleted',arrTableMod.lotQty);
-                    // console.log(arrTableMod);
-                });
 
                 form.iqcInspection.find('#accepted').keyup(function() {
                     divDisplayNoneClass($(this).val());

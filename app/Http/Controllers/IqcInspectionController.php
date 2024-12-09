@@ -98,26 +98,14 @@ class IqcInspectionController extends Controller
             Lot_number
         */
     }
-    public function loadYeuDetails(Request $request)
-    {   //RAPID WHS Whs Transaction
-        /*  Get the data only with whs_transaction.inspection_class = 1 - For Inspection, while
-            Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
-        */
-
+    public function loadYeuDetails(Request $request){
         if( isset( $request->lotNum ) ){
             $tbl_whs_trasanction = DB::connection('mysql_rapidx_yeu')
             ->select('SELECT *  FROM yeu_receives
                 WHERE 1=1
+                AND lot_no = "'.$request->lotNum.'"
                 ORDER BY item_code DESC
             ');
-            // ->select(' SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
-            //     FROM tbl_WarehouseTransaction whs_transaction
-            //     INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
-            //     WHERE 1=1
-            //     AND whs.Factory = 3
-            //     AND  whs_transaction.inspection_class = 1 AND whs_transaction.Lot_number = "'.$request->lotNum.'"
-            //     ORDER BY whs.PartNumber DESC
-            // ');
         }else{
             $tbl_whs_trasanction = DB::connection('mysql_rapidx_yeu')
             ->select('SELECT *  FROM yeu_receives
@@ -125,14 +113,6 @@ class IqcInspectionController extends Controller
                 ORDER BY item_code DESC
 
             ');
-            // ->select('SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
-            //     FROM tbl_WarehouseTransaction whs_transaction
-            //     INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
-            //     WHERE 1=1
-            //     AND whs.Factory = 3
-            //     AND whs_transaction.inspection_class = 1
-            //     ORDER BY whs.PartNumber DESC
-            // ');
         }
 
         return DataTables::of($tbl_whs_trasanction)

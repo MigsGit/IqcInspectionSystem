@@ -1,3 +1,4 @@
+/database/migrations
 /node_modules
 /public/hot
 /public/storage
@@ -16,3 +17,4 @@ yarn-error.log
 /.vscode
 composer.lock
 /.tours
+
