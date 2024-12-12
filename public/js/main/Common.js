@@ -1,5 +1,5 @@
 /* Call basic ajax for submit */
-function call_ajax(data = null, handler, fn) {
+function call_ajax(elFormId =null ,data = null, handler, fn) {
     data = $.param(data);
     $.ajax({
         type: "GET",
@@ -8,6 +8,9 @@ function call_ajax(data = null, handler, fn) {
         url: handler,
         beforeSend: function(){
             $('#modal-loading').modal('show');
+            if(elFormId !=null){
+                elFormId[0].reset();
+            }
         },
         success: function (result) {
             fn(result);
@@ -21,7 +24,7 @@ function call_ajax(data = null, handler, fn) {
     });
 }
 
-function call_ajax_serialize(data = null, serialized_data, handler, fn) {
+function call_ajax_serialize(elFormId =null ,data = null, serialized_data, handler, fn) {
     data = $.param(data) + '&' + serialized_data;
 	$.ajax({
         type: "post",
@@ -30,6 +33,9 @@ function call_ajax_serialize(data = null, serialized_data, handler, fn) {
         url: handler,
         beforeSend: function(){
             $('#modal-loading').modal('show');
+            if(elFormId !=null){
+                elFormId[0].reset();
+            }
         },
         success: function (result) {
             fn(result);
@@ -79,7 +85,7 @@ function create_table(table_id, table_class, array_theader, array_tbody) {
 	return html;
 }
 
-function call_ajax_attachment(serialized_data, handler, fn) {
+function call_ajax_attachment(elFormId = null, serialized_data, handler, fn) {
 	$.ajax({
 		url				: handler,
 		type			: "POST",
@@ -88,6 +94,12 @@ function call_ajax_attachment(serialized_data, handler, fn) {
 		dataType		: 'json',
 		cache			: false,
 		processData		: false,
+        beforeSend: function(){
+            $('#modal-loading').modal('show');
+            if(elFormId !=null){
+                elFormId[0].reset();
+            }
+        },
 		success			: function(result)
 		{
 			fn(result);

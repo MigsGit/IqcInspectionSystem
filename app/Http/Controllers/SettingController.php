@@ -19,9 +19,8 @@ class SettingController extends Controller
     }
     public function readDropdownCategory(){
         // return $this->resourceInterface->readAllRelationsAndConditions(IqcDropdownCategory::class,'iqc_dropdown_details');
-        $iqcDropdownCategory = $this->resourceInterface->read(IqcDropdownCategory::class);
-
-
+        $query = $this->resourceInterface->readCustomEloquent(IqcDropdownCategory::class);
+        $iqcDropdownCategory = $query->whereNull('deleted_at')->get();
         return DataTables::of($iqcDropdownCategory)
         ->addColumn('raw_action', function($row){
             $result = '';

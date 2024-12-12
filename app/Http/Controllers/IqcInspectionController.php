@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Helpers;
 use DataTables;
 use App\Models\User;
+use App\Models\YeuReceive;
 use App\Models\TblWarehouse;
 use Illuminate\Http\Request;
 use App\Models\IqcInspection;
@@ -119,7 +120,7 @@ class IqcInspectionController extends Controller
         ->addColumn('action', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1 d-none' whs-trasaction-id='".$row->id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= "<button class='btn btn-info btn-sm mr-1 d-none' yeu-receives-id='".$row->id."' id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
             $result .= '</center>';
             return $result;
         })
@@ -284,7 +285,25 @@ class IqcInspectionController extends Controller
         ->make(true);
 
     }
-
+    public function getYeuReceivingById(Request $request){
+        try {
+            /**
+             * Add Conditions as many as you want
+             *
+             * @param array $conditions
+            */
+            $conditions = [
+                'logdel' => 0,
+                'id' => $request->yeuReceivesId,
+            ];
+            $query = $this->resourceInterface->readAllWithConditions(YeuReceive::class,$conditions);
+            $iqcInspection = $query->get();
+            $generateControlNumber = $this->generateControlNumber();
+            return response()->json(['is_success' => 'true','iqcInspection' => $iqcInspection,'generateControlNumber' => $generateControlNumber]);
+        } catch (Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
     public function getIqcInspectionById(Request $request)
     {
         $tbl_whs_trasanction = IqcInspection::with('IqcInspectionsMods','user_iqc')
@@ -295,26 +314,18 @@ class IqcInspectionController extends Controller
 
     public function getWhsReceivingById(Request $request)
     {
-        if($request->whs_transaction_id != 0){
-            return $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
-            ->select('
-                SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.Username as "whs_transaction_username",
-                whs_transaction.LastUpdate as "whs_transaction_lastupdate",whs_transaction.inspection_class,
-                whs_transaction.InvoiceNo as "invoice_no",whs_transaction.Lot_number as "lot_no",whs_transaction.In as "total_lot_qty",
-                whs.PartNumber as "partcode",whs.MaterialType as "partname",whs.Supplier as supplier,
-                whs.*,whs.id as "whs_id",whs.Username as "whs_username",whs.LastUpdate as "whs_lastupdate"
-                FROM tbl_WarehouseTransaction whs_transaction
-                INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
-                WHERE whs_transaction.pkid = '.$request->whs_transaction_id.'
-                LIMIT 0,1
-            ');
-        }
-        if($request->receiving_detail_id != 0){
-            return $tbl_whs_trasanction = ReceivingDetails::where('id',$request->receiving_detail_id)->get([
-                'id as receiving_detail_id','supplier_pmi_lot_no as lot_no','supplier_quantity as total_lot_qty','part_code as partcode',
-                'mat_name as partname','supplier_name as supplier',
-            ]);
-        }
+        return $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
+        ->select('
+            SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.Username as "whs_transaction_username",
+            whs_transaction.LastUpdate as "whs_transaction_lastupdate",whs_transaction.inspection_class,
+            whs_transaction.InvoiceNo as "invoice_no",whs_transaction.Lot_number as "lot_no",whs_transaction.In as "total_lot_qty",
+            whs.PartNumber as "partcode",whs.MaterialType as "partname",whs.Supplier as supplier,
+            whs.*,whs.id as "whs_id",whs.Username as "whs_username",whs.LastUpdate as "whs_lastupdate"
+            FROM tbl_WarehouseTransaction whs_transaction
+            INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
+            WHERE whs_transaction.pkid = '.$request->whs_transaction_id.'
+            LIMIT 0,1
+        ');
     }
 
     public function getLotNumberByWhsTransactionId()
@@ -342,6 +353,7 @@ class IqcInspectionController extends Controller
 
             if(isset($request->iqc_inspection_id)){ //Edit
 
+                // return 'edit';
                 $update_iqc_inspection = IqcInspection::where('id', $request->iqc_inspection_id)->update($request->validated()); //PO and packinglist number
 
                 IqcInspection::where('id', $request->iqc_inspection_id)
@@ -353,6 +365,7 @@ class IqcInspectionController extends Controller
 
                 $iqc_inspections_id = $request->iqc_inspection_id;
             }else{ //Add
+                // return 'add';
                 /* All required fields is the $request validated, check the column is IqcInspectionRequest
                     NOTE: the name of fields must be match in column name
                 */
@@ -482,7 +495,44 @@ class IqcInspectionController extends Controller
         }
     }
     //categoryMaterial
+    public function generateControlNumber(){
+        date_default_timezone_set('Asia/Manila');
+        $query = $this->resourceInterface->readCustomEloquent(IqcInspection::class);
+        $iqc_inspection = $query->orderBy('created_at','desc')->whereNull('deleted_at')->limit(1)->get(['app_no_extension','created_at']);
 
+        $rapidx_employee_number = session('rapidx_employee_number');
+
+        $hris_data = DB::connection('mysql_systemone_hris')
+        ->select(" SELECT division.Division
+            FROM tbl_EmployeeInfo employee_info
+            LEFT JOIN tbl_Division division on division.pkid = employee_info.fkDivision
+            WHERE EmpNo = '$rapidx_employee_number'
+        ");
+
+
+        if(count($hris_data) > 0){
+            $division = ($hris_data[0]->Division == "PPS" ||  $hris_data[0]->Division == "PPD") ? "PPD" :  $hris_data[0]->Division;
+        }else{
+            $subcon_data = DB::connection('mysql_systemone_subcon')
+            ->select("SELECT division.Division
+                FROM tbl_EmployeeInfo employee_info
+                LEFT JOIN tbl_Division division on division.pkid = employee_info.fkDivision
+                WHERE EmpNo = '$rapidx_employee_number'
+             ");
+            $division = ($subcon_data[0]->Division == "PPS" || $subcon_data[0]->Division == "PPD") ? "PPD" :  $hris_data[0]->Division;
+        }
+
+        if(date_format($iqc_inspection[0]->created_at,'Y-m-d') != date('Y-m-d')){
+            return [
+                'app_no' => $division."-".date('Y').date('M'),
+                'app_no_extension'=>"001"
+            ];
+        }
+        return [
+            'app_no' => $division."-".date('y').date('m'),
+            'app_no_extension'=> sprintf("%03d", $iqc_inspection[0]->app_no_extension + 1)
+        ];
+    }
     public function Slug($string, $slug = '-', $extra = null)
 	{
 		return strtolower(trim(preg_replace('~[^0-9a-z' . preg_quote($extra, '~') . ']+~i', $slug, $this->Unaccent($string)), $slug));

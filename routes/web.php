@@ -52,6 +52,7 @@ Route::get('check_user', function (Request $request) {
 
         ]);
         // return session()->all();
+        // return session('rapidx_employee_number');
         return true;
     }
     else{
@@ -69,6 +70,9 @@ Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/get_whs_receiving_by_id', 'getWhsReceivingById')->name('get_whs_receiving_by_id');
     Route::get('/view_coc_file_attachment/{id}', 'viewCocFileAttachment')->name('view_coc_file_attachment');
     Route::get('/get_dropdown_details_by_opt_value', 'getDropdownDetailsByOptValue')->name('get_dropdown_details_by_opt_value');
+    Route::get('/get_dropdown_details_by_opt_value', 'getDropdownDetailsByOptValue')->name('get_dropdown_details_by_opt_value');
+
+    Route::get('/get_yeu_receiving_by_id', 'getYeuReceivingById')->name('get_yeu_receiving_by_id');
 
     Route::post('/save_iqc_inspection', 'saveIqcInspection')->name('save_iqc_inspection');
 });

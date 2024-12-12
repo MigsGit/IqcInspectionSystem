@@ -29,7 +29,7 @@ class ResourceJob implements ResourceInterface
         DB::beginTransaction();
         try {
             if( isset( $dataId ) ){
-                // return $model; 
+                // return $model;
                 $model::where('id',$dataId)->update($data);
                 $dataId = $dataId;
             }else{
@@ -43,10 +43,28 @@ class ResourceJob implements ResourceInterface
             return response()->json(['isSuccess' => 'false', 'exceptionError' => $e->getMessage()]);
         }
     }
+    public function readCustomEloquent($model){
+        try {
+            return $data = $model::query();
+        } catch (Exception $e) {
+            return response()->json(['isSuccess' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
 
     public function readByID($model,$id){
         try {
             return $data = $model::where('id',$id)->whereNull('deleted_at')->get();
+        } catch (Exception $e) {
+            return response()->json(['isSuccess' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
+    public function readAllWithConditions($model,$conditions){
+        try {
+            $query = $model::query();
+            foreach ($conditions as $key => $value) {
+                $query->where($key, $value);
+            }
+            return $query;
         } catch (Exception $e) {
             return response()->json(['isSuccess' => 'false', 'exceptionError' => $e->getMessage()]);
         }
@@ -60,14 +78,8 @@ class ResourceJob implements ResourceInterface
         }
     }
 
-    public function read($model){
-        try {
-            return $data = $model::whereNull('deleted_at')->get();
-        } catch (Exception $e) {
-            return response()->json(['isSuccess' => 'false', 'exceptionError' => $e->getMessage()]);
-        }
-    }
-    public function readWithConditions($model,array $conditions){
+
+    public function readActiveDataWithConditions($model,array $conditions){
         try {
             $query = $model::query();
             $query->whereNull('deleted_at');

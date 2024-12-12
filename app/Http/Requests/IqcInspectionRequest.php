@@ -28,7 +28,7 @@ class IqcInspectionRequest extends FormRequest
         // 'remarks'=>'required',
         return [
             'whs_transaction_id'=>'required',
-            'receiving_detail_id'=>'required',
+            'iqc_category_material_id'=>'required',
             // 'invoice_no'=>'required',
             'partcode'=>'required',
             'partname'=>'required',

@@ -11,7 +11,6 @@
 
     var dataTable = {
         iqcInspection:'', //iqcInspection
-        iqcWshDetails: '',
         iqcInspected: '',
         iqcYeuDetails: '',
         iqcYeuInspected: '',
@@ -45,9 +44,6 @@
 
     const editIqcInspection = function () {
         let iqcInpectionId = $(this).attr('iqc-inspection-id')
-        getIqcInspectionById(iqcInpectionId);
-        getDieNo();
-
         form.iqcInspection.find('input').removeClass('is-valid');
         form.iqcInspection.find('input').removeClass('is-invalid');
         form.iqcInspection.find('input').attr('title', '');
@@ -59,16 +55,101 @@
         $('#isUploadCoc').prop('checked',false);
         form.iqcInspection.find('#fileIqcCocUpload').addClass('d-none',true);
         form.iqcInspection.find('#iqc_coc_file').prop('required',false);
-
+        getDieNo();
+        getIqcInspectionById(iqcInpectionId);
     }
     const editReceivingDetails = function () {
-        // alert('dasdsad')
-        let receivingDetailId = ($(this).attr('receiving-detail-id') != undefined) ?  $(this).attr('receiving-detail-id') : 0;
-        let whsTransactionId = ($(this).attr('whs-trasaction-id') != undefined) ?  $(this).attr('whs-trasaction-id') : 0;
-
-        getWhsDetailsById(receivingDetailId,whsTransactionId);
         getDieNo();
+        form.iqcInspection.find('input').removeClass('is-valid');
+        form.iqcInspection.find('input').removeClass('is-invalid');
+        form.iqcInspection.find('input').attr('title', '');
+        form.iqcInspection.find('select').removeClass('is-valid');
+        form.iqcInspection.find('select').removeClass('is-invalid');
+        form.iqcInspection.find('select').attr('title', '');
+        /*Upload and Download file*/
+        $('#isUploadCoc').prop('checked',false);
+        form.iqcInspection.find('#fileIqcCocUpload').addClass('d-none',true);
 
+        let whsTransactionId = ($(this).attr('whs-trasaction-id') != undefined) ?  $(this).attr('whs-trasaction-id') : 0;
+        let iqcCategoryMaterialId = $('#txtCategoryMaterial').val();
+        let data = {
+            "whs_transaction_id"        : whsTransactionId,
+
+        }
+        let elFormId = form.iqcInspection;
+        call_ajax(elFormId,data, 'get_whs_receiving_by_id', function(response){
+            $('#modalSaveIqcInspection').modal('show');
+            form.iqcInspection.find('select').val(2);
+            let twoDigitYear = strDatTime.dateToday.getFullYear().toString().substr(-2);
+            let twoDigitMonth = (strDatTime.dateToday.getMonth() + 1).toString().padStart(2, "0");
+            let twoDigitDay = String(strDatTime.dateToday.getDate()).padStart(2, '0');
+
+            let partCode = response[0]['partcode'];
+            let partName = response[0]['partname'];
+            let supplier = response[0]['supplier']; // aql
+            let lotNo = response[0]['lot_no'];
+            let lotQty = response[0]['total_lot_qty'];
+            let iqcCocFile = response[0]['iqc_coc_file'];
+            let whsTransactionId = ( response[0]['whs_transaction_id'] != undefined || response[0]['whs_transaction_id'] != null) ? response[0]['whs_transaction_id'] : 0;
+            let lotAccepted = response[0]['accepted'];
+
+            /* Visual Inspection */
+            form.iqcInspection.find('#app_no').val(`PPD-${twoDigitYear}${twoDigitMonth}-`);
+            form.iqcInspection.find('#whs_transaction_id').val(whsTransactionId);
+            form.iqcInspection.find('#iqc_category_material_id').val(iqcCategoryMaterialId);
+            form.iqcInspection.find('#invoice_no').val(response[0]['invoice_no']);
+            form.iqcInspection.find('#partcode').val(partCode);
+            form.iqcInspection.find('#partname').val(partName);
+            form.iqcInspection.find('#supplier').val(supplier);
+            form.iqcInspection.find('#total_lot_qty').val(lotQty);
+            form.iqcInspection.find('#lot_no').val(lotNo);
+            form.iqcInspection.find('#iqc_coc_file').val('');
+            /* Sampling Plan */
+            form.iqcInspection.find('#accept').val(0);
+            form.iqcInspection.find('#reject').val(1);
+            /* Visual Inspection Result */
+            form.iqcInspection.find('#lot_inspected').val(1);
+            form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
+            form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
+            form.iqcInspection.find('#isUploadCoc').prop('required',true);
+            getDropdownDetailsById(form.iqcInspection.find('#aql'),'aql');
+            getDropdownDetailsById(form.iqcInspection.find('#family'),'family');
+            getDropdownDetailsById(form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');
+            getDropdownDetailsById(form.iqcInspection.find('#target_dppm'),'target_dppm');
+            getDropdownDetailsById(form.iqcInspection.find('#target_lar'),'target_lar');
+            getDropdownDetailsById($('#mode_of_defect'),'mode_of_defects');
+
+            if( iqcCocFile === undefined || iqcCocFile === null ){
+                form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
+                form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
+            }else{
+                form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
+                form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
+            }
+            /* Display the Mode of Defects Button */
+            divDisplayNoneClass(form.iqcInspection,lotAccepted);
+
+
+
+            $('#tblModeOfDefect tbody').empty();
+            arrTableMod.lotNo = [];
+            arrTableMod.modeOfDefects = [];
+            arrTableMod.lotQty = [];
+            arrCounter.ctr = 0;
+            /*Mode of Defects Modal*/
+            $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
+            $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
+            for (let i = 0; i < response.length; i++) {
+                let optLotNo = `<option value="${lotNo}">${lotNo}</option>`;
+                $('#mod_lot_no').append(optLotNo);
+            }
+            console.log('whsarrTableMod',arrTableMod);
+        })
+
+    }
+    const editYeuIqcDetails = function () {
+        //TODO: Get YeuDetail
+        getDieNo();
         form.iqcInspection.find('input').removeClass('is-valid');
         form.iqcInspection.find('input').removeClass('is-invalid');
         form.iqcInspection.find('input').attr('title', '');
@@ -79,13 +160,89 @@
         /*Upload and Download file*/
         $('#isUploadCoc').prop('checked',false);
         form.iqcInspection.find('#fileIqcCocUpload').addClass('d-none',true);
+
+        let yeuReceivesId = ($(this).attr('yeu-receives-id') != undefined) ?  $(this).attr('yeu-receives-id') : 0;
+        let data = {
+            yeuReceivesId : yeuReceivesId
+        }
+        let elFormId = form.iqcInspection;
+        call_ajax(elFormId,data, 'get_yeu_receiving_by_id', function(response){
+            $('#modalSaveIqcInspection').modal('show');
+            let twoDigitYear = strDatTime.dateToday.getFullYear().toString().substr(-2);
+            let twoDigitMonth = (strDatTime.dateToday.getMonth() + 1).toString().padStart(2, "0");
+            let twoDigitDay = String(strDatTime.dateToday.getDate()).padStart(2, '0');
+            let iqcInspection = response['iqcInspection'][0];
+            let generateControlNumber = response['generateControlNumber'];
+            // return;
+            let partCode = iqcInspection['item_code'];
+            let partName = iqcInspection['item_name'];
+            let supplier = iqcInspection['supplier']; // aql
+            let lotNo = iqcInspection['lot_no'];
+            let lotQty = iqcInspection['qty'];
+            let invoiceNo = iqcInspection['invoice_no'];
+            let iqcCocFile = iqcInspection['iqc_coc_file'];
+
+            let whsTransactionId = ( iqcInspection['id'] != undefined || iqcInspection['id'] != null) ? iqcInspection['id'] : 0;
+            let lotAccepted = iqcInspection['accepted'];
+            /* Visual Inspection */
+            form.iqcInspection.find('#app_no').val(generateControlNumber.app_no);
+            form.iqcInspection.find('#app_no_extension').val(generateControlNumber.app_no_extension);
+            form.iqcInspection.find('#whs_transaction_id').val(whsTransactionId);
+            form.iqcInspection.find('#iqc_category_material_id').val($('#txtCategoryMaterial').val());
+            form.iqcInspection.find('#invoice_no').val(invoiceNo);
+            form.iqcInspection.find('#partcode').val(partCode);
+            form.iqcInspection.find('#partname').val(partName);
+            form.iqcInspection.find('#supplier').val(supplier);
+            form.iqcInspection.find('#total_lot_qty').val(lotQty);
+            form.iqcInspection.find('#lot_no').val(lotNo);
+            form.iqcInspection.find('#iqc_coc_file').val('');
+                /* Sampling Plan */
+            form.iqcInspection.find('#accept').val(0);
+            form.iqcInspection.find('#reject').val(1);
+            /* Visual Inspection Result */
+            form.iqcInspection.find('#lot_inspected').val(1);
+            form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
+            form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
+            form.iqcInspection.find('#isUploadCoc').prop('required',true);
+            getDropdownDetailsById(form.iqcInspection.find('#aql'),'aql');
+            getDropdownDetailsById(form.iqcInspection.find('#family'),'family');
+            getDropdownDetailsById(form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');
+            getDropdownDetailsById(form.iqcInspection.find('#target_dppm'),'target_dppm');
+            getDropdownDetailsById(form.iqcInspection.find('#target_lar'),'target_lar');
+            getDropdownDetailsById($('#mode_of_defect'),'mode_of_defects');
+
+            if( iqcCocFile === undefined || iqcCocFile === null ){
+                form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
+                form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
+            }else{
+                form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
+                form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
+            }
+            /* Display the Mode of Defects Button */
+            divDisplayNoneClass(form.iqcInspection,lotAccepted);
+
+
+
+            $('#tblModeOfDefect tbody').empty();
+            arrTableMod.lotNo = [];
+            arrTableMod.modeOfDefects = [];
+            arrTableMod.lotQty = [];
+            arrCounter.ctr = 0;
+            /*Mode of Defects Modal*/
+            $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
+            $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
+            for (let i = 0; i < response.length; i++) {
+                let optLotNo = `<option value="${lotNo}">${lotNo}</option>`;
+                $('#mod_lot_no').append(optLotNo);
+            }
+            console.log('whsarrTableMod',arrTableMod);
+        })
     }
-    const getWhsDetailsById = function (receivingDetailId,whsTransactionId) {
+    const getWhsDetailsById = function (whsTransactionId) {
         $.ajax({
             type: "GET",
             url: "get_whs_receiving_by_id",
             data: {
-                "receiving_detail_id" : receivingDetailId,
                 "whs_transaction_id" : whsTransactionId,
             },
             dataType: "json",
@@ -94,73 +251,7 @@
                 $("select").val('');
             },
             success: function (response) {
-                $('#modalSaveIqcInspection').modal('show');
-                let twoDigitYear = strDatTime.dateToday.getFullYear().toString().substr(-2);
-                let twoDigitMonth = (strDatTime.dateToday.getMonth() + 1).toString().padStart(2, "0");
-                let twoDigitDay = String(strDatTime.dateToday.getDate()).padStart(2, '0');
 
-                let partCode = response[0]['partcode'];
-                let partName = response[0]['partname'];
-                let supplier = response[0]['supplier']; // aql
-                let lotNo = response[0]['lot_no'];
-                let lotQty = response[0]['total_lot_qty'];
-
-                let iqcCocFile = response[0]['iqc_coc_file'];
-
-                let whsTransactionId = ( response[0]['whs_transaction_id'] != undefined || response[0]['whs_transaction_id'] != null) ? response[0]['whs_transaction_id'] : 0;
-                let whsReceivingDetailId = ( response[0]['receiving_detail_id'] != undefined || response[0]['receiving_detail_id'] != null ) ? response[0]['receiving_detail_id'] : 0;
-                let lotAccepted = response[0]['accepted'];
-                /* Visual Inspection */
-                form.iqcInspection.find('#app_no').val(`PPD-${twoDigitYear}-${twoDigitMonth}${twoDigitDay}-`);
-                form.iqcInspection.find('#whs_transaction_id').val(whsTransactionId);
-                form.iqcInspection.find('#receiving_detail_id').val(whsReceivingDetailId);
-                form.iqcInspection.find('#invoice_no').val(response[0]['invoice_no']);
-                form.iqcInspection.find('#partcode').val(partCode);
-                form.iqcInspection.find('#partname').val(partName);
-                form.iqcInspection.find('#supplier').val(supplier);
-                form.iqcInspection.find('#total_lot_qty').val(lotQty);
-                form.iqcInspection.find('#lot_no').val(lotNo);
-                form.iqcInspection.find('#iqc_coc_file').val('');
-                /* Sampling Plan */
-                form.iqcInspection.find('#accept').val(0);
-                form.iqcInspection.find('#reject').val(1);
-                /* Visual Inspection Result */
-                form.iqcInspection.find('#lot_inspected').val(1);
-                form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
-                form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
-                form.iqcInspection.find('#isUploadCoc').prop('required',true);
-                getDropdownDetailsById(form.iqcInspection.find('#aql'),'aql');
-                getDropdownDetailsById(form.iqcInspection.find('#family'),'family');
-                getDropdownDetailsById(form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');
-                getDropdownDetailsById(form.iqcInspection.find('#target_dppm'),'target_dppm');
-                getDropdownDetailsById(form.iqcInspection.find('#target_lar'),'target_lar');
-                getDropdownDetailsById($('#mode_of_defect'),'mode_of_defects');
-
-
-                if( iqcCocFile === undefined || iqcCocFile === null ){
-                    form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
-                    form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
-                }else{
-                    form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
-                    form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
-                }
-                /* Display the Mode of Defects Button */
-                divDisplayNoneClass(lotAccepted);
-
-
-                $('#tblModeOfDefect tbody').empty();
-                arrTableMod.lotNo = [];
-                arrTableMod.modeOfDefects = [];
-                arrTableMod.lotQty = [];
-                arrCounter.ctr = 0;
-                /*Mode of Defects Modal*/
-                $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
-                $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
-                for (let i = 0; i < response.length; i++) {
-                    let optLotNo = `<option value="${lotNo}">${lotNo}</option>`;
-                    $('#mod_lot_no').append(optLotNo);
-                }
-                console.log('whsarrTableMod',arrTableMod);
             }
         });
     }
@@ -188,7 +279,7 @@
                 let lotQty = tblWhsTrasanction['total_lot_qty'];
 
                 let whsTransactionId = ( tblWhsTrasanction['whs_transaction_id'] != undefined || tblWhsTrasanction['whs_transaction_id'] != null) ? tblWhsTrasanction['whs_transaction_id'] : 0;
-                let whsReceivingDetailId = ( tblWhsTrasanction['receiving_detail_id'] != undefined || tblWhsTrasanction['receiving_detail_id'] != null ) ? tblWhsTrasanction['receiving_detail_id'] : 0;
+                let iqcCategoryMaterialId = ( tblWhsTrasanction['iqc_category_material_id'] != undefined || tblWhsTrasanction['iqc_category_material_id'] != null ) ? tblWhsTrasanction['iqc_category_material_id'] : 0;
                 let iqcInspectionId = tblWhsTrasanction['iqc_inspection_id'];
                 let iqcInspectionsMods = tblWhsTrasanction.iqc_inspections_mods;
                 let lotAccepted = tblWhsTrasanction['accepted'];
@@ -196,7 +287,7 @@
 
 
                 form.iqcInspection.find('#whs_transaction_id').val(whsTransactionId);
-                form.iqcInspection.find('#receiving_detail_id').val(whsReceivingDetailId);
+                form.iqcInspection.find('#iqc_category_material_id').val(iqcCategoryMaterialId);
                 form.iqcInspection.find('#invoice_no').val(tblWhsTrasanction['invoice_no']);
                 form.iqcInspection.find('#partcode').val(partCode);
                 form.iqcInspection.find('#partname').val(partName);
@@ -246,7 +337,9 @@
                     form.iqcInspection.find('#iqc_coc_file_download').removeClass('disabled',true);
                 }
                 /* Display the Mode of Defects Button */
-                divDisplayNoneClass(lotAccepted);
+                divDisplayNoneClass(form.iqcInspection,lotAccepted);
+
+
 
                 $('#tblModeOfDefect tbody').empty();
                 arrTableMod.lotNo = [];
@@ -291,7 +384,6 @@
             }
         });
     }
-
     const getDropdownDetailsById = function (cmb_element,iqc_inspection_column_ref,opt_value = null) {
         let opt = `<option value="N/A" selected disabled>N/A</option>`;
             opt += `<option value="N/A" selected disabled>N/A</option>`;
@@ -342,13 +434,13 @@
     const getSum = function (total, num) {
         return total + Math.round(num);
     }
-    const divDisplayNoneClass =  function (value){
+    const divDisplayNoneClass =  function (elFormId = null,value){
         if(value == 0){ //nmodify
-            form.iqcInspection.find('.divMod').removeClass('d-none',true);
-            form.iqcInspection.find('#judgement').val(2);
+            elFormId.find('.divMod').removeClass('d-none',true);
+            elFormId.find('#judgement').val(2);
         }else{
-            form.iqcInspection.find('.divMod').addClass('d-none',true);
-            form.iqcInspection.find('#judgement').val(1);
+            elFormId.find('.divMod').addClass('d-none',true);
+            elFormId.find('#judgement').val(1);
         }
     }
     const saveIqcInspection = function (){ //amodify
@@ -373,7 +465,6 @@
                     $('#modalSaveIqcInspection').modal('hide');
                     dataTable.iqcInspection.draw();
                     dataTable.iqcInspected.draw();
-                    dataTable.iqcWshDetails.draw();
                     Swal.fire({
                         position: "center",
                         icon: "success",
@@ -382,14 +473,15 @@
                         timer: 1500
                     });
                     $('#modalScanQRSave').modal('hide');
+                    form.iqcInspection[0].reset();
                 }
             },error: function (data, xhr, status){
                 let errors = data.responseJSON.errors ;
                 toastr.error(`Saving Failed, Please fill up all required fields`);
                 $('#modal-loading').modal('hide');
                 if(data.status === 422){
-                    errorHandler(errors.whs_transaction_id,form.iqcInspection.find('#receiving_detail_id'));
-                    errorHandler(errors.whs_transaction_id,form.iqcInspection.find('#receiving_detail_id'));
+                    errorHandler(errors.whs_transaction_id,form.iqcInspection.find('#whs_transaction_id'));
+                    errorHandler(errors.iqc_category_material_id,form.iqcInspection.find('#iqc_category_material_id'));
                     errorHandler(errors.app_no,form.iqcInspection.find('#app_no'));
                     errorHandler(errors.partcode,form.iqcInspection.find('#partcode'));
                     errorHandler(errors.partname,form.iqcInspection.find('#partname'));

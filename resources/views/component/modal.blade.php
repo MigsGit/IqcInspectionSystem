@@ -11,7 +11,7 @@
             <form method="post" id="formSaveIqcInspection" autocomplete="off">
                 @csrf
                 <div class="modal-body modal-body-custom">
-                    <div class="row d-none">
+                    <div class="row">
                         <div class="col-sm-6 mt-3">
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
@@ -21,9 +21,9 @@
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Receiving Details ID (Rapidx)</span>
+                                    <span class="input-group-text w-100" id="basic-addon1">Material Category</span>
                                 </div>
-                                <input type="text" class="form-control form-control-sm" id="receiving_detail_id" name="receiving_detail_id">
+                                <input type="text" class="form-control form-control-sm" id="iqc_category_material_id" name="iqc_category_material_id">
                             </div>
                         </div>
                         <div class="col-sm-6 mt-3">

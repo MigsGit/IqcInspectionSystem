@@ -319,7 +319,7 @@ $(document).ready(function () {
         form.saveDropdownDetails.find('#iqc_dropdown_categories_id').val(dropdownCategoryId);
         settingDataTable.dropdownDetails.ajax.url("read_dropdown_details_by_category?iqc_dropdown_category_id="+dropdownCategoryId).draw();
     });
-    
+
     $(settingTbl.dropdownCategory).on('click','#btnDropdownCategory',`tr`, function () {
         $('#modalCreateDropdownCategory').modal('show');
         let dropdownCategoryId = $(this).attr('dropdown-category-id');
@@ -331,23 +331,24 @@ $(document).ready(function () {
         readDropdownDetailsById(dropdownDetailsId)
     });
 
-    form.saveDropdownCategory.submit(function (e) { 
+    form.saveDropdownCategory.submit(function (e) {
         e.preventDefault();
         let data = {}
         let serializedData = $(this).serialize();
-
-        call_ajax_serialize(data,serializedData , 'save_dropdown_category_by_id', function(response){
+        let elFormId = $(this);
+        call_ajax_serialize(elFormId,data,serializedData , 'save_dropdown_category_by_id', function(response){
             if(response.isSuccess === 'true'){
                 settingDataTable.dropdownCategory.draw();
                 $('#modalCreateDropdownCategory').modal('hide');
             }
         })
     });
-    form.saveDropdownDetails.submit(function (e) { 
+    form.saveDropdownDetails.submit(function (e) {
         e.preventDefault();
         let data = {}
         let serializedData = $(this).serialize();
-
+        let elFormId = $(this);
+        // call_ajax_serialize(elFormId,data,serializedData , 'save_dropdown_details_by_id', function(response){
         call_ajax_serialize(data,serializedData , 'save_dropdown_details_by_id', function(response){
             if(response.isSuccess === 'true'){
                 settingDataTable.dropdownDetails.draw();
