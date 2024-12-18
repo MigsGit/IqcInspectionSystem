@@ -332,19 +332,24 @@
     @section('js_content')
         <script type="text/javascript">
             $(document).ready(function () {
-                dataTable.iqcInspection = $(tbl.iqcInspection).DataTable({
+
+                dataTable = {
+                    iqcTsWhsPackaging: '',
+                }
+
+                dataTable.iqcTsWhsPackaging = $(tbl.iqcInspection).DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
-                        url: "load_whs_transaction", //Rapid PPS WHS Transaction
+                        url: "load_whs_packaging", //Rapid Ts Warehouse Packaging
                         data: function (param){
                             param.lotNum = $('#txtSearchLotNum').val()
                         },
                     },
                     fixedHeader: true,
                     "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status", orderable:false, searchable:false },
+                        { "data" : "rawAction", orderable:false, searchable:false },
+                        { "data" : "rawStatus", orderable:false, searchable:false },
                         { "data" : "InvoiceNo" },
                         { "data" : "Supplier" },
                         { "data" : "PartNumber" },
@@ -519,7 +524,7 @@
                     $('#btnModalLotNum').attr('el-btn-attr','whseTransaction')
                     $('#txtSearchLotNum').val('');
                     let categoryMaterial = '37';
-                    dataTable.iqcInspection.draw();
+                    dataTable.iqcTsWhsPackaging.draw();
                     dataTable.iqcInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                     getDropdownDetailsById($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
                 });
@@ -538,7 +543,7 @@
                 $('a[href="#menu1_1"]').click(function (e) {
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
-                    dataTable.iqcInspection.draw();
+                    dataTable.iqcTsWhsPackaging.draw();
                 });
 
                 $('a[href="#menu2_1"]').click(function (e) {
@@ -595,7 +600,7 @@
                             switch (modalId) {
                                 case 'whseTransaction':
                                         $('#txtSearchLotNum').val($(this).val());
-                                        dataTable.iqcInspection.draw();
+                                        dataTable.iqcTsWhsPackaging.draw();
                                         dataTable.iqcInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                                     break;
                                 case 'yeu':
@@ -615,7 +620,7 @@
                 });
 
 
-                dataTable.iqcInspection.on('draw', function () {
+                dataTable.iqcTsWhsPackaging.on('draw', function () {
                     if($('#txtSearchLotNum').val() != ""){
                         $('#tblIqcInspection tbody #btnEditIqcInspection').each(function(index, tr){
                             $(this).removeClass('d-none');
@@ -656,6 +661,49 @@
                         form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
                     }
                 });
+
+                const getSamplingSizeBySamplingPlan = function (severityOfInspection,inspectionLvl,aql,totalLotQty){
+                    let data = {
+                        'severity_of_inspection' : severityOfInspection,
+                        'inspection_lvl' : inspectionLvl,
+                        'aql' : aql,
+                        'total_lot_qty' : totalLotQty,
+                    }
+                    call_ajax(data,'get_sampling_size_by_sampling_plan',function(response){
+                        console.log(response);
+                    })
+                }
+                form.iqcInspection.find('#severity_of_inspection').change(function (e) {
+                    e.preventDefault();
+                    let severityOfInspection = form.iqcInspection.find(this).val();
+                    let inspectionLvl = form.iqcInspection.find('#inspection_lvl').val();
+                    let aql = form.iqcInspection.find('#aql').val();
+                    let totalLotQty = form.iqcInspection.find('#total_lot_qty').val();
+
+                    getSamplingSizeBySamplingPlan (severityOfInspection,inspectionLvl,aql,totalLotQty)
+                });
+
+                form.iqcInspection.find('#inspection_lvl').change(function (e) {
+                    e.preventDefault();
+                    let severityOfInspection = form.iqcInspection.find('#severity_of_inspection').val();
+                    let inspectionLvl = form.iqcInspection.find(this).val();
+                    let aql = form.iqcInspection.find('#aql').val();
+                    let totalLotQty = form.iqcInspection.find('#total_lot_qty').val();
+
+                    getSamplingSizeBySamplingPlan (severityOfInspection,inspectionLvl,aql,totalLotQty)
+                });
+
+                form.iqcInspection.find('#aql').change(function (e) {
+                    e.preventDefault();
+                    let severityOfInspection = form.iqcInspection.find('#severity_of_inspection').val();
+                    let inspectionLvl = form.iqcInspection.find('#inspection_lvl').val();
+                    let aql = form.iqcInspection.find(this).val();
+                    let totalLotQty = form.iqcInspection.find('#total_lot_qty').val();
+
+                    getSamplingSizeBySamplingPlan (severityOfInspection,inspectionLvl,aql,totalLotQty)
+                });
+
+                // severity_of_inspection
 
                 $('#txtScanUserId').on('keyup', function(e){
                     if(e.keyCode == 13){

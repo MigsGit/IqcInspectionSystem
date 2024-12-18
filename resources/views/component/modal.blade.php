@@ -146,10 +146,10 @@
                                     <span class="input-group-text w-100" id="basic-addon1">Severity of Inspection</span>
                                 </div>
                                 <select class="form-select form-control-sm" id="severity_of_inspection" name="severity_of_inspection">
-                                    <option value="" selected disabled>-Select-</option>
+                                    {{-- <option value="" selected disabled>-Select-</option>
                                     <option value="1">Normal</option>
                                     <option value="2">Tightened</option>
-                                    <option value="3">Label Check</option>
+                                    <option value="3">Label Check</option> --}}
                                 </select>
                             </div>
                             <div class="input-group input-group-sm mb-3">

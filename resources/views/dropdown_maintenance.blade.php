@@ -336,7 +336,7 @@ $(document).ready(function () {
         let data = {}
         let serializedData = $(this).serialize();
         let elFormId = $(this);
-        call_ajax_serialize(elFormId,data,serializedData , 'save_dropdown_category_by_id', function(response){
+        call_ajax_serialize(data,serializedData , 'save_dropdown_category_by_id', function(response){
             if(response.isSuccess === 'true'){
                 settingDataTable.dropdownCategory.draw();
                 $('#modalCreateDropdownCategory').modal('hide');

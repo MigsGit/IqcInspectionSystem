@@ -1,5 +1,6 @@
 /* Call basic ajax for submit */
-function call_ajax(elFormId =null ,data = null, handler, fn) {
+function call_ajax(data = null, handler, fn,elFormId =null) {
+
     data = $.param(data);
     $.ajax({
         type: "GET",
@@ -7,6 +8,8 @@ function call_ajax(elFormId =null ,data = null, handler, fn) {
         data: data,
         url: handler,
         beforeSend: function(){
+            // console.log('call_ajax elFormId',elFormId);
+            // return;
             $('#modal-loading').modal('show');
             if(elFormId !=null){
                 elFormId[0].reset();
@@ -24,7 +27,7 @@ function call_ajax(elFormId =null ,data = null, handler, fn) {
     });
 }
 
-function call_ajax_serialize(elFormId =null ,data = null, serialized_data, handler, fn) {
+function call_ajax_serialize(data = null, serialized_data, handler, fn,elFormId =null) {
     data = $.param(data) + '&' + serialized_data;
 	$.ajax({
         type: "post",

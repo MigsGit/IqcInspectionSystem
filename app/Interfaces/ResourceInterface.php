@@ -16,8 +16,8 @@ interface ResourceInterface
     public function readCustomEloquent($model);
     public function readByID($model,$id);
     public function readByForeignID($model,$col_fkid,$id);
-    public function readActiveDataWithConditions($model,array $conditions);
     public function readAllWithConditions($model,array $conditions);
+    public function readActiveDataWithConditions($model,array $conditions);
     // public function readAllWithConditions(array $conditions);
     public function readAllRelationsAndConditions($model,array $relations,array $conditions);
     // public function inactive($id);

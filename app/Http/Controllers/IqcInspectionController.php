@@ -2,30 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use Helpers;
 use DataTables;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\IqcInspectionRequest;
 use App\Models\User;
 use App\Models\YeuReceive;
-use App\Models\TblWarehouse;
-use Illuminate\Http\Request;
 use App\Models\IqcInspection;
 use App\Models\DropdownIqcAql;
+use App\Models\IqcInspectionsMod;
+use App\Models\IqcDropdownCategory;
+use App\Models\DropdownIqcModeOfDefect;
+use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+
+use App\Interfaces\ResourceInterface;
+
+use App\Models\TblWarehouse;
 use App\Models\ReceivingDetails;
 use App\Models\DropdownIqcFamily;
 use App\Models\IqcDropdownDetail;
-use App\Models\IqcInspectionsMod;
-use Illuminate\Support\Facades\DB;
-use App\Models\IqcDropdownCategory;
 use App\Models\DropdownIqcTargetLar;
-use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Interfaces\ResourceInterface;
 use App\Models\DropdownIqcTargetDppm;
-use App\Models\DropdownIqcModeOfDefect;
 use App\Models\TblWarehouseTransaction;
-use Illuminate\Support\Facades\Storage;
 use App\Models\DropdownIqcInspectionLevel;
-use App\Http\Requests\IqcInspectionRequest;
+
+
 
 class IqcInspectionController extends Controller
 {
@@ -38,67 +41,48 @@ class IqcInspectionController extends Controller
         return $iqc_inspection_by = IqcInspection::where('judgement',1)->get();
     }
 
-    public function loadWhsTransaction(Request $request)
-    { //RAPID WHS Whs Transaction
-        /*  Get the data only with whs_transaction.inspection_class = 1 - For Inspection, while
-            Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
-        */
-        // return 'true';
-        if( isset( $request->lotNum ) ){
-            $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
-            ->select(' SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
-                FROM tbl_WarehouseTransaction whs_transaction
-                INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
-                WHERE 1=1
-                AND whs.Factory = 3
-                AND  whs_transaction.inspection_class = 1 AND whs_transaction.Lot_number = "'.$request->lotNum.'"
-                ORDER BY whs.PartNumber DESC
-            ');
-        }else{
-            $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
-            ->select('SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
-                FROM tbl_WarehouseTransaction whs_transaction
-                INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
-                WHERE 1=1
-                AND whs.Factory = 3
-                AND whs_transaction.inspection_class = 1
-                ORDER BY whs.PartNumber DESC
-            ');
+    public function loadWhsPackaging(Request $request){
+        try {
+            /*
+                TODO: Get the data only with whs_transaction.inspection_class = 1 - For Inspection, while
+                Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
+            */
+            if( isset( $request->lotNum ) ){
+                $tbl_whs_trasanction = DB::connection('mysql_rapid_ts_whs_packaging')
+                ->select('SELECT pkid_received as "receiving_detail_id",supplier as "Supplier",partcode as "PartNumber",
+                    partname as "MaterialType",date as "Lot_number",invoiceno as "InvoiceNo" FROM  vw_list_of_received
+                    WHERE 1=1
+                    AND date = "'.$request->lotNum.'"
+                ');
+            }else{
+                $tbl_whs_trasanction = DB::connection('mysql_rapid_ts_whs_packaging')
+                ->select('SELECT pkid_received as "receiving_detail_id",supplier as "Supplier",partcode as "PartNumber",
+                        partname as "MaterialType",date as "Lot_number",invoiceno as "InvoiceNo"  FROM  vw_list_of_received
+                ');
+            }
+            return DataTables::of($tbl_whs_trasanction)
+            ->addColumn('rawAction', function($row){
+                $result = '';
+                $result .= '<center>';
+                $result .= "<button class='btn btn-info btn-sm mr-1 d-none' whs-trasaction-id='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+                $result .= '</center>';
+                return $result;
+            })
+            ->addColumn('rawStatus', function($row){
+                $result = '';
+                $result .= '<center>';
+                $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
+                $result .= '</center>';
+                return $result;
+            })
+            ->rawColumns(['rawAction','rawStatus'])
+            ->make(true);
+        } catch (Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
-
-        return DataTables::of($tbl_whs_trasanction)
-        ->addColumn('action', function($row){
-            $result = '';
-            $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1 d-none' whs-trasaction-id='".$row->whs_transaction_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
-            $result .= '</center>';
-            return $result;
-        })
-        ->addColumn('status', function($row){
-            $result = '';
-            $result .= '<center>';
-            $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
-            $result .= '</center>';
-            return $result;
-        })
-        ->rawColumns(['action','status'])
-        ->make(true);
-        /*
-            InvoiceNo
-            whs_transaction_username,whs_username
-            whs_transaction_lastupdate,whs_lastupdate
-            whs_transaction_lastupdate,whs_lastupdate
-            *Inspection Times*
-            *Application Ctrl. No*
-            *FY#*
-            *WW#*
-            *Sub*
-            PartNumber
-            ProductLine,MaterialType
-            Supplier
-            Lot_number
-        */
     }
+
+    
     public function loadYeuDetails(Request $request){
         if( isset( $request->lotNum ) ){
             $tbl_whs_trasanction = DB::connection('mysql_rapidx_yeu')
@@ -353,8 +337,7 @@ class IqcInspectionController extends Controller
 
             if(isset($request->iqc_inspection_id)){ //Edit
 
-                // return 'edit';
-                $update_iqc_inspection = IqcInspection::where('id', $request->iqc_inspection_id)->update($request->validated()); //PO and packinglist number
+                IqcInspection::where('id', $request->iqc_inspection_id)->update($request->validated()); //PO and packinglist number
 
                 IqcInspection::where('id', $request->iqc_inspection_id)
                 ->update([
@@ -365,7 +348,6 @@ class IqcInspectionController extends Controller
 
                 $iqc_inspections_id = $request->iqc_inspection_id;
             }else{ //Add
-                // return 'add';
                 /* All required fields is the $request validated, check the column is IqcInspectionRequest
                     NOTE: the name of fields must be match in column name
                 */

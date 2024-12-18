@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\IqcInspectionController;
+use App\Http\Controllers\PpdIqcInspectionController;
 
 
 
@@ -62,7 +63,7 @@ Route::get('check_user', function (Request $request) {
 
 Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/load_iqc_inspection', 'loadIqcInspection')->name('load_iqc_inspection');
-    Route::get('/load_whs_transaction', 'loadWhsTransaction')->name('load_whs_transaction');
+    Route::get('/load_whs_packaging', 'loadWhsPackaging')->name('load_whs_packaging');
     Route::get('/load_whs_details', 'loadWhsDetails')->name('load_whs_details');
     Route::get('/load_yeu_details', 'loadYeuDetails')->name('load_yeu_details');
     Route::get('/get_iqc_inspection_by_judgement', 'getIqcInspectionByJudgement')->name('get_iqc_inspection_by_judgement');
@@ -70,11 +71,23 @@ Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/get_whs_receiving_by_id', 'getWhsReceivingById')->name('get_whs_receiving_by_id');
     Route::get('/view_coc_file_attachment/{id}', 'viewCocFileAttachment')->name('view_coc_file_attachment');
     Route::get('/get_dropdown_details_by_opt_value', 'getDropdownDetailsByOptValue')->name('get_dropdown_details_by_opt_value');
-    Route::get('/get_dropdown_details_by_opt_value', 'getDropdownDetailsByOptValue')->name('get_dropdown_details_by_opt_value');
-
     Route::get('/get_yeu_receiving_by_id', 'getYeuReceivingById')->name('get_yeu_receiving_by_id');
 
     Route::post('/save_iqc_inspection', 'saveIqcInspection')->name('save_iqc_inspection');
+});
+Route::controller(PpdIqcInspectionController::class)->group(function () {
+    Route::get('/load_whs_transaction', 'loadWhsTransaction')->name('load_whs_transaction');
+    // Route::get('/load_iqc_inspection', 'loadIqcInspection')->name('load_iqc_inspection');
+    // Route::get('/load_whs_details', 'loadWhsDetails')->name('load_whs_details');
+    // Route::get('/load_yeu_details', 'loadYeuDetails')->name('load_yeu_details');
+    // Route::get('/get_iqc_inspection_by_judgement', 'getIqcInspectionByJudgement')->name('get_iqc_inspection_by_judgement');
+    // Route::get('/get_iqc_inspection_by_id', 'getIqcInspectionById')->name('get_iqc_inspection_by_id');
+    // Route::get('/get_whs_receiving_by_id', 'getWhsReceivingById')->name('get_whs_receiving_by_id');
+    // Route::get('/view_coc_file_attachment/{id}', 'viewCocFileAttachment')->name('view_coc_file_attachment');
+    // Route::get('/get_dropdown_details_by_opt_value', 'getDropdownDetailsByOptValue')->name('get_dropdown_details_by_opt_value');
+    // Route::get('/get_yeu_receiving_by_id', 'getYeuReceivingById')->name('get_yeu_receiving_by_id');
+
+    // Route::post('/save_iqc_inspection', 'saveIqcInspection')->name('save_iqc_inspection');
 });
 
 
@@ -107,6 +120,10 @@ Route::controller(SettingController::class)->group(function () {
 
     Route::post('/save_dropdown_category_by_id', 'saveDropdownCategoryById')->name('save_dropdown_category_by_id');
     Route::post('/save_dropdown_details_by_id', 'saveDropdownDetailsById')->name('save_dropdown_details_by_id');
+});
+
+Route::controller(CommonController::class)->group(function () {
+    Route::get('/get_sampling_size_by_sampling_plan', 'getSamplingSizeBySamplingPlan')->name('get_sampling_size_by_sampling_plan');
 });
 
 //readDropdownDetailsByCategory
