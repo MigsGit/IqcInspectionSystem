@@ -103,7 +103,7 @@
                                                         <div class="tab-pane fade show active" id="menu1_1" role="tabpanel" aria-labelledby="menu1_1-tab">
                                                             <div class="table-responsive">
                                                                 <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                                                <table id="tblIqcInspection" class="table table-sm table-bordered table-striped table-hover"
+                                                                <table id="tblIqcWhsReceivingPackaging" class="table table-sm table-bordered table-striped table-hover"
                                                                     style="width: 100%;">
                                                                     <thead>
                                                                         <tr>
@@ -332,12 +332,54 @@
     @section('js_content')
         <script type="text/javascript">
             $(document).ready(function () {
+                tbl = {
+                    iqcInspection:'#tblIqcInspection',
+                    iqcWhsReceivingPackaging:'#tblIqcWhsReceivingPackaging',
+                    iqcWhsDetails :'#tblWhsDetails',
+                    iqcInspected:'#tblIqcInspected',
+                    iqcYeuDetails:'#tblIqcYeuDetails',
+                    iqcYeuInspected:'#tblIqcYeuInspected',
+
+                };
 
                 dataTable = {
+                    iqcInspection:'', //iqcInspection
+                    iqcInspected: '',
+                    iqcYeuDetails: '',
+                    iqcYeuInspected: '',
                     iqcTsWhsPackaging: '',
+
+                };
+
+                form = {
+                    iqcInspection : $('#formSaveIqcInspection')
+                };
+
+                strDatTime = {
+                    dateToday : new Date(), // By default Date empty constructor give you Date.now
+                    currentDate : new Date().toJSON().slice(0, 10),
+                    currentTime : new Date().toLocaleTimeString('en-GB', { hour: "numeric",minute: "numeric"}),
+                    currentHours : new Date().getHours(),
+                    currentMinutes : new Date().getMinutes(),
                 }
 
-                dataTable.iqcTsWhsPackaging = $(tbl.iqcInspection).DataTable({
+                arrCounter= {
+                    ctr : 0
+                }
+
+                btn = {
+                    removeModLotNumber : $('#btnRemoveModLotNumber'),
+                    saveComputation : $('#btnSaveComputation')
+                }
+
+                arrTableMod = {
+                    lotNo : [],
+                    modeOfDefects : [],
+                    lotQty : []
+                };
+
+            
+                dataTable.iqcTsWhsPackaging = $(tbl.iqcWhsReceivingPackaging).DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
@@ -447,10 +489,10 @@
 
                 getDropdownDetailsById($('#txtCategoryMaterial'),'iqc_category_material_id','37');
 
-                $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
-                $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
+                $(tbl.iqcWhsReceivingPackaging).on('click','#btnEditIqcInspection', getTsWhsRecevingPackagingById);
+                $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspected);
                 $(tbl.iqcYeuDetails).on('click','#btnEditIqcInspection', editYeuIqcDetails);
-                $(tbl.iqcYeuInspected).on('click','#btnEditIqcInspection', editIqcInspection);
+                $(tbl.iqcYeuInspected).on('click','#btnEditIqcInspection', editIqcInspected);
 
                 $('#btnLotNo').click(function (e) {
                     e.preventDefault();
@@ -622,7 +664,7 @@
 
                 dataTable.iqcTsWhsPackaging.on('draw', function () {
                     if($('#txtSearchLotNum').val() != ""){
-                        $('#tblIqcInspection tbody #btnEditIqcInspection').each(function(index, tr){
+                        $('#tblIqcWhsReceivingPackaging tbody #btnEditIqcInspection').each(function(index, tr){
                             $(this).removeClass('d-none');
                         })
                     }
@@ -670,7 +712,10 @@
                         'total_lot_qty' : totalLotQty,
                     }
                     call_ajax(data,'get_sampling_size_by_sampling_plan',function(response){
-                        console.log(response);
+                        console.log(response.sample_size);
+                        
+                        form.iqcInspection.find('#sampling_size').val(response.sample_size)
+                        // form.iqcInspection.find('#sampling_size').val(tblWhsTrasanction['sampling_size']);
                     })
                 }
                 form.iqcInspection.find('#severity_of_inspection').change(function (e) {

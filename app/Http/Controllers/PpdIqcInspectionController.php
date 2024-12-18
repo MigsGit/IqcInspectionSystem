@@ -69,4 +69,19 @@ class PpdIqcInspectionController extends Controller
             Lot_number
         */
     }
+    public function getWhsReceivingById(Request $request)
+    {
+        return $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
+        ->select('
+            SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.Username as "whs_transaction_username",
+            whs_transaction.LastUpdate as "whs_transaction_lastupdate",whs_transaction.inspection_class,
+            whs_transaction.InvoiceNo as "invoice_no",whs_transaction.Lot_number as "lot_no",whs_transaction.In as "total_lot_qty",
+            whs.PartNumber as "partcode",whs.MaterialType as "partname",whs.Supplier as supplier,
+            whs.*,whs.id as "whs_id",whs.Username as "whs_username",whs.LastUpdate as "whs_lastupdate"
+            FROM tbl_WarehouseTransaction whs_transaction
+            INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
+            WHERE whs_transaction.pkid = '.$request->whs_transaction_id.'
+            LIMIT 0,1
+        ');
+    }
 }

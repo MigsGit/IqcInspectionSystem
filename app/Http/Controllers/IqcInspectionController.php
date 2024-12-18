@@ -3,30 +3,31 @@
 namespace App\Http\Controllers;
 
 use DataTables;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\IqcInspectionRequest;
 use App\Models\User;
 use App\Models\YeuReceive;
+use App\Models\TblWarehouse;
+use Illuminate\Http\Request;
 use App\Models\IqcInspection;
 use App\Models\DropdownIqcAql;
-use App\Models\IqcInspectionsMod;
-use App\Models\IqcDropdownCategory;
-use App\Models\DropdownIqcModeOfDefect;
-use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Facades\Excel;
-
-use App\Interfaces\ResourceInterface;
-
-use App\Models\TblWarehouse;
 use App\Models\ReceivingDetails;
+use App\Models\VwListOfReceived;
 use App\Models\DropdownIqcFamily;
 use App\Models\IqcDropdownDetail;
+use App\Models\IqcInspectionsMod;
+use Illuminate\Support\Facades\DB;
+use App\Models\IqcDropdownCategory;
+
 use App\Models\DropdownIqcTargetLar;
+
+use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Interfaces\ResourceInterface;
 use App\Models\DropdownIqcTargetDppm;
+use App\Models\DropdownIqcModeOfDefect;
 use App\Models\TblWarehouseTransaction;
+use Illuminate\Support\Facades\Storage;
 use App\Models\DropdownIqcInspectionLevel;
+use App\Http\Requests\IqcInspectionRequest;
 
 
 
@@ -64,7 +65,7 @@ class IqcInspectionController extends Controller
             ->addColumn('rawAction', function($row){
                 $result = '';
                 $result .= '<center>';
-                $result .= "<button class='btn btn-info btn-sm mr-1 d-none' whs-trasaction-id='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+                $result .= "<button class='btn btn-info btn-sm mr-1 d-none' pkid-received='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
                 $result .= '</center>';
                 return $result;
             })
@@ -154,9 +155,6 @@ class IqcInspectionController extends Controller
                 ORDER BY created_at DESC
             ');
         }
-
-
-
         return DataTables::of($tbl_whs_trasanction)
         ->addColumn('action', function($row){
             $result = '';
@@ -296,20 +294,20 @@ class IqcInspectionController extends Controller
         return response()->json(['tbl_whs_trasanction'=>$tbl_whs_trasanction]);
     }
 
-    public function getWhsReceivingById(Request $request)
-    {
-        return $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
-        ->select('
-            SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.Username as "whs_transaction_username",
-            whs_transaction.LastUpdate as "whs_transaction_lastupdate",whs_transaction.inspection_class,
-            whs_transaction.InvoiceNo as "invoice_no",whs_transaction.Lot_number as "lot_no",whs_transaction.In as "total_lot_qty",
-            whs.PartNumber as "partcode",whs.MaterialType as "partname",whs.Supplier as supplier,
-            whs.*,whs.id as "whs_id",whs.Username as "whs_username",whs.LastUpdate as "whs_lastupdate"
-            FROM tbl_WarehouseTransaction whs_transaction
-            INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
-            WHERE whs_transaction.pkid = '.$request->whs_transaction_id.'
-            LIMIT 0,1
-        ');
+    public function getTsWhsRecevingPackagingById(Request $request){
+        try {
+            
+            $query = $this->resourceInterface->readCustomEloquent( VwListOfReceived::class);
+            $tsWhsReceivedPackaging = $query->where('pkid_received',$request->pkid_received)->get();
+            $generateControlNumber = $this->generateControlNumber();
+
+            return response()->json(['is_success' => 'true',
+                'tsWhsReceivedPackaging' => $tsWhsReceivedPackaging[0],
+                'generateControlNumber' => $generateControlNumber
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
     }
 
     public function getLotNumberByWhsTransactionId()
@@ -506,7 +504,7 @@ class IqcInspectionController extends Controller
 
         if(date_format($iqc_inspection[0]->created_at,'Y-m-d') != date('Y-m-d')){
             return [
-                'app_no' => $division."-".date('Y').date('M'),
+                'app_no' => $division."-".date('y').date('m'),
                 'app_no_extension'=>"001"
             ];
         }

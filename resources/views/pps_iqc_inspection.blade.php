@@ -332,6 +332,7 @@
     @section('js_content')
         <script type="text/javascript">
             $(document).ready(function () {
+                
                 dataTable.iqcInspection = $(tbl.iqcInspection).DataTable({
                     "processing" : true,
                     "serverSide" : true,
@@ -443,7 +444,7 @@
                 getDropdownDetailsById($('#txtCategoryMaterial'),'iqc_category_material_id','37');
 
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
-                $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
+                $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspected);
                 $(tbl.iqcYeuDetails).on('click','#btnEditIqcInspection', editYeuIqcDetails);
                 $(tbl.iqcYeuInspected).on('click','#btnEditIqcInspection', editIqcInspection);
 
