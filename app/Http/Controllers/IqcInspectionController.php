@@ -504,12 +504,12 @@ class IqcInspectionController extends Controller
 
         if(date_format($iqc_inspection[0]->created_at,'Y-m-d') != date('Y-m-d')){
             return [
-                'app_no' => $division."-".date('y').date('m'),
+                'app_no' => $division."-".date('y').date('m').'-',
                 'app_no_extension'=>"001"
             ];
         }
         return [
-            'app_no' => $division."-".date('y').date('m'),
+            'app_no' => $division."-".date('y').date('m').'-',
             'app_no_extension'=> sprintf("%03d", $iqc_inspection[0]->app_no_extension + 1)
         ];
     }

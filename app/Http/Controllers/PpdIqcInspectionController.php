@@ -69,6 +69,46 @@ class PpdIqcInspectionController extends Controller
             Lot_number
         */
     }
+    public function loadPpdWhsPackaging(Request $request){
+        try {
+            /*
+                TODO: Get the data only with whs_transaction.inspection_class = 1 - For Inspection, while
+                Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
+            */
+            if( isset( $request->lotNum ) ){
+                $tbl_whs_trasanction = DB::connection('mysql_rapid_ppd_whs_packaging')
+                ->select('SELECT pkid_received as "receiving_detail_id",supplier as "Supplier",partcode as "PartNumber",
+                    partname as "MaterialType",date as "Lot_number",invoiceno as "InvoiceNo" FROM  vw_list_of_received
+                    WHERE 1=1
+                    AND date = "'.$request->lotNum.'"
+                ');
+            }else{
+                $tbl_whs_trasanction = DB::connection('mysql_rapid_ppd_whs_packaging')
+                ->select('SELECT pkid_received as "receiving_detail_id",supplier as "Supplier",partcode as "PartNumber",
+                        partname as "MaterialType",date as "Lot_number",invoiceno as "InvoiceNo"  FROM  vw_list_of_received
+                ');
+            }
+            return DataTables::of($tbl_whs_trasanction)
+            ->addColumn('rawAction', function($row){
+                $result = '';
+                $result .= '<center>';
+                $result .= "<button class='btn btn-info btn-sm mr-1 d-none' pkid-received='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+                $result .= '</center>';
+                return $result;
+            })
+            ->addColumn('rawStatus', function($row){
+                $result = '';
+                $result .= '<center>';
+                $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
+                $result .= '</center>';
+                return $result;
+            })
+            ->rawColumns(['rawAction','rawStatus'])
+            ->make(true);
+        } catch (Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
     public function getWhsReceivingById(Request $request)
     {
         return $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
@@ -84,4 +124,6 @@ class PpdIqcInspectionController extends Controller
             LIMIT 0,1
         ');
     }
+
+
 }

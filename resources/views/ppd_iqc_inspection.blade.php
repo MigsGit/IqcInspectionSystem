@@ -32,7 +32,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>TS IQC Inspection</h1>
+                            <h1>PPD IQC Inspection</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
@@ -54,10 +54,10 @@
                                     <!-- Start Page Content -->
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">WHSE Transaction</a>
+                                            <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">Rapid PPD Database</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">YEU</a>
+                                            <a class="nav-link .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">Rapid PPD WHS Packaging V3</a>
                                         </li>
                                     </ul>
                                     <div class="tab-content mt-5" id="myTabContent">
@@ -65,7 +65,7 @@
                                             <div class="col-sm-2">
                                                 <label class="form-label">Lot Number</label>
                                                 <div class="input-group mb-3">
-                                                    <button class="btn btn-primary" id="btnModalLotNum" el-btn-attr="whseTransaction"><i class="fa-solid fa-qrcode"></i></button>
+                                                    <button class="btn btn-primary" id="btnModalLotNum" el-btn-attr="ppdWhsDatabase"><i class="fa-solid fa-qrcode"></i></button>
                                                     <input type="search" class="form-control" placeholder="Lot Number" id="txtSearchLotNum" readonly>
                                                 </div>
                                             </div>
@@ -186,8 +186,8 @@
                                                     <div class="tab-content" id="myTabContent">
                                                         <div class="tab-pane fade show active" id="menu1_2" role="tabpanel" aria-labelledby="menu1_2-tab">
                                                             <div class="table-responsive">
-                                                                <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                                                <table id="tblIqcYeuDetails" class="table table-sm table-bordered table-striped table-hover"
+                                                                <!-- style="max-height: 600px; overflow-y: auto;" nmodify-->
+                                                                <table id="tblPpdIqcWhsPackaging" class="table table-sm table-bordered table-striped table-hover"
                                                                     style="width: 100%;">
                                                                     <thead>
                                                                         <tr>
@@ -332,12 +332,56 @@
     @section('js_content')
         <script type="text/javascript">
             $(document).ready(function () {
-                
+                tbl = {
+                    iqcInspection:'#tblIqcInspection',
+                    iqcPpdWhsPackaging:'#tblIqcPpdWhsPackaging',
+                    iqcWhsDetails :'#tblWhsDetails',
+                    iqcInspected:'#tblIqcInspected',
+                    iqcYeuDetails:'#tblIqcYeuDetails',
+
+                };
+
+                dataTable = {
+                    iqcInspection:'', //PPS Database
+                    iqcPpdWhsPackaging: '',
+                    iqcYeuDetails: '',
+                    iqcInspected: '',
+                    iqcYeuInspected: '',
+
+                };
+
+                form = {
+                    iqcInspection : $('#formSaveIqcInspection')
+                };
+
+                strDatTime = {
+                    dateToday : new Date(), // By default Date empty constructor give you Date.now
+                    currentDate : new Date().toJSON().slice(0, 10),
+                    currentTime : new Date().toLocaleTimeString('en-GB', { hour: "numeric",minute: "numeric"}),
+                    currentHours : new Date().getHours(),
+                    currentMinutes : new Date().getMinutes(),
+                }
+
+                arrCounter= {
+                    ctr : 0
+                }
+
+                btn = {
+                    removeModLotNumber : $('#btnRemoveModLotNumber'),
+                    saveComputation : $('#btnSaveComputation')
+                }
+
+                arrTableMod = {
+                    lotNo : [],
+                    modeOfDefects : [],
+                    lotQty : []
+                };
+
                 dataTable.iqcInspection = $(tbl.iqcInspection).DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
-                        url: "load_whs_transaction", //Rapid PPS WHS Transaction
+                        url: "load_whs_transaction", //Rapid Ts Warehouse Packaging
                         data: function (param){
                             param.lotNum = $('#txtSearchLotNum').val()
                         },
@@ -354,26 +398,24 @@
                     ],
                 });
 
-                dataTable.iqcYeuDetails = $(tbl.iqcYeuDetails).DataTable({
+                dataTable.iqcPpdWhsPackaging = $(tbl.iqcPpdWhsPackaging).DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
-                        url: "load_yeu_details", //Rapidx TS YEU Receiving
+                        url: "load_ppd_whs_packaging", //Rapid PPS WHS Transaction
                         data: function (param){
                             param.lotNum = $('#txtSearchLotNum').val()
                         },
                     },
                     fixedHeader: true,
                     "columns":[
-
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "status", orderable:false, searchable:false },
-                        { "data" : "invoice_no" },
-                        { "data" : "supplier" },
-                        { "data" : "item_code" },
-                        { "data" : "item_name" },
-                        { "data" : "lot_no" },
-
+                        { "data" : "InvoiceNo" },
+                        { "data" : "Supplier" },
+                        { "data" : "PartNumber" },
+                        { "data" : "MaterialType" },
+                        { "data" : "Lot_number" },
                     ],
                 });
 
@@ -409,44 +451,12 @@
                     ],
                 });
 
-                dataTable.iqcYeuInspected = $(tbl.iqcYeuInspected).DataTable({
-                    "processing" : true,
-                    "serverSide" : true,
-                    "ajax" : {
-                        url: "load_iqc_inspection",
-                        data: function (param){
-                            param.lotNum = $('#txtSearchLotNum').val()
-                            // param.categoryMaterial = $('#txtCategoryMaterial').val()
-                        },
-                    },
-                    fixedHeader: true,
-                    "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status", orderable:false, searchable:false },
-                        { "data" : "date_inspected" },
-                        { "data" : "time_inspected" }, //
-                        { "data" : "app_ctrl_no" }, //
-                        { "data": "supplier" },
-                        // { "data" : "classification" },//
-                        // { "data" : "family" },//
-                        // { "data" : "category" },//
-                        { "data" : "partcode" },
-                        { "data" : "partname" },
-                        { "data" : "lot_no" },
-                        { "data" : "total_lot_qty" },
-                        // { "data" : "aql" }, //
-                        { "data" : "qc_inspector" }, //
-                        { "data" : "created_at" },
-                        { "data" : "updated_at" },
-                    ],
-                });
-
-                getDropdownDetailsById($('#txtCategoryMaterial'),'iqc_category_material_id','37');
+                getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id','44');
 
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspected);
                 $(tbl.iqcYeuDetails).on('click','#btnEditIqcInspection', editYeuIqcDetails);
-                $(tbl.iqcYeuInspected).on('click','#btnEditIqcInspection', editIqcInspection);
+                $(tbl.iqcYeuInspected).on('click','#btnEditIqcInspection', editIqcInspected);
 
                 $('#btnLotNo').click(function (e) {
                     e.preventDefault();
@@ -517,23 +527,24 @@
 
                 $('a[href="#menu1"]').click(function (e) {
                     e.preventDefault();
-                    $('#btnModalLotNum').attr('el-btn-attr','whseTransaction')
+                    $('#btnModalLotNum').attr('el-btn-attr','ppdWhsDatabase')
                     $('#txtSearchLotNum').val('');
-                    let categoryMaterial = '37';
+                    let categoryMaterial = '44';
                     dataTable.iqcInspection.draw();
                     dataTable.iqcInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
-                    getDropdownDetailsById($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
+                    getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
                 });
 
                 $('a[href="#menu2"]').click(function (e) {
                     e.preventDefault();
                     $('#btnModalLotNum').attr('el-btn-attr','yeu')
                     $('#txtSearchLotNum').val('');
-                    let categoryMaterial = '38';
+                    let categoryMaterial = '45';
 
-                    dataTable.iqcYeuDetails.draw();
-                    dataTable.iqcYeuInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
-                    getDropdownDetailsById($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
+                    // dataTable.iqcYeuDetails.draw();
+                    dataTable.iqcPpdWhsPackaging.draw();
+                    // dataTable.iqcYeuInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
+                    getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
                 });
 
                 $('a[href="#menu1_1"]').click(function (e) {
@@ -545,22 +556,24 @@
                 $('a[href="#menu2_1"]').click(function (e) {
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
-                    let categoryMaterial = '37';
+                    let categoryMaterial = '44';
                     dataTable.iqcInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                 });
 
                 $('a[href="#menu1_2"]').click(function (e) {
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
-                    dataTable.iqcYeuDetails.draw();
+                    // dataTable.iqcYeuDetails.draw();
+                    dataTable.iqcPpdWhsPackaging.draw();
+
                 });
 
                 $('a[href="#menu2_2"]').click(function (e) {
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
                     console.log('menu2_2');
-                    let categoryMaterial = '38';
-                    dataTable.iqcYeuInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
+                    let categoryMaterial = '45';
+                    // dataTable.iqcYeuInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                 });
 
                 $('#modalLotNum').on('shown.bs.modal', function () {
@@ -594,16 +607,16 @@
                             $( modalId ).submit();
                         }else{
                             switch (modalId) {
-                                case 'whseTransaction':
+                                case 'ppdWhsDatabase':
                                         $('#txtSearchLotNum').val($(this).val());
                                         dataTable.iqcInspection.draw();
                                         dataTable.iqcInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                                     break;
-                                case 'yeu':
-                                        // alert('yeu')
+                                case 'ppdWhsPackaging':
+                                        // alert('ppdWhsPackaging')
                                         $('#txtSearchLotNum').val($(this).val());
-                                        dataTable.iqcYeuDetails.draw();
-                                        dataTable.iqcYeuInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
+                                        dataTable.iqcPpdWhsPackaging.draw();
+                                        // dataTable.iqcYeuInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                                     break;
 
                                 default:
@@ -624,9 +637,9 @@
                     }
                 });
 
-                dataTable.iqcYeuDetails.on('draw', function () {
+                dataTable.iqcPpdWhsPackaging.on('draw', function () {
                     if($('#txtSearchLotNum').val() != ""){
-                        $('#tblIqcYeuDetails tbody #btnEditIqcInspection').each(function(index, tr){
+                        $('#tblIqcPpdWhsPackaging tbody #btnEditIqcInspection').each(function(index, tr){
                             $(this).removeClass('d-none');
                         })
                     }

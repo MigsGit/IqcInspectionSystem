@@ -54,7 +54,7 @@
                                     <!-- Start Page Content -->
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">WHSE Transaction</a>
+                                            <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">WHS Packaging</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">YEU</a>
@@ -487,7 +487,7 @@
                     ],
                 });
 
-                getDropdownDetailsById($('#txtCategoryMaterial'),'iqc_category_material_id','37');
+                getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id','37');
 
                 $(tbl.iqcWhsReceivingPackaging).on('click','#btnEditIqcInspection', getTsWhsRecevingPackagingById);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspected);
@@ -568,7 +568,7 @@
                     let categoryMaterial = '37';
                     dataTable.iqcTsWhsPackaging.draw();
                     dataTable.iqcInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
-                    getDropdownDetailsById($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
+                    getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
                 });
 
                 $('a[href="#menu2"]').click(function (e) {
@@ -579,7 +579,7 @@
 
                     dataTable.iqcYeuDetails.draw();
                     dataTable.iqcYeuInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
-                    getDropdownDetailsById($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
+                    getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
                 });
 
                 $('a[href="#menu1_1"]').click(function (e) {

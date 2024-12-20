@@ -339,7 +339,7 @@
             }
         });
     }
-    const getDropdownDetailsById = function (cmb_element,iqc_inspection_column_ref,opt_value = null) {
+    const getDropdownDetailsByOptValue = function (cmb_element,iqc_inspection_column_ref,opt_value = null) {
         let opt = `<option value="" selected disabled>-Select-</option>`;
             opt += `<option value="N/A">N/A</option>`;
         cmb_element.empty().append(opt)
