@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\DB;
 use App\Models\IqcDropdownCategory;
 
 use App\Models\DropdownIqcTargetLar;
-
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Interfaces\ResourceInterface;
@@ -83,7 +82,7 @@ class IqcInspectionController extends Controller
         }
     }
 
-    
+
     public function loadYeuDetails(Request $request){
         if( isset( $request->lotNum ) ){
             $tbl_whs_trasanction = DB::connection('mysql_rapidx_yeu')
@@ -102,21 +101,21 @@ class IqcInspectionController extends Controller
         }
 
         return DataTables::of($tbl_whs_trasanction)
-        ->addColumn('action', function($row){
+        ->addColumn('rawAction', function($row){
             $result = '';
             $result .= '<center>';
             $result .= "<button class='btn btn-info btn-sm mr-1 d-none' yeu-receives-id='".$row->id."' id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
             $result .= '</center>';
             return $result;
         })
-        ->addColumn('status', function($row){
+        ->addColumn('rawStatus', function($row){
             $result = '';
             $result .= '<center>';
             $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
             $result .= '</center>';
             return $result;
         })
-        ->rawColumns(['action','status'])
+        ->rawColumns(['rawAction','rawStatus'])
         ->make(true);
         /*
             InvoiceNo
@@ -156,21 +155,21 @@ class IqcInspectionController extends Controller
             ');
         }
         return DataTables::of($tbl_whs_trasanction)
-        ->addColumn('action', function($row){
+        ->addColumn('rawAction', function($row){
             $result = '';
             $result .= '<center>';
             $result .= "<button class='btn btn-info btn-sm mr-1' style='display: none;' receiving-detail-id='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
             $result .= '</center>';
             return $result;
         })
-        ->addColumn('status', function($row){
+        ->addColumn('rawStatus', function($row){
             $result = '';
             $result .= '<center>';
             $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
             $result .= '</center>';
             return $result;
         })
-        ->rawColumns(['action','status'])
+        ->rawColumns(['rawAction','rawStatus'])
         ->make(true);
     }
 
@@ -202,7 +201,7 @@ class IqcInspectionController extends Controller
             ');
         }
         return DataTables::of($tbl_iqc_inspected)
-        ->addColumn('action', function($row){
+        ->addColumn('rawAction', function($row){
             $result = '';
             $result .= '<center>';
             // if($row->inspector == Auth::user()->id || Auth::user()->username =='mclegaspi'){ //nmodify
@@ -212,7 +211,7 @@ class IqcInspectionController extends Controller
             return $result;
         })
 
-        ->addColumn('status', function($row){
+        ->addColumn('rawStatus', function($row){
             $iqc_inspection_by_whs_trasaction_id = IqcInspection::where('whs_transaction_id',$row->whs_transaction_id)->get();
             $result = '';
             $backgound = '';
@@ -263,7 +262,7 @@ class IqcInspectionController extends Controller
             $result .= $qc_inspector[0]->name;
             return $result;
         })
-        ->rawColumns(['action','status','app_ctrl_no','qc_inspector','time_inspected',])
+        ->rawColumns(['rawAction','rawStatus','app_ctrl_no','qc_inspector','time_inspected',])
         ->make(true);
 
     }
@@ -294,9 +293,9 @@ class IqcInspectionController extends Controller
         return response()->json(['tbl_whs_trasanction'=>$tbl_whs_trasanction]);
     }
 
-    public function getTsWhsRecevingPackagingById(Request $request){
+    public function getTsWhsPackagingById(Request $request){
         try {
-            
+
             $query = $this->resourceInterface->readCustomEloquent( VwListOfReceived::class);
             $tsWhsReceivedPackaging = $query->where('pkid_received',$request->pkid_received)->get();
             $generateControlNumber = $this->generateControlNumber();
@@ -372,7 +371,7 @@ class IqcInspectionController extends Controller
                 // if($request->receiving_detail_id != 0){
                 //     ReceivingDetails::where('id', $request->receiving_detail_id)
                 //     ->update([
-                //         'status' => 2,
+                //         'rawStatus' => 2,
                 //     ]);
                 // }
                 $iqc_inspections_id = $create_iqc_inspection_id;
@@ -475,44 +474,7 @@ class IqcInspectionController extends Controller
         }
     }
     //categoryMaterial
-    public function generateControlNumber(){
-        date_default_timezone_set('Asia/Manila');
-        $query = $this->resourceInterface->readCustomEloquent(IqcInspection::class);
-        $iqc_inspection = $query->orderBy('created_at','desc')->whereNull('deleted_at')->limit(1)->get(['app_no_extension','created_at']);
-
-        $rapidx_employee_number = session('rapidx_employee_number');
-
-        $hris_data = DB::connection('mysql_systemone_hris')
-        ->select(" SELECT division.Division
-            FROM tbl_EmployeeInfo employee_info
-            LEFT JOIN tbl_Division division on division.pkid = employee_info.fkDivision
-            WHERE EmpNo = '$rapidx_employee_number'
-        ");
-
-
-        if(count($hris_data) > 0){
-            $division = ($hris_data[0]->Division == "PPS" ||  $hris_data[0]->Division == "PPD") ? "PPD" :  $hris_data[0]->Division;
-        }else{
-            $subcon_data = DB::connection('mysql_systemone_subcon')
-            ->select("SELECT division.Division
-                FROM tbl_EmployeeInfo employee_info
-                LEFT JOIN tbl_Division division on division.pkid = employee_info.fkDivision
-                WHERE EmpNo = '$rapidx_employee_number'
-             ");
-            $division = ($subcon_data[0]->Division == "PPS" || $subcon_data[0]->Division == "PPD") ? "PPD" :  $hris_data[0]->Division;
-        }
-
-        if(date_format($iqc_inspection[0]->created_at,'Y-m-d') != date('Y-m-d')){
-            return [
-                'app_no' => $division."-".date('y').date('m').'-',
-                'app_no_extension'=>"001"
-            ];
-        }
-        return [
-            'app_no' => $division."-".date('y').date('m').'-',
-            'app_no_extension'=> sprintf("%03d", $iqc_inspection[0]->app_no_extension + 1)
-        ];
-    }
+    
     public function Slug($string, $slug = '-', $extra = null)
 	{
 		return strtolower(trim(preg_replace('~[^0-9a-z' . preg_quote($extra, '~') . ']+~i', $slug, $this->Unaccent($string)), $slug));

@@ -5,9 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
+use App\Models\VwPpdListOfReceived;
+use App\Interfaces\ResourceInterface;
 
 class PpdIqcInspectionController extends Controller
 {
+    protected $resourceInterface;
+    public function __construct(ResourceInterface $resourceInterface) {
+        $this->resourceInterface = $resourceInterface;
+    }
     public function loadWhsTransaction(Request $request)
     { //RAPID WHS Whs Transaction
         /*  Get the data only with whs_transaction.inspection_class = 1 - For Inspection, while
@@ -37,21 +43,21 @@ class PpdIqcInspectionController extends Controller
         }
 
         return DataTables::of($tbl_whs_trasanction)
-        ->addColumn('action', function($row){
+        ->addColumn('rawAction', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1 d-none' whs-trasaction-id='".$row->whs_transaction_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= "<button class='btn btn-info btn-sm mr-1 d-none' whs-trasaction-id='".$row->pkid."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
             $result .= '</center>';
             return $result;
         })
-        ->addColumn('status', function($row){
+        ->addColumn('rawStatus', function($row){
             $result = '';
             $result .= '<center>';
             $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
             $result .= '</center>';
             return $result;
         })
-        ->rawColumns(['action','status'])
+        ->rawColumns(['rawAction','rawStatus'])
         ->make(true);
         /*
             InvoiceNo
@@ -123,6 +129,21 @@ class PpdIqcInspectionController extends Controller
             WHERE whs_transaction.pkid = '.$request->whs_transaction_id.'
             LIMIT 0,1
         ');
+    }
+    public function getPpdWhsPackagingById(Request $request){
+        try {
+
+            $query = $this->resourceInterface->readCustomEloquent( VwPpdListOfReceived::class);
+            $ppdWhsReceivedPackaging = $query->where('pkid_received',$request->pkid_received)->get();
+            $generateControlNumber = $this->generateControlNumber();
+
+            return response()->json(['is_success' => 'true',
+                'ppdWhsReceivedPackaging' => $ppdWhsReceivedPackaging[0],
+                'generateControlNumber' => $generateControlNumber
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
     }
 
 

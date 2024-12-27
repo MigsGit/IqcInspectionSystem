@@ -1,6 +1,6 @@
 
 // $(document).ready(function () {
-    
+
     const editIqcInspected = function () {
         let iqcInpectionId = $(this).attr('iqc-inspection-id')
         form.iqcInspection.find('input').removeClass('is-valid');
@@ -39,7 +39,7 @@
         let elFormId = form.iqcInspection;
         call_ajax(data, 'get_yeu_receiving_by_id', function(response){
             $('#modalSaveIqcInspection').modal('show');
-        
+
             let iqcInspection = response['iqcInspection'][0];
             let generateControlNumber = response['generateControlNumber'];
             // return;
@@ -111,7 +111,7 @@
         },elFormId)
     }
 
-    const getTsWhsRecevingPackagingById = function () {
+    const getTsWhsPackagingById = function () {
         getDieNo();
         form.iqcInspection.find('input').removeClass('is-valid');
         form.iqcInspection.find('input').removeClass('is-invalid');
@@ -131,10 +131,10 @@
             "pkid_received"        : pkidReceived,
         }
 
-        call_ajax(data, 'get_ts_whs_receving_packaging_by_id', function(response){
-            
+        call_ajax(data, 'get_ts_whs_packaging_by_id', function(response){
+
             $('#modalSaveIqcInspection').modal('show')
-        
+
             form.iqcInspection.find('select').val(2);
 
             let tsWhsReceivedPackaging = response.tsWhsReceivedPackaging;

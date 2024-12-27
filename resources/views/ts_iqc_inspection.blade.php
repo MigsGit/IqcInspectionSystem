@@ -378,7 +378,7 @@
                     lotQty : []
                 };
 
-            
+
                 dataTable.iqcTsWhsPackaging = $(tbl.iqcWhsReceivingPackaging).DataTable({
                     "processing" : true,
                     "serverSide" : true,
@@ -412,8 +412,8 @@
                     fixedHeader: true,
                     "columns":[
 
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status", orderable:false, searchable:false },
+                        { "data" : "rawAction", orderable:false, searchable:false },
+                        { "data" : "rawStatus" orderable:false, searchable:false },
                         { "data" : "invoice_no" },
                         { "data" : "supplier" },
                         { "data" : "item_code" },
@@ -435,8 +435,8 @@
                     },
                     fixedHeader: true,
                     "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status", orderable:false, searchable:false },
+                        { "data" : "rawAction", orderable:false, searchable:false },
+                        { "data" : "rawStatus" orderable:false, searchable:false },
                         { "data" : "date_inspected" },
                         { "data" : "time_inspected" }, //
                         { "data" : "app_ctrl_no" }, //
@@ -467,8 +467,8 @@
                     },
                     fixedHeader: true,
                     "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status", orderable:false, searchable:false },
+                        { "data" : "rawAction", orderable:false, searchable:false },
+                        { "data" : "rawStatus" orderable:false, searchable:false },
                         { "data" : "date_inspected" },
                         { "data" : "time_inspected" }, //
                         { "data" : "app_ctrl_no" }, //
@@ -489,7 +489,7 @@
 
                 getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id','37');
 
-                $(tbl.iqcWhsReceivingPackaging).on('click','#btnEditIqcInspection', getTsWhsRecevingPackagingById);
+                $(tbl.iqcWhsReceivingPackaging).on('click','#btnEditIqcInspection', getTsWhsPackagingById);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspected);
                 $(tbl.iqcYeuDetails).on('click','#btnEditIqcInspection', editYeuIqcDetails);
                 $(tbl.iqcYeuInspected).on('click','#btnEditIqcInspection', editIqcInspected);
@@ -713,7 +713,7 @@
                     }
                     call_ajax(data,'get_sampling_size_by_sampling_plan',function(response){
                         console.log(response.sample_size);
-                        
+
                         form.iqcInspection.find('#sampling_size').val(response.sample_size)
                         // form.iqcInspection.find('#sampling_size').val(tblWhsTrasanction['sampling_size']);
                     })
