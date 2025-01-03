@@ -8,18 +8,24 @@ use App\Models\IqcInspection;
 
 use App\Models\PpdIqcInspection;
 use Yajra\DataTables\DataTables;
+use App\Interfaces\FileInterface;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\CommonInterface;
 use App\Models\VwPpdListOfReceived;
+use App\Models\PpdIqcInspectionsMod;
 use App\Interfaces\ResourceInterface;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\PpdIqcInspectionRequest;
 
 class PpdIqcInspectionController extends Controller
 {
     protected $resourceInterface;
     protected $commonInterface;
-    public function __construct(ResourceInterface $resourceInterface,CommonInterface $commonInterface) {
+    protected $fileInterface;
+    public function __construct(ResourceInterface $resourceInterface,CommonInterface $commonInterface,FileInterface $fileInterface) {
         $this->resourceInterface = $resourceInterface;
         $this->commonInterface = $commonInterface;
+        $this->fileInterface = $fileInterface;
     }
 
     public function loadPpdIqcInspection(Request $request){
@@ -62,35 +68,28 @@ class PpdIqcInspectionController extends Controller
             })
 
             ->addColumn('rawStatus', function($row){
-                $iqc_inspection_by_whs_trasaction_id = IqcInspection::where('whs_transaction_id',$row->whs_transaction_id)->get();
+                // return $row->judgement;
                 $result = '';
                 $backgound = '';
                 $judgement = '';
                 $result .= '<center>';
+                switch ($row->judgement) {
+                    case 1:
+                        $judgement = 'Accepted';
+                        $backgound = 'bg-success';
 
-                if( count($iqc_inspection_by_whs_trasaction_id) != 0 ){
-                    foreach ($iqc_inspection_by_whs_trasaction_id as $key => $value){
-                        switch ($value['judgement']) {
-                            case 1:
-                                $judgement = 'Accepted';
-                                $backgound = 'bg-success';
+                        break;
+                    case 2:
+                        $judgement = 'Reject';
+                        $backgound = 'bg-danger';
+                        break;
 
-                                break;
-                            case 2:
-                                $judgement = 'Reject';
-                                $backgound = 'bg-danger';
-                                break;
-
-                            default:
-                                $judgement = 'On-going';
-                                $backgound = 'bg-primary';
-                                break;
-                        }
-                    }
-                    $result .= '<span class="badge rounded-pill '.$backgound.' ">'.$judgement.'</span>';
-                }else{
-                    $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
+                    default:
+                        $judgement = 'On-going';
+                        $backgound = 'bg-primary';
+                        break;
                 }
+                $result .= '<span class="badge rounded-pill '.$backgound.' ">'.$judgement.'</span>';
                 $result .= '</center>';
                 return $result;
             })
@@ -234,7 +233,7 @@ class PpdIqcInspectionController extends Controller
             WHERE whs_transaction.pkid = '.$request->whs_transaction_id.'
             LIMIT 0,1
         ');
-        $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class);
+        $generateControlNumber = $this->commonInterface->generateControlNumber(PpdIqcInspection::class);
         return response()->json(['is_success' => 'true',
         'tblWhsTrasanction' => $tblWhsTrasanction[0],
         'generateControlNumber' => $generateControlNumber
@@ -252,7 +251,7 @@ class PpdIqcInspectionController extends Controller
                 'partname as partname',
                 'supplier as supplier',
             ]);
-            $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class);
+            $generateControlNumber = $this->commonInterface->generateControlNumber(PpdIqcInspection::class);
 
             return response()->json(['is_success' => 'true',
                 'ppdWhsReceivedPackaging' => $ppdWhsReceivedPackaging[0],
@@ -273,6 +272,100 @@ class PpdIqcInspectionController extends Controller
             return response()->json(['is_success' => 'true','tbl_whs_trasanction'=>$tbl_whs_trasanction]);
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
+
+    public function savePpdIqcInspection(PpdIqcInspectionRequest $request){
+        date_default_timezone_set('Asia/Manila');
+        DB::beginTransaction();
+        try {
+            $mod_lot_no = explode(',',$request->lotNo);
+            $mod_defects = explode(',',$request->modeOfDefects);
+            $mod_lot_qty = explode(',',$request->lotQty);
+            $arr_sum_mod_lot_qty = array_sum($mod_lot_qty);
+
+            if(isset($request->iqc_inspection_id)){ //Edit
+                PpdIqcInspection::where('id', $request->iqc_inspection_id)->update($request->validated()); //PO and packinglist number
+
+                PpdIqcInspection::where('id', $request->iqc_inspection_id)
+                ->update([
+                    'no_of_defects' => $arr_sum_mod_lot_qty,
+                    'remarks' => $request->remarks,
+                    'inspector' => session('rapidx_user_id'),
+                ]);
+
+                $iqc_inspections_id = $request->iqc_inspection_id;
+            }else{ //Add
+                /* All required fields is the $request validated, check the column is IqcInspectionRequest
+                    NOTE: the name of fields must be match in column name
+                */
+                $create_iqc_inspection_id = PpdIqcInspection::insertGetId($request->validated());
+                /*  All not required fields should to be inside the update method below
+                    NOTE: the name of fields must be match in column name
+                */
+                PpdIqcInspection::where('id', $create_iqc_inspection_id)
+                ->update([
+                    'no_of_defects' => $arr_sum_mod_lot_qty,
+                    'remarks' => $request->remarks,
+                    'inspector' => session('rapidx_user_id'),
+                ]);
+
+                /* Update rapid/db_pps TblWarehouseTransaction, set inspection_class to 3 */
+                // if($request->whs_transaction_id != 0){
+                //     TblWarehouseTransaction::where('pkid', $request->whs_transaction_id)
+                //     ->update([
+                //         'inspection_class' => 3,
+                //     ]);
+                // }
+                // /* Update status ReceivingDetails into 2*/
+                // if($request->receiving_detail_id != 0){
+                //     ReceivingDetails::where('id', $request->receiving_detail_id)
+                //     ->update([
+                //         'rawStatus' => 2,
+                //     ]);
+                // }
+                $iqc_inspections_id = $create_iqc_inspection_id;
+            }
+            /* Uploading of file if checked & iqc_coc_file is exist*/
+            if(isset($request->iqc_coc_file) ){
+                $original_filename = $request->file('iqc_coc_file')->getClientOriginalName(); //'/etc#hosts/@Álix Ãxel likes - beer?!.pdf';
+                $filtered_filename = $this->fileInterface->Slug($original_filename, '_', '.');
+                // $filtered_filename = '_'.$this->Slug($original_filename, '_', '.');	 // _etc_hosts_alix_axel_likes_beer.pdf
+                Storage::putFileAs('public/ppd_iqc_inspection_coc', $request->iqc_coc_file,  $iqc_inspections_id . $filtered_filename);
+
+                PpdIqcInspection::where('id', $iqc_inspections_id)
+                ->update([
+                    'iqc_coc_file' => $filtered_filename,
+                    'iqc_coc_file_name' => $original_filename
+                ]);
+            }
+
+            /* Get iqc_inspections_id, delete the previous MOD then  save new MOD*/
+            if(isset($request->modeOfDefects)){
+                PpdIqcInspectionsMod::where('ppd_iqc_inspection_id', $iqc_inspections_id)->update([
+                    'deleted_at' => date('Y-m-d H:i:s')
+                ]);
+                foreach ( $mod_lot_no as $key => $value) {
+                    PpdIqcInspectionsMod::insert([
+                        'ppd_iqc_inspection_id'    => $iqc_inspections_id,
+                        'lot_no'                => $mod_lot_no[$key],
+                        'mode_of_defects'       => $mod_defects[$key],
+                        'quantity'              => $mod_lot_qty[$key],
+                        'created_at'            => date('Y-m-d H:i:s')
+                    ]);
+                }
+            }else{
+                if(PpdIqcInspectionsMod::where('ppd_iqc_inspection_id', $iqc_inspections_id)->exists()){
+                    PpdIqcInspectionsMod::where('ppd_iqc_inspection_id', $iqc_inspections_id)->update([
+                        'deleted_at' => date('Y-m-d H:i:s')
+                    ]);
+                }
+            }
+            DB::commit();
+            return response()->json( [ 'result' => 1 ] );
+        } catch (\Throwable $th) {
+            DB::rollback();
+            throw $th;
         }
     }
 

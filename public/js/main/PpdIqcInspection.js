@@ -17,7 +17,7 @@
             "whs_transaction_id"        : whsTransactionId,
 
         }
-        let elFormId = form.iqcInspection;
+
         call_ajax(data, 'get_whs_receiving_by_id', function(response){
             alert('editReceivingDetails')
             $('#modalSaveIqcInspection').modal('show');
@@ -85,12 +85,17 @@
             /*Mode of Defects Modal*/
             $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
             $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
-            for (let i = 0; i < response.length; i++) {
+            console.log('restart',response);
+            for (let i = 0; i < 1; i++) {
                 let optLotNo = `<option value="${lotNo}">${lotNo}</option>`;
                 $('#mod_lot_no').append(optLotNo);
+                console.log('arrlotNo',lotNo);
+                
             }
+            console.log('lotNo',lotNo);
+
             console.log('whsarrTableMod',arrTableMod);
-        },elFormId)
+        },form.iqcInspection)
 
     }
 
@@ -113,7 +118,6 @@
         }
         call_ajax(data, 'get_ppd_whs_packaging_by_id', function(response){
             $('#modalSaveIqcInspection').modal('show')
-            form.iqcInspection.find('select').val(2);
             let ppdWhsReceiving = response.ppdWhsReceivedPackaging;
             let partCode =ppdWhsReceiving['partcode'];
             let partName =ppdWhsReceiving['partname'];
@@ -201,7 +205,7 @@
 
             let whsTransactionId = ( tblWhsTrasanction['whs_transaction_id'] != undefined || tblWhsTrasanction['whs_transaction_id'] != null) ? tblWhsTrasanction['whs_transaction_id'] : 0;
             let iqcInspectionId = tblWhsTrasanction['iqc_inspection_id'];
-            let iqcInspectionsMods = tblWhsTrasanction.iqc_inspections_mods;
+            let iqcInspectionsMods = tblWhsTrasanction.ppd_iqc_inspections_mods;
             let lotAccepted = tblWhsTrasanction['accepted'];
             let iqcCocFile = tblWhsTrasanction['iqc_coc_file'];
 
@@ -262,6 +266,8 @@
             /* Display the Mode of Defects Button */
             divDisplayNoneClass(form.iqcInspection,lotAccepted);
 
+            console.log('iqcInspectionsMods',iqcInspectionsMods);
+            
             $('#tblModeOfDefect tbody').empty();
             arrTableMod.lotNo = [];
             arrTableMod.modeOfDefects = [];
@@ -292,7 +298,7 @@
 
             $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
             $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
-            for (let i = 0; i < response.length; i++) {
+            for (let i = 0; i < 1; i++) {
                 let optLotNo = `<option value="${lotNo}">${lotNo}</option>`;
                 $('#mod_lot_no').append(optLotNo);
             }

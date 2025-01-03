@@ -332,13 +332,7 @@
     @section('js_content')
         <script type="text/javascript">
             $(document).ready(function () {
-                // document.addEventListener("DOMContentLoaded", function () {
-                // document.addEventListener('hide.bs.modal', function (event) {
-                //     if (document.activeElement) {
-                //         document.activeElement.blur();
-                //     }
-                // });
-                // });
+                
                 tbl = {
                     iqcInspection:'#tblIqcInspection',
                     iqcPpdWhsPackaging:'#tblIqcPpdWhsPackaging',
@@ -488,7 +482,79 @@
                         { "data" : "updated_at" },
                     ],
                 });
-
+                const savePpdIqcInspection = function (){ //amodify
+                    let serialized_data = new FormData(form.iqcInspection[0]);
+                        serialized_data.append('lotNo',arrTableMod.lotNo);
+                        serialized_data.append('modeOfDefects',arrTableMod.modeOfDefects);
+                        serialized_data.append('lotQty',arrTableMod.lotQty);
+                    $.ajax({
+                        type: "POST",
+                        url: "save_ppd_iqc_inspection",
+                        data: serialized_data,
+                        dataType: "json",
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        beforeSend: function(){
+                            $('#modal-loading').modal('show');
+                        },
+                        success: function (response) {
+                            $('#modal-loading').modal('hide');
+                            if (response['result'] === 1){
+                                $('#modalSaveIqcInspection').modal('hide');
+                                dataTable.iqcInspection.draw();
+                                dataTable.iqcPpdWhsPackagingInspected.draw();
+                                Swal.fire({
+                                    position: "center",
+                                    icon: "success",
+                                    title: "Your work has been saved",
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                $('#modalScanQRSave').modal('hide');
+                                form.iqcInspection[0].reset();
+                            }
+                        },error: function (data, xhr, status){
+                            let errors = data.responseJSON.errors ;
+                            toastr.error(`Saving Failed, Please fill up all required fields`);
+                            $('#modal-loading').modal('hide');
+                            if(data.status === 422){
+                                errorHandler(errors.whs_transaction_id,form.iqcInspection.find('#whs_transaction_id'));
+                                errorHandler(errors.iqc_category_material_id,form.iqcInspection.find('#iqc_category_material_id'));
+                                errorHandler(errors.app_no,form.iqcInspection.find('#app_no'));
+                                errorHandler(errors.partcode,form.iqcInspection.find('#partcode'));
+                                errorHandler(errors.partname,form.iqcInspection.find('#partname'));
+                                errorHandler(errors.supplier,form.iqcInspection.find('#supplier'));
+                                errorHandler(errors.total_lot_qty,form.iqcInspection.find('#total_lot_qty'));
+                                errorHandler(errors.accept,form.iqcInspection.find('#accept'));
+                                errorHandler(errors.family,form.iqcInspection.find('#family'));
+                                errorHandler(errors.app_no_extension,form.iqcInspection.find('#app_no_extension'));
+                                errorHandler(errors.die_no,form.iqcInspection.find('#die_no'));
+                                errorHandler(errors.lot_no,form.iqcInspection.find('#lot_no'));
+                                errorHandler(errors.classification,form.iqcInspection.find('#classification'));
+                                errorHandler(errors.type_of_inspection,form.iqcInspection.find('#type_of_inspection'));
+                                errorHandler(errors.severity_of_inspection,form.iqcInspection.find('#severity_of_inspection'));
+                                errorHandler(errors.inspection_lvl,form.iqcInspection.find('#inspection_lvl'));
+                                errorHandler(errors.aql,form.iqcInspection.find('#aql'));
+                                errorHandler(errors.accept,form.iqcInspection.find('#accept'));
+                                errorHandler(errors.reject,form.iqcInspection.find('#reject'));
+                                errorHandler(errors.shift,form.iqcInspection.find('#shift'));
+                                errorHandler(errors.date_inspected,form.iqcInspection.find('#date_inspected'));
+                                errorHandler(errors.time_ins_from,form.iqcInspection.find('#time_ins_from'));
+                                errorHandler(errors.time_ins_to,form.iqcInspection.find('#time_ins_to'));
+                                errorHandler(errors.inspector,form.iqcInspection.find('#inspector'));
+                                errorHandler(errors.submission,form.iqcInspection.find('#submission'));
+                                errorHandler(errors.category,form.iqcInspection.find('#category'));
+                                errorHandler(errors.sampling_size,form.iqcInspection.find('#sampling_size'));
+                                errorHandler(errors.lot_inspected,form.iqcInspection.find('#lot_inspected'));
+                                errorHandler(errors.accepted,form.iqcInspection.find('#accepted'));
+                                errorHandler(errors.judgement,form.iqcInspection.find('#judgement'));
+                            }else{
+                                toastr.error(`Error: ${data.status}`);
+                            }
+                        }
+                    });
+                }
                 getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id','44');
 
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
@@ -714,6 +780,36 @@
                     }
                 });
 
+                form.iqcInspection.find('#severity_of_inspection').change(function (e) {
+                    e.preventDefault();
+                    let severityOfInspection = form.iqcInspection.find(this).val();
+                    let inspectionLvl = form.iqcInspection.find('#inspection_lvl').val();
+                    let aql = form.iqcInspection.find('#aql').val();
+                    let totalLotQty = form.iqcInspection.find('#total_lot_qty').val();
+
+                    getSamplingSizeBySamplingPlan (severityOfInspection,inspectionLvl,aql,totalLotQty)
+                });
+
+                form.iqcInspection.find('#inspection_lvl').change(function (e) {
+                    e.preventDefault();
+                    let severityOfInspection = form.iqcInspection.find('#severity_of_inspection').val();
+                    let inspectionLvl = form.iqcInspection.find(this).val();
+                    let aql = form.iqcInspection.find('#aql').val();
+                    let totalLotQty = form.iqcInspection.find('#total_lot_qty').val();
+
+                    getSamplingSizeBySamplingPlan (severityOfInspection,inspectionLvl,aql,totalLotQty)
+                });
+
+                form.iqcInspection.find('#aql').change(function (e) {
+                    e.preventDefault();
+                    let severityOfInspection = form.iqcInspection.find('#severity_of_inspection').val();
+                    let inspectionLvl = form.iqcInspection.find('#inspection_lvl').val();
+                    let aql = form.iqcInspection.find(this).val();
+                    let totalLotQty = form.iqcInspection.find('#total_lot_qty').val();
+
+                    getSamplingSizeBySamplingPlan (severityOfInspection,inspectionLvl,aql,totalLotQty)
+                });
+
                 $('#txtScanUserId').on('keyup', function(e){
                     if(e.keyCode == 13){
                         // console.log($(this).val());
@@ -722,7 +818,7 @@
                                 // console.log('true');
                                 // submitProdData($(this).val());
                                 // console.log('', $('#txtKeepSample1').val());
-                                saveIqcInspection();
+                                savePpdIqcInspection();
                             }
                             else{ // Error Handler
                                 toastr.error('User not authorize!');
@@ -735,7 +831,7 @@
                 /*Submit*/
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
-                    saveIqcInspection();
+                    savePpdIqcInspection();
                     // $('#modalScanQRSave').modal('show');
                 });
                 form.iqcInspection.find('select').val(1);
