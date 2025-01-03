@@ -3,17 +3,16 @@
 namespace App\Models;
 
 use App\Models\User;
-use App\Models\DropdownIqcAql;
 use App\Models\IqcInspectionsMod;
-use App\Models\TblWarehouseTransaction;
-use App\Models\DropdownIqcInspectionLevel;
+use App\Models\PpdIqcInspectionMod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class IqcInspection extends Model
+class PpdIqcInspection extends Model
 {
+
     protected $connection = 'mysql';
-    protected $table = 'ts_iqc_inspections';
+    protected $table = 'ppd_iqc_inspections';
     protected $fillable = [
         'whs_transaction_id',
         'receiving_detail_id',
@@ -53,15 +52,17 @@ class IqcInspection extends Model
         // 'iqc_inspection_id',
     ];
 
-    public function IqcInspectionsMods(){
-        return $this->hasMany(IqcInspectionsMod::class)->whereNull('deleted_at');
+    public function ppd_iqc_inspections_mods(){
+        return $this->hasMany(PpdIqcInspectionMod::class)->whereNull('deleted_at');
     }
 
     public function user_iqc(){
         return $this->hasOne(User::class, 'id', 'inspector');
     }
 
-    public function iqc_inspection_mods_info(){
-        return $this->hasMany(IqcInspectionsMod::class, 'iqc_inspection_id', 'id')->whereNull('deleted_at');
+    public function ppd_iqc_inspection_mods_info(){
+        return $this->hasMany(PpdIqcInspectionMod::class, 'iqc_inspection_id', 'id')->whereNull('deleted_at');
     }
+
+
 }

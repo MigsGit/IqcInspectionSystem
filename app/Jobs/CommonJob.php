@@ -4,13 +4,20 @@ namespace App\Jobs;
 
 use App\Models\IqcInspection;
 use Illuminate\Support\Facades\DB;
+use App\Interfaces\CommonInterface;
+use App\Interfaces\ResourceInterface;
 
 
-class CommonJob implements ShouldQueue
+class CommonJob implements CommonInterface
 {
-    public function generateControlNumber(){
+
+    protected $resourceInterface;
+    public function __construct(ResourceInterface $resourceInterface){
+        $this->resourceInterface = $resourceInterface;
+    }
+    public function generateControlNumber($model){
         date_default_timezone_set('Asia/Manila');
-        $query = $this->resourceInterface->readCustomEloquent(IqcInspection::class);
+        $query = $this->resourceInterface->readCustomEloquent($model);
         $iqc_inspection = $query->orderBy('created_at','desc')->whereNull('deleted_at')->limit(1)->get(['app_no_extension','created_at']);
 
         $rapidx_employee_number = session('rapidx_employee_number');

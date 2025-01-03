@@ -2,14 +2,15 @@
 
 namespace App\Interfaces;
 
-interface FileInterface
+interface CommonInterface
 {
     /**
      * Create a interface
      *
      * @return void
      */
-    public function slug($string, $slug, $extra);
+    public function generateControlNumber($model);
+
 
 
 }

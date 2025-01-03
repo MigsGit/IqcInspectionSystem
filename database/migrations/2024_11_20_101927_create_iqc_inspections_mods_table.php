@@ -15,7 +15,7 @@ class CreateIqcInspectionsModsTable extends Migration
     {
         Schema::create('iqc_inspections_mods', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('iqc_inspection_id')->references('id')->on('ts_iqc_inspections')->comment ='id from ts_iqc_inspections';
+            $table->foreignId('ppd_iqc_inspection_id')->references('id')->on('ts_iqc_inspections')->comment ='id from ts_iqc_inspections';
             $table->string('lot_no')->nullable();
             $table->string('mode_of_defects')->nullable();
             $table->integer('quantity')->nullable();

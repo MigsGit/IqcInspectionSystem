@@ -19,7 +19,6 @@
     }
 
     const editYeuIqcDetails = function () {
-        //TODO: Get YeuDetail
         getDieNo();
         form.iqcInspection.find('input').removeClass('is-valid');
         form.iqcInspection.find('input').removeClass('is-invalid');
@@ -50,7 +49,6 @@
             let lotQty = iqcInspection['qty'];
             let invoiceNo = iqcInspection['invoice_no'];
             let iqcCocFile = iqcInspection['iqc_coc_file'];
-
             let whsTransactionId = ( iqcInspection['id'] != undefined || iqcInspection['id'] != null) ? iqcInspection['id'] : 0;
             let lotAccepted = iqcInspection['accepted'];
             /* Visual Inspection */
@@ -74,13 +72,13 @@
             form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
             form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
             form.iqcInspection.find('#isUploadCoc').prop('required',true);
-            getDropdownDetailsById(form.iqcInspection.find('#aql'),'aql');
-            getDropdownDetailsById(form.iqcInspection.find('#family'),'family');
-            getDropdownDetailsById(form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');
-            getDropdownDetailsById(form.iqcInspection.find('#target_dppm'),'target_dppm');
-            getDropdownDetailsById(form.iqcInspection.find('#target_lar'),'target_lar');
-            getDropdownDetailsById(form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection');
-            getDropdownDetailsById($('#mode_of_defect'),'mode_of_defects');
+            getDropdownDetailsByOptValue(form.iqcInspection.find('#aql'),'aql');
+            getDropdownDetailsByOptValue(form.iqcInspection.find('#family'),'family');
+            getDropdownDetailsByOptValue(form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');
+            getDropdownDetailsByOptValue(form.iqcInspection.find('#target_dppm'),'target_dppm');
+            getDropdownDetailsByOptValue(form.iqcInspection.find('#target_lar'),'target_lar');
+            getDropdownDetailsByOptValue(form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection');
+            getDropdownDetailsByOptValue($('#mode_of_defect'),'mode_of_defects');
 
 
             if( iqcCocFile === undefined || iqcCocFile === null ){
@@ -170,15 +168,15 @@
             form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
             form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
             form.iqcInspection.find('#isUploadCoc').prop('required',true);
-            getDropdownDetailsById(form.iqcInspection.find('#aql'),'aql');
-            getDropdownDetailsById(form.iqcInspection.find('#family'),'family');
-            getDropdownDetailsById(form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');
-            getDropdownDetailsById(form.iqcInspection.find('#target_dppm'),'target_dppm');
-            getDropdownDetailsById(form.iqcInspection.find('#target_lar'),'target_lar');
-            getDropdownDetailsById(form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection');
-            getDropdownDetailsById($('#mode_of_defect'),'mode_of_defects');
+            getDropdownDetailsByOptValue(form.iqcInspection.find('#aql'),'aql');
+            getDropdownDetailsByOptValue(form.iqcInspection.find('#family'),'family');
+            getDropdownDetailsByOptValue(form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');
+            getDropdownDetailsByOptValue(form.iqcInspection.find('#target_dppm'),'target_dppm');
+            getDropdownDetailsByOptValue(form.iqcInspection.find('#target_lar'),'target_lar');
+            getDropdownDetailsByOptValue(form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection');
+            getDropdownDetailsByOptValue($('#mode_of_defect'),'mode_of_defects');
 
-            return;
+            // return;
             if( iqcCocFile === undefined || iqcCocFile === null ){
                 form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
                 form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
@@ -275,13 +273,13 @@
                 form.iqcInspection.find('#iqc_coc_file').val('');
                 form.iqcInspection.find('#isUploadCoc').prop('required',false);
 
-                getDropdownDetailsById(form.iqcInspection.find('#aql'),'aql',tblWhsTrasanction['aql'])
-                getDropdownDetailsById(form.iqcInspection.find('#family'),'family',tblWhsTrasanction['family'])
-                getDropdownDetailsById(form.iqcInspection.find('#inspection_lvl'),'inspection_lvl',tblWhsTrasanction['inspection_lvl'])
-                getDropdownDetailsById(form.iqcInspection.find('#target_dppm'),'target_dppm');
-                getDropdownDetailsById(form.iqcInspection.find('#target_lar'),'target_lar');
-                getDropdownDetailsById(form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection',tblWhsTrasanction['severity_of_inspection']);
-                getDropdownDetailsById($('#mode_of_defect'),'mode_of_defects',tblWhsTrasanction['mode_of_defects']);
+                getDropdownDetailsByOptValue(form.iqcInspection.find('#aql'),'aql',tblWhsTrasanction['aql'])
+                getDropdownDetailsByOptValue(form.iqcInspection.find('#family'),'family',tblWhsTrasanction['family'])
+                getDropdownDetailsByOptValue(form.iqcInspection.find('#inspection_lvl'),'inspection_lvl',tblWhsTrasanction['inspection_lvl'])
+                getDropdownDetailsByOptValue(form.iqcInspection.find('#target_dppm'),'target_dppm');
+                getDropdownDetailsByOptValue(form.iqcInspection.find('#target_lar'),'target_lar');
+                getDropdownDetailsByOptValue(form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection',tblWhsTrasanction['severity_of_inspection']);
+                getDropdownDetailsByOptValue($('#mode_of_defect'),'mode_of_defects',tblWhsTrasanction['mode_of_defects']);
 
 
                 if( iqcCocFile === undefined || iqcCocFile === null ){
@@ -339,6 +337,7 @@
             }
         });
     }
+
     const getDropdownDetailsByOptValue = function (cmb_element,iqc_inspection_column_ref,opt_value = null) {
         let opt = `<option value="" selected disabled>-Select-</option>`;
             opt += `<option value="N/A">N/A</option>`;
@@ -355,7 +354,6 @@
                     cmb_element.val(value[0]);
                     return;
                 }
-                console.log('value',value);
                 for (let i = 0; i < id.length; i++) {
                     let opt = `<option value="${id[i]}">${value[i]}</option>`;
                     cmb_element.append(opt);

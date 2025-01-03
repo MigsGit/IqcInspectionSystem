@@ -413,7 +413,7 @@
                     "columns":[
 
                         { "data" : "rawAction", orderable:false, searchable:false },
-                        { "data" : "rawStatus" orderable:false, searchable:false },
+                        { "data" : "rawStatus",orderable:false, searchable:false },
                         { "data" : "invoice_no" },
                         { "data" : "supplier" },
                         { "data" : "item_code" },
@@ -436,7 +436,7 @@
                     fixedHeader: true,
                     "columns":[
                         { "data" : "rawAction", orderable:false, searchable:false },
-                        { "data" : "rawStatus" orderable:false, searchable:false },
+                        { "data" : "rawStatus",orderable:false, searchable:false },
                         { "data" : "date_inspected" },
                         { "data" : "time_inspected" }, //
                         { "data" : "app_ctrl_no" }, //
@@ -468,7 +468,7 @@
                     fixedHeader: true,
                     "columns":[
                         { "data" : "rawAction", orderable:false, searchable:false },
-                        { "data" : "rawStatus" orderable:false, searchable:false },
+                        { "data" : "rawStatus",orderable:false, searchable:false },
                         { "data" : "date_inspected" },
                         { "data" : "time_inspected" }, //
                         { "data" : "app_ctrl_no" }, //

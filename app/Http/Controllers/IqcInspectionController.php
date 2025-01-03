@@ -3,38 +3,43 @@
 namespace App\Http\Controllers;
 
 use DataTables;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\IqcInspectionRequest;
+
 use App\Models\User;
 use App\Models\YeuReceive;
-use App\Models\TblWarehouse;
 use Illuminate\Http\Request;
 use App\Models\IqcInspection;
 use App\Models\DropdownIqcAql;
-use App\Models\ReceivingDetails;
 use App\Models\VwListOfReceived;
+use App\Models\DropdownIqcModeOfDefect;
+use App\Models\IqcDropdownCategory;
+use App\Models\IqcInspectionsMod;
+use App\Models\TblWarehouse;
+use App\Models\ReceivingDetails;
 use App\Models\DropdownIqcFamily;
 use App\Models\IqcDropdownDetail;
-use App\Models\IqcInspectionsMod;
-use Illuminate\Support\Facades\DB;
-use App\Models\IqcDropdownCategory;
-
-use App\Models\DropdownIqcTargetLar;
-use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Interfaces\ResourceInterface;
-use App\Models\DropdownIqcTargetDppm;
-use App\Models\DropdownIqcModeOfDefect;
-use App\Models\TblWarehouseTransaction;
-use Illuminate\Support\Facades\Storage;
 use App\Models\DropdownIqcInspectionLevel;
-use App\Http\Requests\IqcInspectionRequest;
+use App\Models\TblWarehouseTransaction;
+use App\Models\DropdownIqcTargetDppm;
+use App\Models\DropdownIqcTargetLar;
+
+use App\Interfaces\ResourceInterface;
+use App\Interfaces\CommonInterface;
+
 
 
 
 class IqcInspectionController extends Controller
 {
     protected $resourceInterface;
-    public function __construct(ResourceInterface $resourceInterface) {
+    protected $commonInterface;
+    public function __construct(ResourceInterface $resourceInterface,CommonInterface $commonInterface) {
         $this->resourceInterface = $resourceInterface;
+        $this->commonInterface = $commonInterface;
     }
     public function getIqcInspectionByJudgement(Request $request)
     {
@@ -81,7 +86,6 @@ class IqcInspectionController extends Controller
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
     }
-
 
     public function loadYeuDetails(Request $request){
         if( isset( $request->lotNum ) ){
@@ -279,7 +283,7 @@ class IqcInspectionController extends Controller
             ];
             $query = $this->resourceInterface->readAllWithConditions(YeuReceive::class,$conditions);
             $iqcInspection = $query->get();
-            $generateControlNumber = $this->generateControlNumber();
+            $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class);
             return response()->json(['is_success' => 'true','iqcInspection' => $iqcInspection,'generateControlNumber' => $generateControlNumber]);
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
@@ -298,7 +302,7 @@ class IqcInspectionController extends Controller
 
             $query = $this->resourceInterface->readCustomEloquent( VwListOfReceived::class);
             $tsWhsReceivedPackaging = $query->where('pkid_received',$request->pkid_received)->get();
-            $generateControlNumber = $this->generateControlNumber();
+            $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class);
 
             return response()->json(['is_success' => 'true',
                 'tsWhsReceivedPackaging' => $tsWhsReceivedPackaging[0],
@@ -474,7 +478,7 @@ class IqcInspectionController extends Controller
         }
     }
     //categoryMaterial
-    
+
     public function Slug($string, $slug = '-', $extra = null)
 	{
 		return strtolower(trim(preg_replace('~[^0-9a-z' . preg_quote($extra, '~') . ']+~i', $slug, $this->Unaccent($string)), $slug));

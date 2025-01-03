@@ -76,10 +76,12 @@ Route::controller(IqcInspectionController::class)->group(function () {
     Route::post('/save_iqc_inspection', 'saveIqcInspection')->name('save_iqc_inspection');
 });
 Route::controller(PpdIqcInspectionController::class)->group(function () {
-    Route::get('/get_whs_receiving_by_id', 'getWhsReceivingById')->name('get_whs_receiving_by_id');
     Route::get('/load_whs_transaction', 'loadWhsTransaction')->name('load_whs_transaction');
     Route::get('/load_ppd_whs_packaging', 'loadPpdWhsPackaging')->name('load_ppd_whs_packaging');
+    Route::get('/load_ppd_iqc_inspection', 'loadPpdIqcInspection')->name('load_ppd_iqc_inspection');
+    Route::get('/get_whs_receiving_by_id', 'getWhsReceivingById')->name('get_whs_receiving_by_id');
     Route::get('/get_ppd_whs_packaging_by_id', 'getPpdWhsPackagingById')->name('get_ppd_whs_packaging_by_id');
+    Route::get('/get_ppd_iqc_inspection_by_id', 'getPpdIqcInspectionById')->name('get_ppd_iqc_inspection_by_id');
 
     // Route::get('/load_iqc_inspection', 'loadIqcInspection')->name('load_iqc_inspection');
     // Route::get('/load_whs_details', 'loadWhsDetails')->name('load_whs_details');

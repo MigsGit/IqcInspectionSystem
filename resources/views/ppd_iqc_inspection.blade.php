@@ -430,10 +430,9 @@
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
-                        url: "load_iqc_inspection",
+                        url: "load_ppd_iqc_inspection",
                         data: function (param){
                             param.lotNum = $('#txtSearchLotNum').val()
-                            // param.categoryMaterial = $('#txtCategoryMaterial').val()
                         },
                     },
                     fixedHeader: true,
@@ -441,8 +440,8 @@
                         { "data" : "rawAction", orderable:false, searchable:false },
                         { "data" : "rawStatus", orderable:false, searchable:false },
                         { "data" : "date_inspected" },
-                        { "data" : "time_inspected" }, //
-                        { "data" : "app_ctrl_no" }, //
+                        { "data" : "time_inspected" },
+                        { "data" : "app_ctrl_no" },
                         { "data": "supplier" },
                         // { "data" : "classification" },//
                         // { "data" : "family" },//
@@ -462,7 +461,7 @@
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
-                        url: "load_iqc_inspection",
+                        url: "load_ppd_iqc_inspection",
                         data: function (param){
                             param.lotNum = $('#txtSearchLotNum').val()
                             // param.categoryMaterial = $('#txtCategoryMaterial').val()
@@ -473,8 +472,8 @@
                         { "data" : "rawAction", orderable:false, searchable:false },
                         { "data" : "rawStatus", orderable:false, searchable:false },
                         { "data" : "date_inspected" },
-                        { "data" : "time_inspected" }, //
-                        { "data" : "app_ctrl_no" }, //
+                        { "data" : "time_inspected" },
+                        { "data" : "app_ctrl_no" },
                         { "data": "supplier" },
                         // { "data" : "classification" },//
                         // { "data" : "family" },//
@@ -493,7 +492,12 @@
                 getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id','44');
 
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
-                $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspected);
+                $(tbl.iqcInspected).on('click','#btnEditIqcInspection', function(){
+                    let iqcInspectionId = ($(this).attr('iqc-inspection-id') != undefined) ?  $(this).attr('iqc-inspection-id') : 0;
+                    let iqcCategoryMaterialId = $('#txtCategoryMaterial').val();
+                    getPpdIqcInspectionById (iqcInspectionId,iqcCategoryMaterialId);
+                });
+
                 $(tbl.iqcPpdWhsPackaging).on('click','#btnEditIqcInspection', getPpdWhsPackagingById);
                 $(tbl.iqcPpdWhsPackagingInspected).on('click','#btnEditIqcInspection', editIqcInspected);
 
@@ -570,7 +574,7 @@
                     $('#txtSearchLotNum').val('');
                     let categoryMaterial = '44';
                     dataTable.iqcInspection.draw();
-                    dataTable.iqcInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
+                    dataTable.iqcInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
                     getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
                 });
 
@@ -582,7 +586,7 @@
 
                     // dataTable.iqcYeuDetails.draw();
                     dataTable.iqcPpdWhsPackaging.draw();
-                    dataTable.iqcPpdWhsPackagingInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
+                    dataTable.iqcPpdWhsPackagingInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
                     getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
                 });
 
@@ -596,7 +600,7 @@
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
                     let categoryMaterial = '44';
-                    dataTable.iqcInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
+                    dataTable.iqcInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
                 });
 
                 $('a[href="#menu1_2"]').click(function (e) {
@@ -612,7 +616,7 @@
                     $('#txtSearchLotNum').val('');
                     console.log('menu2_2');
                     let categoryMaterial = '45';
-                    dataTable.iqcPpdWhsPackagingInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
+                    dataTable.iqcPpdWhsPackagingInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
                 });
 
                 $('#modalLotNum').on('shown.bs.modal', function () {
@@ -647,17 +651,14 @@
                         }else{
                             switch (modalId) {
                                 case 'ppdWhsDatabase':
-                                        alert('ppdWhsDatabase')
-
                                         $('#txtSearchLotNum').val($(this).val());
                                         dataTable.iqcInspection.draw();
-                                        dataTable.iqcInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
+                                        dataTable.iqcInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
                                     break;
                                 case 'ppdWhsPackaging':
-                                        alert('ppdWhsPackaging')
                                         $('#txtSearchLotNum').val($(this).val());
                                         dataTable.iqcPpdWhsPackaging.draw();
-                                        dataTable.iqcPpdWhsPackagingInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
+                                        dataTable.iqcPpdWhsPackagingInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
                                     break;
 
                                 default:
