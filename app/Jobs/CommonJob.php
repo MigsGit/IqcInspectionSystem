@@ -45,12 +45,18 @@ class CommonJob implements CommonInterface
         if(date_format($iqc_inspection[0]->created_at,'Y-m-d') != date('Y-m-d')){
             return [
                 'app_no' => $division."-".date('y').date('m').'-',
-                'app_no_extension'=>"001"
+                'app_no_extension'=>"001",
+                'id'=>$iqc_inspection[0]->created_at,
+                'created_at'=> $iqc_inspection[0]->created_at,
+                'today' =>  date('Y-m-d')
+
             ];
         }
         return [
             'app_no' => $division."-".date('y').date('m').'-',
-            'app_no_extension'=> sprintf("%03d", $iqc_inspection[0]->app_no_extension + 1)
+            'app_no_extension'=> sprintf("%03d", $iqc_inspection[0]->app_no_extension + 1),
+            'created_at'=> $iqc_inspection[0]->created_at,
+            'today' =>  date('Y-m-d')
         ];
     }
 }

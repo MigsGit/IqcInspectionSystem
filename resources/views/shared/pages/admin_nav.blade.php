@@ -33,6 +33,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="{{ route('cn_iqc_inspection') }}" class="nav-link">
+                            <i class="far fa-circle nav-icon ml-2"> </i>
+                            <p>CN IQC</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{{ route('ppd_iqc_inspection') }}" class="nav-link">
                             <i class="far fa-circle nav-icon ml-2"> </i>
                             <p>PPD IQC</p>

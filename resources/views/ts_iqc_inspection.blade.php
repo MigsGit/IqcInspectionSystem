@@ -61,7 +61,7 @@
                                         </li>
                                     </ul>
                                     <div class="tab-content mt-5" id="myTabContent">
-                                        <div class="row">
+                                        <div class="row justify-content-end">
                                             <div class="col-sm-2">
                                                 <label class="form-label">Lot Number</label>
                                                 <div class="input-group mb-3">

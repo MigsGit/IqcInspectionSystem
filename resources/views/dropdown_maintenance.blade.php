@@ -196,7 +196,7 @@ table.table thead th{
                             <div class="form-group">
                                 <label>Section</label>
                                 <select class="form-control" id="section" name="section">
-                                    <option value="" selected disabled>N/A</option>
+                                    <option value="" selected disabled>Select</option>
                                     <option value="TS">TS</option>
                                     <option value="CN">CN</option>
                                     <option value="PPD">PPD</option>
@@ -278,6 +278,7 @@ $(document).ready(function () {
         dropdownDetails:'',
     };
 
+
     settingDataTable.dropdownCategory = $(settingTbl.dropdownCategory).DataTable({
         "processing" : true,
         "serverSide" : true,
@@ -307,6 +308,16 @@ $(document).ready(function () {
             { "data" : "updated_by" },
         ],
     });
+
+    $('#modalCreateDropdownDetails').on('hidden.bs.modal', function (e) {
+        form.saveDropdownDetails.find('#dropdown_details_id').val('');
+        form.saveDropdownDetails.find('#dropdown_details').val('');
+    });
+    $('#modalCreateDropdownCategory').on('hidden.bs.modal', function (e) {
+        form.saveDropdownCategory[0].reset()
+    });
+
+    
 
     $(document).on('click', `${settingTbl.dropdownCategory} tbody tr`, function (e) {
         $(this).closest('tbody').find('tr').removeClass('table-active');

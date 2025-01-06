@@ -308,6 +308,7 @@ class PpdIqcInspectionController extends Controller
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
                     'inspector' => session('rapidx_user_id'),
+                    'created_at' => date('Y-m-d H:i:s')
                 ]);
 
                 /* Update rapid/db_pps TblWarehouseTransaction, set inspection_class to 3 */

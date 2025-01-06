@@ -34,8 +34,9 @@ Route::middleware('CheckSessionExist')->group(function(){
     // * ADMIN VIEW
     Route::view('/user','user')->name('user');
     Route::view('/ts_iqc_inspection','ts_iqc_inspection')->name('ts_iqc_inspection');
-    Route::view('/dropdown_maintenance','dropdown_maintenance')->name('dropdown_maintenance');
     Route::view('/ppd_iqc_inspection','ppd_iqc_inspection')->name('ppd_iqc_inspection');
+    Route::view('/cn_iqc_inspection','cn_iqc_inspection')->name('cn_iqc_inspection');
+    Route::view('/dropdown_maintenance','dropdown_maintenance')->name('dropdown_maintenance');
 });
 
 Route::get('check_user', function (Request $request) {

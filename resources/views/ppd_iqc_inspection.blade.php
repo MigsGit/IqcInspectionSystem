@@ -3,7 +3,7 @@
 {{-- @auth --}}
     @extends($layout)
 
-    @section('title', 'TS IQC Inspection')
+    @section('title', 'PPD IQC Inspection')
 
     @section('content_page')
 
@@ -38,7 +38,7 @@
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
                                 </li>
-                                <li class="breadcrumb-item active">TS IQC Inspection</li>
+                                <li class="breadcrumb-item active">PPD IQC Inspection</li>
                             </ol>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                                         </li>
                                     </ul>
                                     <div class="tab-content mt-5" id="myTabContent">
-                                        <div class="row">
+                                        <div class="row justify-content-end">
                                             <div class="col-sm-2">
                                                 <label class="form-label">Lot Number</label>
                                                 <div class="input-group mb-3">
@@ -555,6 +555,7 @@
                         }
                     });
                 }
+
                 getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id','44');
 
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
