@@ -454,6 +454,7 @@ class IqcInspectionController extends Controller
             */
             $conditions = [
                 'iqc_inspection_column_ref' => $request->iqc_inspection_column_ref,
+                'section' => $request->section,
                 'status' => 1,
             ];
 

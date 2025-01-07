@@ -556,7 +556,7 @@
                     });
                 }
 
-                getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id','44');
+                getDropdownDetailsByOptValue('TS',$('#txtCategoryMaterial'),'iqc_category_material_id','44');
 
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', function(){
@@ -642,7 +642,7 @@
                     let categoryMaterial = '44';
                     dataTable.iqcInspection.draw();
                     dataTable.iqcInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
-                    getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
+                    getDropdownDetailsByOptValue('TS',$('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
                 });
 
                 $('a[href="#menu2"]').click(function (e) {
@@ -654,7 +654,7 @@
                     // dataTable.iqcYeuDetails.draw();
                     dataTable.iqcPpdWhsPackaging.draw();
                     dataTable.iqcPpdWhsPackagingInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
-                    getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
+                    getDropdownDetailsByOptValue('TS',$('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
                 });
 
                 $('a[href="#menu1_1"]').click(function (e) {

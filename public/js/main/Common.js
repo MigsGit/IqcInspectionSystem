@@ -337,6 +337,39 @@ const errorHandler = function (errors,formInput){
         formInput.attr('title', errors[0])
     }
 }
+//IQC FUNCTION
+const getDropdownDetailsByOptValue = function (section=null,cmb_element,iqc_inspection_column_ref,opt_value = null) {
+    let opt = `<option value="" selected disabled>-Select-</option>`;
+        opt += `<option value="N/A">N/A</option>`;
+    cmb_element.empty().append(opt)
+    $.ajax({
+        type: "GET",
+        url: "get_dropdown_details_by_opt_value",
+        data: {
+            "iqc_inspection_column_ref" : iqc_inspection_column_ref,
+            "section" : section
+        },
+        dataType: "json",
+        success: function (response) {
+            let id = response['id'];
+            let value = response['value'];
+            if(iqc_inspection_column_ref =='target_lar' || iqc_inspection_column_ref == 'target_dppm'){
+                cmb_element.val(value[0]);
+                return;
+            }
+            for (let i = 0; i < id.length; i++) {
+                let opt = `<option value="${id[i]}">${value[i]}</option>`;
+                cmb_element.append(opt);
+            }
+            console.log(opt_value);
+
+            if(opt_value != null){
+                cmb_element.val(opt_value).trigger("change");
+            }
+
+        }
+    });
+}
 
 
 

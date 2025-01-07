@@ -244,6 +244,8 @@
 
     @section('js_content')
         <script type="text/javascript">
+            getDropdownDetailsByOptValue('CN',$('#txtCategoryMaterial'),'iqc_category_material_id','46');
+
             $(document).ready(function () {
                 
                 tbl = {
@@ -417,7 +419,6 @@
                 //     });
                 // }
 
-                getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id','46');
 
                 // $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
                 // $(tbl.iqcInspected).on('click','#btnEditIqcInspection', function(){
@@ -426,7 +427,7 @@
                 //     getPpdIqcInspectionById (iqcInspectionId,iqcCategoryMaterialId);
                 // });
 
-                // $(tbl.iqcCnWhsPackaging).on('click','#btnEditIqcInspection', getPpdWhsPackagingById);
+                $(tbl.iqcCnWhsPackaging).on('click','#btnEditIqcInspection', getCnWhsPackagingById);
                 // $(tbl.iqcCnWhsPackagingInspected).on('click','#btnEditIqcInspection', editIqcInspected);
 
                 // $('#btnLotNo').click(function (e) {
@@ -501,11 +502,11 @@
                 //     e.preventDefault();
                 //     $('#btnModalLotNum').attr('el-btn-attr','ppdWhsPackaging')
                 //     $('#txtSearchLotNum').val('');
-                //     let categoryMaterial = '45';
+                //     let categoryMaterial = '46';
 
                 //     dataTable.iqcCnWhsPackaging.draw();
                 //     dataTable.iqcCnWhsPackagingInspected.ajax.url("load_cn_iqc_inspection?category_material="+categoryMaterial).draw();
-                //     getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
+                //     getDropdownDetailsByOptValue('CN',$('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
                 // });
 
 

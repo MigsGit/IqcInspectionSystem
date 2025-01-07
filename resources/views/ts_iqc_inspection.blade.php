@@ -487,8 +487,7 @@
                     ],
                 });
 
-                getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id','37');
-
+                getDropdownDetailsByOptValue('TS',$('#txtCategoryMaterial'),'iqc_category_material_id','37');
                 $(tbl.iqcWhsReceivingPackaging).on('click','#btnEditIqcInspection', getTsWhsPackagingById);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspected);
                 $(tbl.iqcYeuDetails).on('click','#btnEditIqcInspection', editYeuIqcDetails);
@@ -568,7 +567,7 @@
                     let categoryMaterial = '37';
                     dataTable.iqcTsWhsPackaging.draw();
                     dataTable.iqcInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
-                    getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
+                    getDropdownDetailsByOptValue('TS',$('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
                 });
 
                 $('a[href="#menu2"]').click(function (e) {
@@ -579,7 +578,7 @@
 
                     dataTable.iqcYeuDetails.draw();
                     dataTable.iqcYeuInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
-                    getDropdownDetailsByOptValue($('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
+                    getDropdownDetailsByOptValue('TS',$('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
                 });
 
                 $('a[href="#menu1_1"]').click(function (e) {

@@ -163,21 +163,6 @@ class PpdIqcInspectionController extends Controller
         })
         ->rawColumns(['rawAction','rawStatus'])
         ->make(true);
-        /*
-            InvoiceNo
-            whs_transaction_username,whs_username
-            whs_transaction_lastupdate,whs_lastupdate
-            whs_transaction_lastupdate,whs_lastupdate
-            *Inspection Times*
-            *Application Ctrl. No*
-            *FY#*
-            *WW#*
-            *Sub*
-            PartNumber
-            ProductLine,MaterialType
-            Supplier
-            Lot_number
-        */
     }
     public function loadPpdWhsPackaging(Request $request){
         try {

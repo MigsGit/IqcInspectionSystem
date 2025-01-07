@@ -72,12 +72,12 @@
             form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
             form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
             form.iqcInspection.find('#isUploadCoc').prop('required',true);
-            getDropdownDetailsByOptValue(form.iqcInspection.find('#aql'),'aql');
-            getDropdownDetailsByOptValue(form.iqcInspection.find('#family'),'family');
-            getDropdownDetailsByOptValue(form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');
-            getDropdownDetailsByOptValue(form.iqcInspection.find('#target_dppm'),'target_dppm');
-            getDropdownDetailsByOptValue(form.iqcInspection.find('#target_lar'),'target_lar');
-            getDropdownDetailsByOptValue(form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection');
+            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#aql'),'aql');
+            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#family'),'family');
+            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');
+            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_dppm'),'target_dppm');
+            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_lar'),'target_lar');
+            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection');
             getDropdownDetailsByOptValue($('#mode_of_defect'),'mode_of_defects');
 
 
@@ -168,12 +168,12 @@
             form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
             form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
             form.iqcInspection.find('#isUploadCoc').prop('required',true);
-            getDropdownDetailsByOptValue(form.iqcInspection.find('#aql'),'aql');
-            getDropdownDetailsByOptValue(form.iqcInspection.find('#family'),'family');
-            getDropdownDetailsByOptValue(form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');
-            getDropdownDetailsByOptValue(form.iqcInspection.find('#target_dppm'),'target_dppm');
-            getDropdownDetailsByOptValue(form.iqcInspection.find('#target_lar'),'target_lar');
-            getDropdownDetailsByOptValue(form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection');
+            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#aql'),'aql');
+            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#family'),'family');
+            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');
+            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_dppm'),'target_dppm');
+            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_lar'),'target_lar');
+            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection');
             getDropdownDetailsByOptValue($('#mode_of_defect'),'mode_of_defects');
 
             // return;
@@ -273,12 +273,12 @@
                 form.iqcInspection.find('#iqc_coc_file').val('');
                 form.iqcInspection.find('#isUploadCoc').prop('required',false);
 
-                getDropdownDetailsByOptValue(form.iqcInspection.find('#aql'),'aql',tblWhsTrasanction['aql'])
-                getDropdownDetailsByOptValue(form.iqcInspection.find('#family'),'family',tblWhsTrasanction['family'])
-                getDropdownDetailsByOptValue(form.iqcInspection.find('#inspection_lvl'),'inspection_lvl',tblWhsTrasanction['inspection_lvl'])
-                getDropdownDetailsByOptValue(form.iqcInspection.find('#target_dppm'),'target_dppm');
-                getDropdownDetailsByOptValue(form.iqcInspection.find('#target_lar'),'target_lar');
-                getDropdownDetailsByOptValue(form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection',tblWhsTrasanction['severity_of_inspection']);
+                getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#aql'),'aql',tblWhsTrasanction['aql'])
+                getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#family'),'family',tblWhsTrasanction['family'])
+                getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#inspection_lvl'),'inspection_lvl',tblWhsTrasanction['inspection_lvl'])
+                getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_dppm'),'target_dppm');
+                getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_lar'),'target_lar');
+                getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection',tblWhsTrasanction['severity_of_inspection']);
                 getDropdownDetailsByOptValue($('#mode_of_defect'),'mode_of_defects',tblWhsTrasanction['mode_of_defects']);
 
 
@@ -338,35 +338,7 @@
         });
     }
 
-    const getDropdownDetailsByOptValue = function (cmb_element,iqc_inspection_column_ref,opt_value = null) {
-        let opt = `<option value="" selected disabled>-Select-</option>`;
-            opt += `<option value="N/A">N/A</option>`;
-        cmb_element.empty().append(opt)
-        $.ajax({
-            type: "GET",
-            url: "get_dropdown_details_by_opt_value",
-            data: {"iqc_inspection_column_ref" : iqc_inspection_column_ref},
-            dataType: "json",
-            success: function (response) {
-                let id = response['id'];
-                let value = response['value'];
-                if(iqc_inspection_column_ref =='target_lar' || iqc_inspection_column_ref == 'target_dppm'){
-                    cmb_element.val(value[0]);
-                    return;
-                }
-                for (let i = 0; i < id.length; i++) {
-                    let opt = `<option value="${id[i]}">${value[i]}</option>`;
-                    cmb_element.append(opt);
-                }
-                console.log(opt_value);
-
-                if(opt_value != null){
-                    cmb_element.val(opt_value).trigger("change");
-                }
-
-            }
-        });
-    }
+    
     const getDieNo = function () {
         let opt = ``;
             opt += `<option value="" selected disabled>-Select-</option>`;
@@ -396,7 +368,7 @@
             elFormId.find('#judgement').val(1);
         }
     }
-    
+
     const saveIqcInspection = function (){ //amodify
         let serialized_data = new FormData(form.iqcInspection[0]);
             serialized_data.append('lotNo',arrTableMod.lotNo);
