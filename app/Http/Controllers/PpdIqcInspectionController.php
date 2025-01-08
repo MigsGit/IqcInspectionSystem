@@ -252,7 +252,7 @@ class PpdIqcInspectionController extends Controller
     {
         // return 'true';
         try {
-            $tbl_whs_trasanction = PpdIqcInspection::with('ppd_iqc_inspections_mods','user_iqc')
+            $tbl_whs_trasanction = PpdIqcInspection::with('ppd_iqc_inspections_mods','ppd_iqc_inspections_mods.iqc_dropdown_detail','user_iqc')
             ->where('id',$request->iqc_inspection_id)
             // ->get();
             ->get(['ppd_iqc_inspections.id as iqc_inspection_id','ppd_iqc_inspections.*']);

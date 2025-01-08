@@ -287,7 +287,7 @@ class IqcInspectionController extends Controller
     }
     public function getIqcInspectionById(Request $request)
     {
-        $tbl_whs_trasanction = IqcInspection::with('IqcInspectionsMods','user_iqc')
+        $tbl_whs_trasanction = IqcInspection::with('iqc_inspections_mods','iqc_inspections_mods.iqc_dropdown_detail','user_iqc')
         ->where('id',$request->iqc_inspection_id)
         ->get(['ts_iqc_inspections.id as iqc_inspection_id','ts_iqc_inspections.*']);
         return response()->json(['tbl_whs_trasanction'=>$tbl_whs_trasanction]);
