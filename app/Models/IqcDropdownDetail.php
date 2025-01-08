@@ -10,7 +10,8 @@ class IqcDropdownDetail extends Model
 {
     use HasFactory;
 
-    public function iqc_dropdown_category(){
+    public function iqc_dropdown_category()
+    {
         return $this->hasOne(IqcDropdownCategory::class,'id','iqc_dropdown_categories_id')->whereNull('deleted_at')->orderBy('id', 'DESC');
     }
 }

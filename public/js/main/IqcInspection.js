@@ -98,6 +98,7 @@
             arrTableMod.modeOfDefects = [];
             arrTableMod.lotQty = [];
             arrCounter.ctr = 0;
+
             /*Mode of Defects Modal*/
             $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
             $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
@@ -174,7 +175,7 @@
             getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_dppm'),'target_dppm');
             getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_lar'),'target_lar');
             getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection');
-            getDropdownDetailsByOptValue($('#mode_of_defect'),'mode_of_defects');
+            getDropdownDetailsByOptValue('TS','#mode_of_defect','mode_of_defects');
 
             // return;
             if( iqcCocFile === undefined || iqcCocFile === null ){
@@ -279,7 +280,7 @@
                 getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_dppm'),'target_dppm');
                 getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_lar'),'target_lar');
                 getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection',tblWhsTrasanction['severity_of_inspection']);
-                getDropdownDetailsByOptValue($('#mode_of_defect'),'mode_of_defects',tblWhsTrasanction['mode_of_defects']);
+                getDropdownDetailsByOptValue('TS',$('#mode_of_defect'),'mode_of_defects');
 
 
                 if( iqcCocFile === undefined || iqcCocFile === null ){
@@ -303,9 +304,9 @@
                 }else{
                     btn.removeModLotNumber.prop('disabled',false);
                     for (let i = 0; i < iqcInspectionsMods.length; i++) {
-                        let selectedLotNo = iqcInspectionsMods[i].lot_no
-                        let selectedMod = iqcInspectionsMods[i].mode_of_defects
-                        let selectedLotQty = iqcInspectionsMods[i].quantity
+                        let selectedLotNo = iqcInspectionsMods[i].lot_no;
+                        let selectedMod = iqcInspectionsMods[i].iqc_dropdown_detail.dropdown_details;
+                        let selectedLotQty = iqcInspectionsMods[i].quantity;
                         arrCounter.ctr = i+1;
                         var html_body  = '<tr>';
                             html_body += '<td>'+arrCounter.ctr+'</td>';
@@ -324,7 +325,7 @@
 
                 $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
                 $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
-                for (let i = 0; i < response.length; i++) {
+                for (let i = 0; i < 1; i++) {
                     let optLotNo = `<option value="${lotNo}">${lotNo}</option>`;
                     $('#mod_lot_no').append(optLotNo);
                 }
@@ -338,7 +339,7 @@
         });
     }
 
-    
+
     const getDieNo = function () {
         let opt = ``;
             opt += `<option value="" selected disabled>-Select-</option>`;

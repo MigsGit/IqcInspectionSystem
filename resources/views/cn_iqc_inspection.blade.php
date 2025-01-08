@@ -319,7 +319,7 @@
                 });
             }
             $(document).ready(function () {
-                
+
                 tbl = {
                     iqcInspection:'#tblIqcInspection',
                     iqcCnWhsPackaging:'#tblIqcCnWhsPackaging',
@@ -386,188 +386,112 @@
                     ],
                 });
 
-                // dataTable.iqcCnWhsPackagingInspected = $(tbl.iqcCnWhsPackagingInspected).DataTable({
-                //     "processing" : true,
-                //     "serverSide" : true,
-                //     "ajax" : {
-                //         url: "load_cn_iqc_inspection",
-                //         data: function (param){
-                //             param.lotNum = $('#txtSearchLotNum').val()
-                //             // param.categoryMaterial = $('#txtCategoryMaterial').val()
-                //         },
-                //     },
-                //     fixedHeader: true,
-                //     "columns":[
-                //         { "data" : "rawAction", orderable:false, searchable:false },
-                //         { "data" : "rawStatus", orderable:false, searchable:false },
-                //         { "data" : "date_inspected" },
-                //         { "data" : "time_inspected" },
-                //         { "data" : "app_ctrl_no" },
-                //         { "data": "supplier" },
-                //         // { "data" : "classification" },//
-                //         // { "data" : "family" },//
-                //         // { "data" : "category" },//
-                //         { "data" : "partcode" },
-                //         { "data" : "partname" },
-                //         { "data" : "lot_no" },
-                //         { "data" : "total_lot_qty" },
-                //         // { "data" : "aql" }, //
-                //         { "data" : "qc_inspector" }, //
-                //         { "data" : "created_at" },
-                //         { "data" : "updated_at" },
-                //     ],
-                // });
-                // const savePpdIqcInspection = function (){ //amodify
-                //     let serialized_data = new FormData(form.iqcInspection[0]);
-                //         serialized_data.append('lotNo',arrTableMod.lotNo);
-                //         serialized_data.append('modeOfDefects',arrTableMod.modeOfDefects);
-                //         serialized_data.append('lotQty',arrTableMod.lotQty);
-                //     $.ajax({
-                //         type: "POST",
-                //         url: "save_ppd_iqc_inspection",
-                //         data: serialized_data,
-                //         dataType: "json",
-                //         cache: false,
-                //         contentType: false,
-                //         processData: false,
-                //         beforeSend: function(){
-                //             $('#modal-loading').modal('show');
-                //         },
-                //         success: function (response) {
-                //             $('#modal-loading').modal('hide');
-                //             if (response['result'] === 1){
-                //                 $('#modalSaveIqcInspection').modal('hide');
-                //                 dataTable.iqcInspection.draw();
-                //                 dataTable.iqcCnWhsPackagingInspected.draw();
-                //                 Swal.fire({
-                //                     position: "center",
-                //                     icon: "success",
-                //                     title: "Your work has been saved",
-                //                     showConfirmButton: false,
-                //                     timer: 1500
-                //                 });
-                //                 $('#modalScanQRSave').modal('hide');
-                //                 form.iqcInspection[0].reset();
-                //             }
-                //         },error: function (data, xhr, status){
-                //             let errors = data.responseJSON.errors ;
-                //             toastr.error(`Saving Failed, Please fill up all required fields`);
-                //             $('#modal-loading').modal('hide');
-                //             if(data.status === 422){
-                //                 errorHandler(errors.whs_transaction_id,form.iqcInspection.find('#whs_transaction_id'));
-                //                 errorHandler(errors.iqc_category_material_id,form.iqcInspection.find('#iqc_category_material_id'));
-                //                 errorHandler(errors.app_no,form.iqcInspection.find('#app_no'));
-                //                 errorHandler(errors.partcode,form.iqcInspection.find('#partcode'));
-                //                 errorHandler(errors.partname,form.iqcInspection.find('#partname'));
-                //                 errorHandler(errors.supplier,form.iqcInspection.find('#supplier'));
-                //                 errorHandler(errors.total_lot_qty,form.iqcInspection.find('#total_lot_qty'));
-                //                 errorHandler(errors.accept,form.iqcInspection.find('#accept'));
-                //                 errorHandler(errors.family,form.iqcInspection.find('#family'));
-                //                 errorHandler(errors.app_no_extension,form.iqcInspection.find('#app_no_extension'));
-                //                 errorHandler(errors.die_no,form.iqcInspection.find('#die_no'));
-                //                 errorHandler(errors.lot_no,form.iqcInspection.find('#lot_no'));
-                //                 errorHandler(errors.classification,form.iqcInspection.find('#classification'));
-                //                 errorHandler(errors.type_of_inspection,form.iqcInspection.find('#type_of_inspection'));
-                //                 errorHandler(errors.severity_of_inspection,form.iqcInspection.find('#severity_of_inspection'));
-                //                 errorHandler(errors.inspection_lvl,form.iqcInspection.find('#inspection_lvl'));
-                //                 errorHandler(errors.aql,form.iqcInspection.find('#aql'));
-                //                 errorHandler(errors.accept,form.iqcInspection.find('#accept'));
-                //                 errorHandler(errors.reject,form.iqcInspection.find('#reject'));
-                //                 errorHandler(errors.shift,form.iqcInspection.find('#shift'));
-                //                 errorHandler(errors.date_inspected,form.iqcInspection.find('#date_inspected'));
-                //                 errorHandler(errors.time_ins_from,form.iqcInspection.find('#time_ins_from'));
-                //                 errorHandler(errors.time_ins_to,form.iqcInspection.find('#time_ins_to'));
-                //                 errorHandler(errors.inspector,form.iqcInspection.find('#inspector'));
-                //                 errorHandler(errors.submission,form.iqcInspection.find('#submission'));
-                //                 errorHandler(errors.category,form.iqcInspection.find('#category'));
-                //                 errorHandler(errors.sampling_size,form.iqcInspection.find('#sampling_size'));
-                //                 errorHandler(errors.lot_inspected,form.iqcInspection.find('#lot_inspected'));
-                //                 errorHandler(errors.accepted,form.iqcInspection.find('#accepted'));
-                //                 errorHandler(errors.judgement,form.iqcInspection.find('#judgement'));
-                //             }else{
-                //                 toastr.error(`Error: ${data.status}`);
-                //             }
-                //         }
-                //     });
-                // }
+                dataTable.iqcCnWhsPackagingInspected = $(tbl.iqcCnWhsPackagingInspected).DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "load_cn_iqc_inspection",
+                        data: function (param){
+                            param.lotNum = $('#txtSearchLotNum').val()
+                            // param.categoryMaterial = $('#txtCategoryMaterial').val()
+                        },
+                    },
+                    fixedHeader: true,
+                    "columns":[
+                        { "data" : "rawAction", orderable:false, searchable:false },
+                        { "data" : "rawStatus", orderable:false, searchable:false },
+                        { "data" : "date_inspected" },
+                        { "data" : "time_inspected" },
+                        { "data" : "app_ctrl_no" },
+                        { "data": "supplier" },
+                        // { "data" : "classification" },//
+                        // { "data" : "family" },//
+                        // { "data" : "category" },//
+                        { "data" : "partcode" },
+                        { "data" : "partname" },
+                        { "data" : "lot_no" },
+                        { "data" : "total_lot_qty" },
+                        // { "data" : "aql" }, //
+                        { "data" : "qc_inspector" }, //
+                        { "data" : "created_at" },
+                        { "data" : "updated_at" },
+                    ],
+                });
 
-
-                // $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
-                // $(tbl.iqcInspected).on('click','#btnEditIqcInspection', function(){
-                //     let iqcInspectionId = ($(this).attr('iqc-inspection-id') != undefined) ?  $(this).attr('iqc-inspection-id') : 0;
-                //     let iqcCategoryMaterialId = $('#txtCategoryMaterial').val();
-                //     getPpdIqcInspectionById (iqcInspectionId,iqcCategoryMaterialId);
-                // });
-
+                $(tbl.iqcCnWhsPackagingInspected).on('click','#btnEditIqcInspection', function(){
+                    let iqcInspectionId = ($(this).attr('iqc-inspection-id') != undefined) ?  $(this).attr('iqc-inspection-id') : 0;
+                    let iqcCategoryMaterialId = $('#txtCategoryMaterial').val();
+                    getCnIqcInspectionById (iqcInspectionId,iqcCategoryMaterialId);
+                });
                 $(tbl.iqcCnWhsPackaging).on('click','#btnEditIqcInspection', getCnWhsPackagingById);
                 // $(tbl.iqcCnWhsPackagingInspected).on('click','#btnEditIqcInspection', editIqcInspected);
 
-                // $('#btnLotNo').click(function (e) {
-                //     e.preventDefault();
-                //     $('#modalLotNo').modal('show');
-                // });
+                $('#btnLotNo').click(function (e) {
+                    e.preventDefault();
+                    $('#modalLotNo').modal('show');
+                });
 
-                // $('#btnMod').click(function (e) {
-                //     e.preventDefault();
-                //     $('#modalModeOfDefect').modal('show');
-                // });
+                $('#btnMod').click(function (e) {
+                    e.preventDefault();
+                    $('#modalModeOfDefect').modal('show');
+                });
 
-                // $('#btnAddModLotNumber').click(function (e) {
-                //     e.preventDefault();
+                $('#btnAddModLotNumber').click(function (e) {
+                    e.preventDefault();
 
-                //     /* Selected Value */
-                //     let selectedLotNo = $('#mod_lot_no').val();
-                //     let selectedMod = $('#mode_of_defect').val();
-                //     let selectedLotQty = $('#mod_quantity').val();
+                    /* Selected Value */
+                    let selectedLotNo = $('#mod_lot_no').val();
+                    let selectedMod = $('#mode_of_defect').val();
+                    let selectedLotQty = $('#mod_quantity').val();
 
-                //     if(selectedLotNo === null || selectedMod === null || selectedLotQty <= 0){
-                //         toastr.error('Error: Please Fill up all fields !');
-                //         return false;
-                //     }
+                    if(selectedLotNo === null || selectedMod === null || selectedLotQty <= 0){
+                        toastr.error('Error: Please Fill up all fields !');
+                        return false;
+                    }
 
-                //     /* Counter and Disabled Removed Button */
-                //     arrCounter.ctr++;
-                //     disabledEnabledButton(arrCounter.ctr)
+                    /* Counter and Disabled Removed Button */
+                    arrCounter.ctr++;
+                    disabledEnabledButton(arrCounter.ctr)
 
-                //     /* Get selected array to the table */
-                //     var html_body  = '<tr>';
-                //         html_body += '<td>'+arrCounter.ctr+'</td>';
-                //         html_body += '<td>'+selectedLotNo+'</td>';
-                //         html_body += '<td>'+selectedMod+'</td>';
-                //         html_body += '<td>'+selectedLotQty+'</td>';
-                //         html_body += '</tr>';
-                //     $('#tblModeOfDefect tbody').append(html_body);
+                    /* Get selected array to the table */
+                    var html_body  = '<tr>';
+                        html_body += '<td>'+arrCounter.ctr+'</td>';
+                        html_body += '<td>'+selectedLotNo+'</td>';
+                        html_body += '<td>'+selectedMod+'</td>';
+                        html_body += '<td>'+selectedLotQty+'</td>';
+                        html_body += '</tr>';
+                    $('#tblModeOfDefect tbody').append(html_body);
 
-                //     arrTableMod.lotNo.push(selectedLotNo);
-                //     arrTableMod.modeOfDefects.push(selectedMod);
-                //     arrTableMod.lotQty.push(selectedLotQty);
-                //     console.log('click',arrTableMod.lotQty);
-                //     // console.log('check',arrTableMod);
-                // });
+                    arrTableMod.lotNo.push(selectedLotNo);
+                    arrTableMod.modeOfDefects.push(selectedMod);
+                    arrTableMod.lotQty.push(selectedLotQty);
+                    console.log('click',arrTableMod.lotQty);
+                    // console.log('check',arrTableMod);
+                });
 
-                // btn.saveComputation.click(function (e) {
-                //     e.preventDefault();
-                //     $('#modalModeOfDefect').modal('hide');
-                //     form.iqcInspection.find('#no_of_defects').val(arrTableMod.lotQty.reduce(getSum, 0));
-                // });
+                btn.saveComputation.click(function (e) {
+                    e.preventDefault();
+                    $('#modalModeOfDefect').modal('hide');
+                    form.iqcInspection.find('#no_of_defects').val(arrTableMod.lotQty.reduce(getSum, 0));
+                });
 
-                // btn.removeModLotNumber.click(function() {
-                //     arrCounter.ctr --;
-                //     disabledEnabledButton(arrCounter.ctr)
+                btn.removeModLotNumber.click(function() {
+                    arrCounter.ctr --;
+                    disabledEnabledButton(arrCounter.ctr)
 
-                //     $('#tblModeOfDefect tr:last').remove();
-                //     arrTableMod.lotNo.splice(arrCounter.ctr, 1);
-                //     arrTableMod.modeOfDefects.splice(arrCounter.ctr, 1);
-                //     arrTableMod.lotQty.splice(arrCounter.ctr, 1);
-                //     console.log('deleted',arrTableMod.lotQty);
-                //     // console.log(arrTableMod);
-                // });
+                    $('#tblModeOfDefect tr:last').remove();
+                    arrTableMod.lotNo.splice(arrCounter.ctr, 1);
+                    arrTableMod.modeOfDefects.splice(arrCounter.ctr, 1);
+                    arrTableMod.lotQty.splice(arrCounter.ctr, 1);
+                    console.log('deleted',arrTableMod.lotQty);
+                    // console.log(arrTableMod);
+                });
 
-                // $('#btnModalLotNum').click(function (e) {
-                //     e.preventDefault();
-                //     let elModalAttr = $(this).attr('el-btn-attr');
-                //     $('#modalLotNum').attr('el-modal-attr',elModalAttr).modal('show')
-                // });
+                $('#btnModalLotNum').click(function (e) {
+                    e.preventDefault();
+                    let elModalAttr = $(this).attr('el-btn-attr');
+                    $('#modalLotNum').attr('el-modal-attr',elModalAttr).modal('show')
+                });
 
 
                 // $('a[href="#menu2"]').click(function (e) {
@@ -582,20 +506,19 @@
                 // });
 
 
-                // $('a[href="#menu1_2"]').click(function (e) {
-                //     e.preventDefault();
-                //     $('#txtSearchLotNum').val('');
-                //     dataTable.iqcCnWhsPackaging.draw();
+                $('a[href="#menu1_2"]').click(function (e) {
+                    e.preventDefault();
+                    $('#txtSearchLotNum').val('');
+                    dataTable.iqcCnWhsPackaging.draw();
+                });
 
-                // });
-
-                // $('a[href="#menu2_2"]').click(function (e) {
-                //     e.preventDefault();
-                //     $('#txtSearchLotNum').val('');
-                //     console.log('menu2_2');
-                //     let categoryMaterial = '45';
-                //     dataTable.iqcCnWhsPackagingInspected.ajax.url("load_cn_iqc_inspection?category_material="+categoryMaterial).draw();
-                // });
+                $('a[href="#menu2_2"]').click(function (e) {
+                    e.preventDefault();
+                    $('#txtSearchLotNum').val('');
+                    console.log('menu2_2');
+                    let categoryMaterial = '46';
+                    dataTable.iqcCnWhsPackagingInspected.ajax.url("load_cn_iqc_inspection?category_material="+categoryMaterial).draw();
+                });
 
                 // $('#modalLotNum').on('shown.bs.modal', function () {
                 //     $('#txtLotNum').focus();

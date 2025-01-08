@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\IqcInspection;
-
-use App\Models\PpdIqcInspection;
 use Yajra\DataTables\DataTables;
-use App\Interfaces\FileInterface;
 use Illuminate\Support\Facades\DB;
-use App\Interfaces\CommonInterface;
-use App\Models\VwPpdListOfReceived;
-use App\Models\PpdIqcInspectionsMod;
-use App\Interfaces\ResourceInterface;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\PpdIqcInspectionRequest;
+
+use App\Models\User;
+use App\Models\PpdIqcInspection;
+use App\Models\VwPpdListOfReceived;
+use App\Models\PpdIqcInspectionsMod;
+use App\Interfaces\CommonInterface;
+use App\Interfaces\FileInterface;
+use App\Interfaces\ResourceInterface;
 
 class PpdIqcInspectionController extends Controller
 {
@@ -28,10 +27,10 @@ class PpdIqcInspectionController extends Controller
         $this->fileInterface = $fileInterface;
     }
 
-    public function loadPpdIqcInspection(Request $request){
-        // return 'true' ;
+    public function loadPpdIqcInspection(Request $request)
+    {
         try {
-            /*  Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
+        /*  Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
             NOTE: If the data exist to iqc_inspections it means the data is already inspected
         */
 
@@ -164,7 +163,8 @@ class PpdIqcInspectionController extends Controller
         ->rawColumns(['rawAction','rawStatus'])
         ->make(true);
     }
-    public function loadPpdWhsPackaging(Request $request){
+    public function loadPpdWhsPackaging(Request $request)
+    {
         try {
             /*
                 TODO: Get the data only with whs_transaction.inspection_class = 1 - For Inspection, while
@@ -224,7 +224,8 @@ class PpdIqcInspectionController extends Controller
         'generateControlNumber' => $generateControlNumber
     ]);
     }
-    public function getPpdWhsPackagingById(Request $request){
+    public function getPpdWhsPackagingById(Request $request)
+    {
         try {
 
             $query = $this->resourceInterface->readCustomEloquent( VwPpdListOfReceived::class);
@@ -247,8 +248,8 @@ class PpdIqcInspectionController extends Controller
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
     }
-
-    public function getPpdIqcInspectionById(Request $request){
+    public function getPpdIqcInspectionById(Request $request)
+    {
         // return 'true';
         try {
             $tbl_whs_trasanction = PpdIqcInspection::with('ppd_iqc_inspections_mods','user_iqc')
@@ -260,8 +261,8 @@ class PpdIqcInspectionController extends Controller
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
     }
-
-    public function savePpdIqcInspection(PpdIqcInspectionRequest $request){
+    public function savePpdIqcInspection(PpdIqcInspectionRequest $request)
+    {
         date_default_timezone_set('Asia/Manila');
         DB::beginTransaction();
         try {

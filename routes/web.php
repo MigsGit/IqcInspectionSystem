@@ -79,11 +79,13 @@ Route::controller(IqcInspectionController::class)->group(function () {
 });
 Route::controller(CnIqcInspectionController::class)->group(function () {
     Route::get('/load_cn_whs_packaging', 'loadCnWhsPackaging')->name('load_cn_whs_packaging');
+    Route::get('/load_cn_iqc_inspection', 'loadCnIqcInspection')->name('load_cn_iqc_inspection');
     Route::get('/get_cn_whs_packaging_by_id', 'getCnWhsPackagingById')->name('get_ppd_whs_packaging_by_id');
-    
+    Route::get('/get_cn_iqc_inspection_by_id', 'getCnIqcInspectionById')->name('get_ppd_whs_packaging_by_id');
+
     Route::post('/save_cn_iqc_inspection', 'saveCnIqcInspection')->name('save_cn_iqc_inspection');
 
-    
+
 });
 Route::controller(PpdIqcInspectionController::class)->group(function () {
     Route::get('/load_whs_transaction', 'loadWhsTransaction')->name('load_whs_transaction');
