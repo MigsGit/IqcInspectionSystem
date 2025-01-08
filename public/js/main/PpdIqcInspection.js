@@ -41,7 +41,8 @@
             getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_dppm'),'target_dppm');
             getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_lar'),'target_lar');
             getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection');
-            getDropdownDetailsByOptValue($('#mode_of_defect'),'mode_of_defects');
+            getDropdownDetailsByOptValue('TS',$('#mode_of_defect'),'mode_of_defects');
+
 
             /* Visual Inspection */
             form.iqcInspection.find('#app_no').val(generateControlNumber.app_no);

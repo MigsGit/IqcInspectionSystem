@@ -235,6 +235,7 @@ class PpdIqcInspectionController extends Controller
                 'partcode as partcode',
                 'partname as partname',
                 'supplier as supplier',
+                'rcvqty as total_lot_qty',
             ]);
             $generateControlNumber = $this->commonInterface->generateControlNumber(PpdIqcInspection::class);
 
@@ -246,7 +247,7 @@ class PpdIqcInspectionController extends Controller
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
     }
-    //get_ppd_iqc_inspection_by_id
+
     public function getPpdIqcInspectionById(Request $request){
         // return 'true';
         try {
