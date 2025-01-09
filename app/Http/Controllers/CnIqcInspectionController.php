@@ -251,7 +251,8 @@ class CnIqcInspectionController extends Controller
                 $original_filename = $request->file('iqc_coc_file')->getClientOriginalName(); //'/etc#hosts/@Álix Ãxel likes - beer?!.pdf';
                 $filtered_filename = $this->fileInterface->Slug($original_filename, '_', '.');
                 // $filtered_filename = '_'.$this->Slug($original_filename, '_', '.');	 // _etc_hosts_alix_axel_likes_beer.pdf
-                Storage::putFileAs('public/cn_iqc_inspection_coc', $request->iqc_coc_file,  $iqc_inspections_id . $filtered_filename);
+                Storage::putFileAs('public/cn_iqc_inspection_coc', $request->iqc_coc_file,  $iqc_inspections_id .'_'. $filtered_filename);
+
 
                 CnIqcInspection::where('id', $iqc_inspections_id)
                 ->update([

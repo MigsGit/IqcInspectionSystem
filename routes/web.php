@@ -98,14 +98,14 @@ Route::controller(PpdIqcInspectionController::class)->group(function () {
 });
 Route::controller(YfIqcInspectionController::class)->group(function () {
     Route::get('/load_yf_whs_packaging', 'loadYfWhsPackaging')->name('load_yf_whs_packaging');
-
     Route::get('/get_yf_whs_packaging_by_id', 'getYfWhsPackagingById')->name('get_yf_whs_packaging_by_id');
-
+    
+    Route::post('/save_yf_iqc_inspection', 'saveYfIqcInspection')->name('save_yf_iqc_inspection');
+    
     // Route::get('/load_ppd_iqc_inspection', 'loadPpdIqcInspection')->name('load_ppd_iqc_inspection');
     // Route::get('/get_whs_receiving_by_id', 'getWhsReceivingById')->name('get_whs_receiving_by_id');
     // Route::get('/get_ppd_whs_packaging_by_id', 'getPpdWhsPackagingById')->name('get_ppd_whs_packaging_by_id');
     // Route::get('/get_ppd_iqc_inspection_by_id', 'getPpdIqcInspectionById')->name('get_ppd_iqc_inspection_by_id');
-    // Route::post('/save_ppd_iqc_inspection', 'savePpdIqcInspection')->name('save_ppd_iqc_inspection');
 });
 
 

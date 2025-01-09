@@ -9,7 +9,10 @@ use App\Interfaces\FileInterface;
 use App\Models\VwYfListOfReceived;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\CommonInterface;
+use App\Models\YfIqcInspectionsMod;
 use App\Interfaces\ResourceInterface;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\YfIqcInspectionRequest;
 
 class YfIqcInspectionController extends Controller
 {
@@ -88,6 +91,103 @@ class YfIqcInspectionController extends Controller
             return response()->json(['is_success' => 'true']);
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
+    
+    public function saveYfIqcInspection(YfIqcInspectionRequest $request)
+    {
+        // return '1';
+        date_default_timezone_set('Asia/Manila');
+        DB::beginTransaction();
+        try {
+            $mod_lot_no = explode(',',$request->lotNo);
+            $mod_defects = explode(',',$request->modeOfDefects);
+            $mod_lot_qty = explode(',',$request->lotQty);
+            $arr_sum_mod_lot_qty = array_sum($mod_lot_qty);
+
+            if(isset($request->iqc_inspection_id)){ //Edit
+                YfIqcInspection::where('id', $request->iqc_inspection_id)->update($request->validated()); //PO and packinglist number
+
+                YfIqcInspection::where('id', $request->iqc_inspection_id)
+                ->update([
+                    'no_of_defects' => $arr_sum_mod_lot_qty,
+                    'remarks' => $request->remarks,
+                    'inspector' => session('rapidx_user_id'),
+                ]);
+
+                $iqc_inspections_id = $request->iqc_inspection_id;
+            }else{ //Add
+                /* All required fields is the $request validated, check the column is IqcInspectionRequest
+                    NOTE: the name of fields must be match in column name
+                */
+                $create_iqc_inspection_id = YfIqcInspection::insertGetId($request->validated());
+                /*  All not required fields should to be inside the update method below
+                    NOTE: the name of fields must be match in column name
+                */
+                YfIqcInspection::where('id', $create_iqc_inspection_id)
+                ->update([
+                    'no_of_defects' => $arr_sum_mod_lot_qty,
+                    'remarks' => $request->remarks,
+                    'inspector' => session('rapidx_user_id'),
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+
+                /* Update rapid/db_pps TblWarehouseTransaction, set inspection_class to 3 */
+                // if($request->whs_transaction_id != 0){
+                //     TblWarehouseTransaction::where('pkid', $request->whs_transaction_id)
+                //     ->update([
+                //         'inspection_class' => 3,
+                //     ]);
+                // }
+                // /* Update status ReceivingDetails into 2*/
+                // if($request->receiving_detail_id != 0){
+                //     ReceivingDetails::where('id', $request->receiving_detail_id)
+                //     ->update([
+                //         'rawStatus' => 2,
+                //     ]);
+                // }
+                $iqc_inspections_id = $create_iqc_inspection_id;
+            }
+            /* Uploading of file if checked & iqc_coc_file is exist*/
+            if(isset($request->iqc_coc_file) ){
+                $original_filename = $request->file('iqc_coc_file')->getClientOriginalName(); //'/etc#hosts/@Álix Ãxel likes - beer?!.pdf';
+                $filtered_filename = $this->fileInterface->Slug($original_filename, '_', '.');
+                // $filtered_filename = '_'.$this->Slug($original_filename, '_', '.');	 // _etc_hosts_alix_axel_likes_beer.pdf
+                Storage::putFileAs('public/yf_iqc_inspection_coc', $request->iqc_coc_file,  $iqc_inspections_id .'_'. $filtered_filename);
+
+                YfIqcInspection::where('id', $iqc_inspections_id)
+                ->update([
+                    'iqc_coc_file' => $filtered_filename,
+                    'iqc_coc_file_name' => $original_filename
+                ]);
+            }
+
+            /* Get iqc_inspections_id, delete the previous MOD then  save new MOD*/
+            if(isset($request->modeOfDefects)){
+                YfIqcInspectionsMod::where('yf_iqc_inspection_id', $iqc_inspections_id)->update([
+                    'deleted_at' => date('Y-m-d H:i:s')
+                ]);
+                foreach ( $mod_lot_no as $key => $value) {
+                    YfIqcInspectionsMod::insert([
+                        'yf_iqc_inspection_id'    => $iqc_inspections_id,
+                        'lot_no'                => $mod_lot_no[$key],
+                        'mode_of_defects'       => $mod_defects[$key],
+                        'quantity'              => $mod_lot_qty[$key],
+                        'created_at'            => date('Y-m-d H:i:s')
+                    ]);
+                }
+            }else{
+                if(YfIqcInspectionsMod::where('yf_iqc_inspection_id', $iqc_inspections_id)->exists()){
+                    YfIqcInspectionsMod::where('yf_iqc_inspection_id', $iqc_inspections_id)->update([
+                        'deleted_at' => date('Y-m-d H:i:s')
+                    ]);
+                }
+            }
+            DB::commit();
+            return response()->json( [ 'result' => 1 ] );
+        } catch (\Throwable $th) {
+            DB::rollback();
+            throw $th;
         }
     }
 }

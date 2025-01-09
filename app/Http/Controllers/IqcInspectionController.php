@@ -379,7 +379,8 @@ class IqcInspectionController extends Controller
             if(isset($request->iqc_coc_file) ){
                 $original_filename = $request->file('iqc_coc_file')->getClientOriginalName(); //'/etc#hosts/@Álix Ãxel likes - beer?!.pdf';
                 $filtered_filename = $this->fileInterface->Slug($original_filename, '_', '.');
-                Storage::putFileAs('public/iqc_inspection_coc', $request->iqc_coc_file,  $iqc_inspections_id . $filtered_filename);
+                Storage::putFileAs('public/ts_iqc_inspection_coc', $request->iqc_coc_file,  $iqc_inspections_id .'_'. $filtered_filename);
+
 
                 IqcInspection::where('id', $iqc_inspections_id)
                 ->update([

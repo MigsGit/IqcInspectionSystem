@@ -54,12 +54,12 @@
                                     <!-- Start Page Content -->
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link active .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">Rapid PPD WHS Packaging V3</a>
+                                            <a class="nav-link active .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">Rapid YF WHS Packaging V3</a>
                                         </li>
                                     </ul>
-                                    <div class="tab-content mt-5" id="myTabContent">
+                                    <div class="tab-content mt-4" id="myTabContent">
                                         <div class="row justify-content-end">
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-2 d-none">
                                                 <label class="form-label">Lot Number</label>
                                                 <div class="input-group mb-3">
                                                     <button class="btn btn-primary" id="btnModalLotNum" el-btn-attr="ppdWhsDatabase"><i class="fa-solid fa-qrcode"></i></button>
@@ -77,7 +77,7 @@
                                         <div class="tab-pane fade show active" id="menu2" role="tabpanel" aria-labelledby="menu2-tab">
                                             <div class="card card-primary">
                                                 <div class="card-header">
-                                                    <h3 class="card-title">YEU Receiving</h3>
+                                                    <h3 class="card-title">Rapid YF WHS Packaging V3</h3>
                                                 </div>
                                                 <div class="card-body">
                                                     {{-- <br><br> --}}
@@ -244,15 +244,15 @@
 
     @section('js_content')
         <script type="text/javascript">
-            getDropdownDetailsByOptValue('CN',$('#txtCategoryMaterial'),'iqc_category_material_id','46');
-            const saveCnIqcInspection = function (){ //amodify
+            getDropdownDetailsByOptValue('YF',$('#txtCategoryMaterial'),'iqc_category_material_id','47');
+            const saveYfIqcInspection = function (){ //amodify
                 let serialized_data = new FormData(form.iqcInspection[0]);
                     serialized_data.append('lotNo',arrTableMod.lotNo);
                     serialized_data.append('modeOfDefects',arrTableMod.modeOfDefects);
                     serialized_data.append('lotQty',arrTableMod.lotQty);
                 $.ajax({
                     type: "POST",
-                    url: "save_cn_iqc_inspection",
+                    url: "save_yf_iqc_inspection",
                     data: serialized_data,
                     dataType: "json",
                     cache: false,
@@ -575,11 +575,11 @@
                 });
 
                 // /*Submit*/
-                // $(form.iqcInspection).submit(function (e) {
-                //     e.preventDefault();
-                //     saveCnIqcInspection();
-                //     // $('#modalScanQRSave').modal('show');
-                // });
+                $(form.iqcInspection).submit(function (e) {
+                    e.preventDefault();
+                    saveYfIqcInspection();
+                    // $('#modalScanQRSave').modal('show');
+                });
             });
 
         </script>

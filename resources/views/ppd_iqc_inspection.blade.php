@@ -60,9 +60,9 @@
                                             <a class="nav-link .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">Rapid PPD WHS Packaging V3</a>
                                         </li>
                                     </ul>
-                                    <div class="tab-content mt-5" id="myTabContent">
+                                    <div class="tab-content mt-4" id="myTabContent">
                                         <div class="row justify-content-end">
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-2 d-none">
                                                 <label class="form-label">Lot Number</label>
                                                 <div class="input-group mb-3">
                                                     <button class="btn btn-primary" id="btnModalLotNum" el-btn-attr="ppdWhsDatabase"><i class="fa-solid fa-qrcode"></i></button>
@@ -164,7 +164,7 @@
                                         <div class="tab-pane fade" id="menu2" role="tabpanel" aria-labelledby="menu2-tab">
                                             <div class="card card-primary">
                                                 <div class="card-header">
-                                                    <h3 class="card-title">YEU Receiving</h3>
+                                                    <h3 class="card-title">Rapid PPD WHS Packaging V3</h3>
                                                 </div>
                                                 <div class="card-body">
                                                     {{-- <br><br> --}}
@@ -345,7 +345,6 @@
                 dataTable = {
                     iqcInspection:'', //PPS Database
                     iqcPpdWhsPackaging: '',
-                    iqcYeuDetails: '',
                     iqcInspected: '',
                     iqcPpdWhsPackagingInspected: '',
 
@@ -651,7 +650,6 @@
                     $('#txtSearchLotNum').val('');
                     let categoryMaterial = '45';
 
-                    // dataTable.iqcYeuDetails.draw();
                     dataTable.iqcPpdWhsPackaging.draw();
                     dataTable.iqcPpdWhsPackagingInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
                     getDropdownDetailsByOptValue('TS',$('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
@@ -673,9 +671,7 @@
                 $('a[href="#menu1_2"]').click(function (e) {
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
-                    // dataTable.iqcYeuDetails.draw();
                     dataTable.iqcPpdWhsPackaging.draw();
-
                 });
 
                 $('a[href="#menu2_2"]').click(function (e) {

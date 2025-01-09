@@ -200,6 +200,7 @@ table.table thead th{
                                     <option value="TS">TS</option>
                                     <option value="CN">CN</option>
                                     <option value="PPD">PPD</option>
+                                    <option value="YF">YF</option>
                                 </select>
                             </div>
                             <div class="form-group">

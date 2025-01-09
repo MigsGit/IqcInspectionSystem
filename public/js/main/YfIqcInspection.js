@@ -64,7 +64,7 @@
             form.iqcInspection.find('#lot_inspected').val(1);
             form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
             form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
-            form.iqcInspection.find('#isUploadCoc').prop('required',true);
+            // form.iqcInspection.find('#isUploadCoc').prop('required',true);
             if( iqcCocFile === undefined || iqcCocFile === null ){
                 form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
                 form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
