@@ -9,6 +9,7 @@ use App\Http\Controllers\CommonController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\IqcInspectionController;
 use App\Http\Controllers\CnIqcInspectionController;
+use App\Http\Controllers\YfIqcInspectionController;
 use App\Http\Controllers\PpdIqcInspectionController;
 
 
@@ -37,6 +38,7 @@ Route::middleware('CheckSessionExist')->group(function(){
     Route::view('/ts_iqc_inspection','ts_iqc_inspection')->name('ts_iqc_inspection');
     Route::view('/ppd_iqc_inspection','ppd_iqc_inspection')->name('ppd_iqc_inspection');
     Route::view('/cn_iqc_inspection','cn_iqc_inspection')->name('cn_iqc_inspection');
+    Route::view('/yf_iqc_inspection','yf_iqc_inspection')->name('yf_iqc_inspection');
     Route::view('/dropdown_maintenance','dropdown_maintenance')->name('dropdown_maintenance');
 });
 
@@ -80,12 +82,10 @@ Route::controller(IqcInspectionController::class)->group(function () {
 Route::controller(CnIqcInspectionController::class)->group(function () {
     Route::get('/load_cn_whs_packaging', 'loadCnWhsPackaging')->name('load_cn_whs_packaging');
     Route::get('/load_cn_iqc_inspection', 'loadCnIqcInspection')->name('load_cn_iqc_inspection');
-    Route::get('/get_cn_whs_packaging_by_id', 'getCnWhsPackagingById')->name('get_ppd_whs_packaging_by_id');
-    Route::get('/get_cn_iqc_inspection_by_id', 'getCnIqcInspectionById')->name('get_ppd_whs_packaging_by_id');
+    Route::get('/get_cn_whs_packaging_by_id', 'getCnWhsPackagingById')->name('get_cn_whs_packaging_by_id');
+    Route::get('/get_cn_iqc_inspection_by_id', 'getCnIqcInspectionById')->name('get_cn_iqc_inspection_by_id');
 
     Route::post('/save_cn_iqc_inspection', 'saveCnIqcInspection')->name('save_cn_iqc_inspection');
-
-
 });
 Route::controller(PpdIqcInspectionController::class)->group(function () {
     Route::get('/load_whs_transaction', 'loadWhsTransaction')->name('load_whs_transaction');
@@ -95,16 +95,17 @@ Route::controller(PpdIqcInspectionController::class)->group(function () {
     Route::get('/get_ppd_whs_packaging_by_id', 'getPpdWhsPackagingById')->name('get_ppd_whs_packaging_by_id');
     Route::get('/get_ppd_iqc_inspection_by_id', 'getPpdIqcInspectionById')->name('get_ppd_iqc_inspection_by_id');
     Route::post('/save_ppd_iqc_inspection', 'savePpdIqcInspection')->name('save_ppd_iqc_inspection');
+});
+Route::controller(YfIqcInspectionController::class)->group(function () {
+    Route::get('/load_yf_whs_packaging', 'loadYfWhsPackaging')->name('load_yf_whs_packaging');
 
-    // Route::get('/load_iqc_inspection', 'loadIqcInspection')->name('load_iqc_inspection');
-    // Route::get('/load_whs_details', 'loadWhsDetails')->name('load_whs_details');
-    // Route::get('/load_yeu_details', 'loadYeuDetails')->name('load_yeu_details');
-    // Route::get('/get_iqc_inspection_by_judgement', 'getIqcInspectionByJudgement')->name('get_iqc_inspection_by_judgement');
-    // Route::get('/get_iqc_inspection_by_id', 'getIqcInspectionById')->name('get_iqc_inspection_by_id');
+    Route::get('/get_yf_whs_packaging_by_id', 'getYfWhsPackagingById')->name('get_yf_whs_packaging_by_id');
+
+    // Route::get('/load_ppd_iqc_inspection', 'loadPpdIqcInspection')->name('load_ppd_iqc_inspection');
     // Route::get('/get_whs_receiving_by_id', 'getWhsReceivingById')->name('get_whs_receiving_by_id');
-    // Route::get('/view_coc_file_attachment/{id}', 'viewCocFileAttachment')->name('view_coc_file_attachment');
-    // Route::get('/get_dropdown_details_by_opt_value', 'getDropdownDetailsByOptValue')->name('get_dropdown_details_by_opt_value');
-    // Route::get('/get_yeu_receiving_by_id', 'getYeuReceivingById')->name('get_yeu_receiving_by_id');
+    // Route::get('/get_ppd_whs_packaging_by_id', 'getPpdWhsPackagingById')->name('get_ppd_whs_packaging_by_id');
+    // Route::get('/get_ppd_iqc_inspection_by_id', 'getPpdIqcInspectionById')->name('get_ppd_iqc_inspection_by_id');
+    // Route::post('/save_ppd_iqc_inspection', 'savePpdIqcInspection')->name('save_ppd_iqc_inspection');
 });
 
 

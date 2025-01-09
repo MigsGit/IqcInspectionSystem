@@ -81,7 +81,7 @@
             /*Mode of Defects Modal*/
             $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
             $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
-            for (let i = 0; i < response.length; i++) {
+            for (let i = 0; i < 1; i++) {
                 let optLotNo = `<option value="${lotNo}">${lotNo}</option>`;
                 $('#mod_lot_no').append(optLotNo);
             }
@@ -89,7 +89,6 @@
         },form.iqcInspection)
 
     }
-
 
     const getCnIqcInspectionById = function (iqcInpectionId,iqcCategoryMaterialId) {
         let data = {
@@ -170,7 +169,8 @@
             /* Display the Mode of Defects Button */
             divDisplayNoneClass(form.iqcInspection,lotAccepted);
 
-            console.log('iqcInspectionsMods',iqcInspectionsMods);
+                        console.log('iqcCocFile',iqcCocFile);
+
 
             $('#tblModeOfDefect tbody').empty();
             arrTableMod.lotNo = [];

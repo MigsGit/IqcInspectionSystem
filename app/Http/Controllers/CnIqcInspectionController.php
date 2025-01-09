@@ -10,16 +10,14 @@ use App\Models\User;
 use App\Models\CnIqcInspection;
 use App\Models\CnIqcInspectionsMod;
 use App\Models\VwCnListOfReceived;
+use App\Http\Requests\CnIqcInspectionRequest;
+
 use App\Interfaces\FileInterface;
 use App\Interfaces\CommonInterface;
 use App\Interfaces\ResourceInterface;
-use App\Http\Requests\CnIqcInspectionRequest;
 
 class CnIqcInspectionController extends Controller
 {
-    //TODO: Lagyan ng dept ang getDropdown
-    //FORMAT OF DEVELOPMENT
-    //FILES NEED FOR ME
     protected $resourceInterface;
     protected $commonInterface;
     protected $fileInterface;

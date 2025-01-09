@@ -78,9 +78,10 @@
 <script src="{{ asset('public/js/main/UserLevel.js') }}?t=<?=time()?>"></script>
 
 {{-- IQC --}}
-<script src="{{ asset('public/js/main/PpdIqcInspection.js') }}?t=<?=time()?>"></script>
 <script src="{{ asset('public/js/main/IqcInspection.js') }}?t=<?=time()?>"></script>
 <script src="{{ asset('public/js/main/CnIqcInspection.js') }}?t=<?=time()?>"></script>
+<script src="{{ asset('public/js/main/PpdIqcInspection.js') }}?t=<?=time()?>"></script>
+<script src="{{ asset('public/js/main/YfIqcInspection.js') }}?t=<?=time()?>"></script>
 <script src="{{ asset('public/js/main/Setting.js') }}?t=<?=time()?>"></script>
 
 

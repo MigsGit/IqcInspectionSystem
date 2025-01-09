@@ -80,8 +80,10 @@
             getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection');
             getDropdownDetailsByOptValue('TS',$('#mode_of_defect'),'mode_of_defects');
 
+            console.log('iqcCocFile',iqcCocFile);
 
-            if( iqcCocFile === undefined || iqcCocFile === null ){
+
+            if( iqcCocFile === undefined || iqcCocFile === null){
                 form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
                 form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
             }else{
@@ -90,8 +92,6 @@
             }
             /* Display the Mode of Defects Button */
             divDisplayNoneClass(form.iqcInspection,lotAccepted);
-
-
 
             $('#tblModeOfDefect tbody').empty();
             arrTableMod.lotNo = [];

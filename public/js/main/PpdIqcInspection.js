@@ -296,7 +296,8 @@
                 }
             }
             /*Mode of Defects Modal*/
-            console.log('lotNo',lotNo);
+            console.log('iqcCocFile',iqcCocFile);
+
 
             $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
             $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
