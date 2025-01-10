@@ -182,7 +182,7 @@ class YfIqcInspectionController extends Controller
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
     }
-    
+
     public function getYfIqcInspectionById(Request $request){
         try {
             $tbl_whs_trasanction = YfIqcInspection::with('yf_iqc_inspections_mods','yf_iqc_inspections_mods.iqc_dropdown_detail','user_iqc')
@@ -195,7 +195,6 @@ class YfIqcInspectionController extends Controller
     }
     public function saveYfIqcInspection(YfIqcInspectionRequest $request)
     {
-        // return '1';
         date_default_timezone_set('Asia/Manila');
         DB::beginTransaction();
         try {
@@ -262,7 +261,17 @@ class YfIqcInspectionController extends Controller
             }
 
             /* Get iqc_inspections_id, delete the previous MOD then  save new MOD*/
-            if(isset($request->modeOfDefects)){
+            if($request->accepted == 1){
+                // return 'true';
+                IqcInspectionsMod::where('iqc_inspection_id', $iqc_inspections_id)->update([
+                    'deleted_at' => date('Y-m-d H:i:s')
+                ]);
+                IqcInspection::where('id', $iqc_inspections_id)
+                ->update([
+                    'no_of_defects' => 0,
+                ]);
+            }
+            if(isset($request->modeOfDefects)   && $request->accepted == 0){
                 YfIqcInspectionsMod::where('yf_iqc_inspection_id', $iqc_inspections_id)->update([
                     'deleted_at' => date('Y-m-d H:i:s')
                 ]);

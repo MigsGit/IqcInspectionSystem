@@ -39,18 +39,18 @@ class IqcInspectionController extends Controller
     protected $resourceInterface;
     protected $commonInterface;
     protected $fileInterface;
-    public function __construct(ResourceInterface $resourceInterface,CommonInterface $commonInterface,FileInterface $fileInterface) {
+    public function __construct(ResourceInterface $resourceInterface,CommonInterface $commonInterface,FileInterface $fileInterface)
+    {
         $this->resourceInterface = $resourceInterface;
         $this->commonInterface = $commonInterface;
         $this->fileInterface = $fileInterface;
     }
-
     public function getIqcInspectionByJudgement(Request $request)
     {
         return $iqc_inspection_by = IqcInspection::where('judgement',1)->get();
     }
-
-    public function loadWhsPackaging(Request $request){
+    public function loadWhsPackaging(Request $request)
+    {
         try {
             /*
                 TODO: Get the data only with whs_transaction.inspection_class = 1 - For Inspection, while
@@ -90,8 +90,8 @@ class IqcInspectionController extends Controller
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
     }
-
-    public function loadYeuDetails(Request $request){
+    public function loadYeuDetails(Request $request)
+    {
         if( isset( $request->lotNum ) ){
             $tbl_whs_trasanction = DB::connection('mysql_rapidx_yeu')
             ->select('SELECT *  FROM yeu_receives
@@ -180,7 +180,6 @@ class IqcInspectionController extends Controller
         ->rawColumns(['rawAction','rawStatus'])
         ->make(true);
     }
-
     public function loadIqcInspection(Request $request)
     {
         /*  Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
@@ -266,7 +265,8 @@ class IqcInspectionController extends Controller
         ->make(true);
 
     }
-    public function getYeuReceivingById(Request $request){
+    public function getYeuReceivingById(Request $request)
+    {
         try {
             /**
              * Add Conditions as many as you want
@@ -292,8 +292,8 @@ class IqcInspectionController extends Controller
         ->get(['ts_iqc_inspections.id as iqc_inspection_id','ts_iqc_inspections.*']);
         return response()->json(['tbl_whs_trasanction'=>$tbl_whs_trasanction]);
     }
-
-    public function getTsWhsPackagingById(Request $request){
+    public function getTsWhsPackagingById(Request $request)
+    {
         try {
 
             $query = $this->resourceInterface->readCustomEloquent( VwListOfReceived::class);
@@ -308,7 +308,6 @@ class IqcInspectionController extends Controller
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
     }
-
     public function getLotNumberByWhsTransactionId()
     {
         $dropdown_aql =  DropdownIqcAql::get();
@@ -321,9 +320,9 @@ class IqcInspectionController extends Controller
             'value' =>  $arr_dropdown_aql_value
         ]);
     }
-
     public function saveIqcInspection(IqcInspectionRequest $request)
     {
+        // return $request->accepted;
         date_default_timezone_set('Asia/Manila');
         DB::beginTransaction();
         try {
@@ -390,7 +389,17 @@ class IqcInspectionController extends Controller
             }
 
             /* Get iqc_inspections_id, delete the previous MOD then  save new MOD*/
-            if(isset($request->modeOfDefects)){
+            if($request->accepted == 1){
+                // return 'true';
+                IqcInspectionsMod::where('iqc_inspection_id', $iqc_inspections_id)->update([
+                    'deleted_at' => date('Y-m-d H:i:s')
+                ]);
+                IqcInspection::where('id', $iqc_inspections_id)
+                ->update([
+                    'no_of_defects' => 0,
+                ]);
+            }
+            if(isset($request->modeOfDefects)  && $request->accepted == 0){
                 IqcInspectionsMod::where('iqc_inspection_id', $iqc_inspections_id)->update([
                     'deleted_at' => date('Y-m-d H:i:s')
                 ]);
@@ -417,7 +426,6 @@ class IqcInspectionController extends Controller
             throw $th;
         }
     }
-
     public function getModeOfDefect(){
         // return 'true';
         $dropdown_iqc_mode_of_defect = DropdownIqcModeOfDefect::get();
@@ -430,14 +438,13 @@ class IqcInspectionController extends Controller
             'value' =>  $arr_dropdown_iqc_mode_of_defect_value
         ]);
     }
-
     public function viewCocFileAttachment(Request $request,$iqc_inspection_id)
     {
         $iqc_coc_file_name = IqcInspection::where('id',$iqc_inspection_id)->get('iqc_coc_file');
         return Storage::response( 'public/iqc_inspection_coc/' . $iqc_inspection_id .'_'. $iqc_coc_file_name[0][ 'iqc_coc_file' ] );
     }
-
-    public function getDropdownDetailsByOptValue(Request $request){
+    public function getDropdownDetailsByOptValue(Request $request)
+    {
         try {
             /**
              * Add Relations as many as you want
@@ -470,6 +477,14 @@ class IqcInspectionController extends Controller
                 'value' =>  $arrIqcDropdownDetailValue
             ]);
             // return response()->json(['is_success' => 'true','iqcDropdownDetail'=>$iqcDropdownDetail]);
+        } catch (Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
+    public function getModeOfDefectsById(Request $request){
+        try {
+            $get_mode_of_defects_by_id = $this->resourceInterface->readById(IqcDropdownDetail::class,$request->selectedMod);
+            return response()->json(['is_success' => 'true','get_mode_of_defects_by_id'=> $get_mode_of_defects_by_id[0]->dropdown_details]);
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }

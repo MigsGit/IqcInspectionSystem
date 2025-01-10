@@ -358,6 +358,13 @@ const getDropdownDetailsByOptValue = function (section=null,cmb_element,iqc_insp
                 cmb_element.val(value[0]);
                 return;
             }
+            if(iqc_inspection_column_ref =='mode_of_defects'){
+                for (let i = 0; i < id.length; i++) {
+                    let opt = `<option value="${value[i]}">${value[i]}</option>`;
+                    cmb_element.append(opt);
+                }
+                return;
+            }
             for (let i = 0; i < id.length; i++) {
                 let opt = `<option value="${id[i]}">${value[i]}</option>`;
                 cmb_element.append(opt);
@@ -370,6 +377,7 @@ const getDropdownDetailsByOptValue = function (section=null,cmb_element,iqc_insp
         }
     });
 }
+
 
 
 

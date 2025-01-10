@@ -260,6 +260,10 @@
     @section('js_content')
         <script type="text/javascript">
             $(document).ready(function () {
+                globalVar = {
+                    modeOfDefectsById: ""
+                }
+
                 tbl = {
                     iqcInspection:'#tblIqcInspection',
                     iqcWhsReceivingPackaging:'#tblIqcWhsReceivingPackaging',
@@ -429,6 +433,7 @@
                     $('#modalModeOfDefect').modal('show');
                 });
 
+
                 $('#btnAddModLotNumber').click(function (e) {
                     e.preventDefault();
 
@@ -441,16 +446,14 @@
                         toastr.error('Error: Please Fill up all fields !');
                         return false;
                     }
-
                     /* Counter and Disabled Removed Button */
                     arrCounter.ctr++;
                     disabledEnabledButton(arrCounter.ctr)
-
                     /* Get selected array to the table */
                     var html_body  = '<tr>';
                         html_body += '<td>'+arrCounter.ctr+'</td>';
                         html_body += '<td>'+selectedLotNo+'</td>';
-                        html_body += '<td>'+selectedMod+'</td>';
+                        html_body += '<td>'+globalVar.modeOfDefectsById+'</td>';
                         html_body += '<td>'+selectedLotQty+'</td>';
                         html_body += '</tr>';
                     $('#tblModeOfDefect tbody').append(html_body);
@@ -458,8 +461,6 @@
                     arrTableMod.lotNo.push(selectedLotNo);
                     arrTableMod.modeOfDefects.push(selectedMod);
                     arrTableMod.lotQty.push(selectedLotQty);
-                    console.log('click',arrTableMod.lotQty);
-                    // console.log('check',arrTableMod);
                 });
 
                 btn.saveComputation.click(function (e) {

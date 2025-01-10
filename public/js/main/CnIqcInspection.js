@@ -183,7 +183,7 @@
                 btn.removeModLotNumber.prop('disabled',false);
                 for (let i = 0; i < iqcInspectionsMods.length; i++) {
                     let selectedLotNo = iqcInspectionsMods[i].lot_no
-                    let selectedMod = iqcInspectionsMods[i].iqc_dropdown_detail.dropdown_details;
+                    let selectedMod = iqcInspectionsMods[i].mode_of_defects;
                     let selectedLotQty = iqcInspectionsMods[i].quantity
                     arrCounter.ctr = i+1;
                     var html_body  = '<tr>';

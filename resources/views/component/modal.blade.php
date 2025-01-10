@@ -411,8 +411,8 @@
                             <div class="input-group-prepend w-50">
                                 <span class="input-group-text w-100" id="basic-addon1">Mode of Defect</span>
                             </div>
+                            {{-- <select class="form-control select2bs4" name="mode_of_defect" id="mode_of_defect" style="width: 50%;"> --}}
                             <select class="form-control select2bs4" name="mode_of_defect" id="mode_of_defect" style="width: 50%;">
-                            {{-- <select class="form-control" name="mode_of_defect" id="mode_of_defect" style="width: 50%;"> --}}
                             </select>
                         </div>
                     </div>

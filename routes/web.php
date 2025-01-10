@@ -77,6 +77,8 @@ Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/get_dropdown_details_by_opt_value', 'getDropdownDetailsByOptValue')->name('get_dropdown_details_by_opt_value');
     Route::get('/get_yeu_receiving_by_id', 'getYeuReceivingById')->name('get_yeu_receiving_by_id');
 
+    Route::get('/get_mode_of_defects_by_id', 'getModeOfDefectsById')->name('get_mode_of_defects_by_id');
+
     Route::post('/save_iqc_inspection', 'saveIqcInspection')->name('save_iqc_inspection');
 });
 Route::controller(CnIqcInspectionController::class)->group(function () {
