@@ -73,7 +73,7 @@ class IqcInspectionController extends Controller
             ->addColumn('rawAction', function($row){
                 $result = '';
                 $result .= '<center>';
-                $result .= "<button class='btn btn-info btn-sm mr-1 d-none' pkid-received='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+                $result .= "<button class='btn btn-info btn-sm mr-1' pkid-received='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
                 $result .= '</center>';
                 return $result;
             })
@@ -112,7 +112,7 @@ class IqcInspectionController extends Controller
         ->addColumn('rawAction', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1 d-none' yeu-receives-id='".$row->id."' id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= "<button class='btn btn-info btn-sm mr-1' yeu-receives-id='".$row->id."' id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
             $result .= '</center>';
             return $result;
         })
@@ -434,7 +434,7 @@ class IqcInspectionController extends Controller
     public function viewCocFileAttachment(Request $request,$iqc_inspection_id)
     {
         $iqc_coc_file_name = IqcInspection::where('id',$iqc_inspection_id)->get('iqc_coc_file');
-        return Storage::response( 'public/iqc_inspection_coc/' . $iqc_inspection_id . $iqc_coc_file_name[0][ 'iqc_coc_file' ] );
+        return Storage::response( 'public/iqc_inspection_coc/' . $iqc_inspection_id .'_'. $iqc_coc_file_name[0][ 'iqc_coc_file' ] );
     }
 
     public function getDropdownDetailsByOptValue(Request $request){

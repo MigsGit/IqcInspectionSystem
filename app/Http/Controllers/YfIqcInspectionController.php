@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\YfIqcInspection;
-use Yajra\DataTables\DataTables;
 
+use Yajra\DataTables\DataTables;
 use App\Interfaces\FileInterface;
 use App\Models\VwYfListOfReceived;
 use Illuminate\Support\Facades\DB;
@@ -66,6 +67,94 @@ class YfIqcInspectionController extends Controller
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
     }
+    public function loadYfIqcInspection(Request $request){
+        try {
+            /*  Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
+            NOTE: If the data exist to iqc_inspections it means the data is already inspected
+        */
+         if( isset( $request->lotNum ) ){
+                $tbl_iqc_inspected = DB::connection('mysql')
+                ->select(' SELECT *
+                    FROM yf_iqc_inspections
+                    WHERE 1=1
+                    AND iqc_category_material_id = "'.$request->category_material.'"
+                    AND deleted_at IS NULL AND judgement >= 1
+                    AND lot_no = "'.$request->lotNum.'"
+                    ORDER BY created_at DESC
+                ');
+            }else{
+                $tbl_iqc_inspected = DB::connection('mysql')
+                ->select('SELECT *
+                    FROM yf_iqc_inspections
+                    WHERE 1=1
+                    AND iqc_category_material_id = "'.$request->category_material.'"
+                    AND deleted_at IS NULL
+                    AND judgement >= 1
+                    ORDER BY created_at DESC
+                ');
+            }
+            return DataTables::of($tbl_iqc_inspected)
+            ->addColumn('rawAction', function($row){
+                $result = '';
+                $result .= '<center>';
+                // if($row->inspector == Auth::user()->id || Auth::user()->username =='mclegaspi'){ //nmodify
+                    $result .= "<button class='btn btn-info btn-sm mr-1' iqc-inspection-id='".$row->id."'id='btnEditIqcInspection' inspector='".$row->inspector."'><i class='fa-solid fa-pen-to-square'></i></button>";
+                // }
+                $result .= '</center>';
+                return $result;
+            })
+
+            ->addColumn('rawStatus', function($row){
+                // return $row->judgement;
+                $result = '';
+                $backgound = '';
+                $judgement = '';
+                $result .= '<center>';
+                switch ($row->judgement) {
+                    case 1:
+                        $judgement = 'Accepted';
+                        $backgound = 'bg-success';
+
+                        break;
+                    case 2:
+                        $judgement = 'Reject';
+                        $backgound = 'bg-danger';
+                        break;
+
+                    default:
+                        $judgement = 'On-going';
+                        $backgound = 'bg-primary';
+                        break;
+                }
+                $result .= '<span class="badge rounded-pill '.$backgound.' ">'.$judgement.'</span>';
+                $result .= '</center>';
+                return $result;
+            })
+            ->addColumn('app_ctrl_no', function($row){
+                $result = '';
+                $result .= $row->app_no . $row->app_no_extension;
+                return $result;
+            })
+            ->addColumn('time_inspected', function($row){
+                $result = '';
+                $result .= '<center>';
+                $result .= $row->time_ins_from.'-'.$row->time_ins_to;
+                $result .= '</center>';
+                return $result;
+            })
+            ->addColumn('qc_inspector', function($row){
+                $qc_inspector = User::where('id',$row->inspector)->get();
+                $result = '';
+                $result .= $qc_inspector[0]->name;
+                return $result;
+            })
+            ->rawColumns(['rawAction','rawStatus','app_ctrl_no','qc_inspector','time_inspected',])
+            ->make(true);
+
+        } catch (Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
     public function getYfWhsPackagingById(Request $request)
     {
         // return '1';
@@ -94,6 +183,16 @@ class YfIqcInspectionController extends Controller
         }
     }
     
+    public function getYfIqcInspectionById(Request $request){
+        try {
+            $tbl_whs_trasanction = YfIqcInspection::with('yf_iqc_inspections_mods','yf_iqc_inspections_mods.iqc_dropdown_detail','user_iqc')
+            ->where('id',$request->iqc_inspection_id)
+            ->get(['yf_iqc_inspections.id as iqc_inspection_id','yf_iqc_inspections.*']);
+            return response()->json(['is_success' => 'true','tbl_whs_trasanction'=>$tbl_whs_trasanction]);
+        } catch (Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
     public function saveYfIqcInspection(YfIqcInspectionRequest $request)
     {
         // return '1';
@@ -149,7 +248,7 @@ class YfIqcInspectionController extends Controller
                 $iqc_inspections_id = $create_iqc_inspection_id;
             }
             /* Uploading of file if checked & iqc_coc_file is exist*/
-            if(isset($request->iqc_coc_file) ){
+            if(isset($request->iqc_coc_file) ){ //TODO: Transfer to common function
                 $original_filename = $request->file('iqc_coc_file')->getClientOriginalName(); //'/etc#hosts/@Álix Ãxel likes - beer?!.pdf';
                 $filtered_filename = $this->fileInterface->Slug($original_filename, '_', '.');
                 // $filtered_filename = '_'.$this->Slug($original_filename, '_', '.');	 // _etc_hosts_alix_axel_likes_beer.pdf
@@ -190,4 +289,5 @@ class YfIqcInspectionController extends Controller
             throw $th;
         }
     }
+
 }

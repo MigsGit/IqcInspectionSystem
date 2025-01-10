@@ -182,7 +182,6 @@ class CnIqcInspectionController extends Controller
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
     }
-
     public function getCnIqcInspectionById(Request $request){
         try {
             $tbl_whs_trasanction = CnIqcInspection::with('cn_iqc_inspections_mods','cn_iqc_inspections_mods.iqc_dropdown_detail','user_iqc')

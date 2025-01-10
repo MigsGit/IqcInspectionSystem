@@ -149,7 +149,7 @@ class PpdIqcInspectionController extends Controller
         ->addColumn('rawAction', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1 d-none' whs-trasaction-id='".$row->pkid."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= "<button class='btn btn-info btn-sm mr-1' whs-trasaction-id='".$row->pkid."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
             $result .= '</center>';
             return $result;
         })
@@ -187,7 +187,7 @@ class PpdIqcInspectionController extends Controller
             ->addColumn('rawAction', function($row){
                 $result = '';
                 $result .= '<center>';
-                $result .= "<button class='btn btn-info btn-sm mr-1 d-none' pkid-received='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+                $result .= "<button class='btn btn-info btn-sm mr-1' pkid-received='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
                 $result .= '</center>';
                 return $result;
             })

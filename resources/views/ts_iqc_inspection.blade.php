@@ -252,80 +252,8 @@
             </section>
         </div>
 
-        <!--- Modal modalSaveIqcInspection formSaveIqcInspection-->
-        <!--- Modal modalLotNum-->
+        <!--- Modal modalSaveIqcInspection formSaveIqcInspection modalModeOfDefect modalLotNum-->
         @include('component.modal')
-
-        <div class="modal fade" id="modalModeOfDefect" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
-            <div class="modal-dialog modal-md">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title"><i class="fa fa-edit"></i> Mode of Defects Details</h4>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-sm-12 mt-2">
-                                <div class="input-group input-group-sm mb-3">
-                                    <div class="input-group-prepend w-50">
-                                        <span class="input-group-text w-100" id="basic-addon1">Lot No.</span>
-                                    </div>
-                                    <select class="form-control select2bs4" name="mod_lot_no" id="mod_lot_no" style="width: 50%;">
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-12">
-                                <div class="input-group input-group-sm mb-3">
-                                    <div class="input-group-prepend w-50">
-                                        <span class="input-group-text w-100" id="basic-addon1">Mode of Defect</span>
-                                    </div>
-                                    <select class="form-control select2bs4" name="mode_of_defect" id="mode_of_defect" style="width: 50%;">
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-12">
-                                <div class="input-group input-group-sm mb-3">
-                                    <div class="input-group-prepend w-50">
-                                        <span class="input-group-text w-100" id="basic-addon1">Quantity</span>
-                                    </div>
-                                    <input class="form-control" type="number" name="mod_quantity" id="mod_quantity" value="0" min =0>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row justify-content-between">
-                            <div class="col-sm-3">
-                                <button type="button" class="btn btn-sm btn-danger" id="btnRemoveModLotNumber" disabled><i class="fas fa-trash-alt"></i> Remove </a></button>
-                            </div>
-                            <div class="col-sm-2">
-                                <button type="button" class="btn btn-sm btn-primary" id="btnAddModLotNumber"><i class="fas fa-plus"></i>Add</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12 mt-3">
-                                <table id="tblModeOfDefect" class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
-                                    <thead>
-                                        <tr>
-                                            <th>Counter</th>
-                                            <th>Lot No.</th>
-                                            <th>Mode of Defects</th>
-                                            <th>Quantity</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer justify-content-end">
-                        {{-- <button type="button" class="btn btn-sm btn-primary" id="btnSaveComputation"><i class="fas fa-save"></i> Compute</button> --}}
-                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
     @endsection
 
@@ -343,11 +271,10 @@
                 };
 
                 dataTable = {
-                    iqcInspection:'', //iqcInspection
-                    iqcInspected: '',
+                    iqcTsWhsPackaging: '',
+                    iqcTsWhsPackagingInspected: '',
                     iqcYeuDetails: '',
                     iqcYeuInspected: '',
-                    iqcTsWhsPackaging: '',
 
                 };
 
@@ -377,7 +304,6 @@
                     modeOfDefects : [],
                     lotQty : []
                 };
-
 
                 dataTable.iqcTsWhsPackaging = $(tbl.iqcWhsReceivingPackaging).DataTable({
                     "processing" : true,
@@ -423,7 +349,7 @@
                     ],
                 });
 
-                dataTable.iqcInspected = $(tbl.iqcInspected).DataTable({
+                dataTable.iqcTsWhsPackagingInspected = $(tbl.iqcInspected).DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
@@ -566,7 +492,7 @@
                     $('#txtSearchLotNum').val('');
                     let categoryMaterial = '37';
                     dataTable.iqcTsWhsPackaging.draw();
-                    dataTable.iqcInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
+                    dataTable.iqcTsWhsPackagingInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                     getDropdownDetailsByOptValue('TS',$('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
                 });
 
@@ -591,7 +517,7 @@
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
                     let categoryMaterial = '37';
-                    dataTable.iqcInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
+                    dataTable.iqcTsWhsPackagingInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                 });
 
                 $('a[href="#menu1_2"]').click(function (e) {
@@ -642,7 +568,7 @@
                                 case 'whseTransaction':
                                         $('#txtSearchLotNum').val($(this).val());
                                         dataTable.iqcTsWhsPackaging.draw();
-                                        dataTable.iqcInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
+                                        dataTable.iqcTsWhsPackagingInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                                     break;
                                 case 'yeu':
                                         // alert('yeu')
@@ -702,7 +628,7 @@
                         form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
                     }
                 });
-                
+
                 form.iqcInspection.find('#severity_of_inspection').change(function (e) {
                     e.preventDefault();
                     let severityOfInspection = form.iqcInspection.find(this).val();
@@ -756,10 +682,10 @@
                 /*Submit*/
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
-                    saveIqcInspection();
+                    let categoryMaterialId = $('#txtCategoryMaterial').val();
+                    saveIqcInspection(categoryMaterialId);
                     // $('#modalScanQRSave').modal('show');
                 });
-                form.iqcInspection.find('select').val(1);
             });
 
         </script>

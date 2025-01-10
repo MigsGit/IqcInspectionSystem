@@ -1,6 +1,6 @@
 // $(document).ready(function () {
-
-    const editReceivingDetails = function () {
+    const editReceivingDetails = function ()
+    {
         form.iqcInspection.find('input').removeClass('is-valid');
         form.iqcInspection.find('input').removeClass('is-invalid');
         form.iqcInspection.find('input').attr('title', '');
@@ -99,8 +99,8 @@
         },form.iqcInspection)
 
     }
-
-    const getPpdWhsPackagingById = function () {
+    const getPpdWhsPackagingById = function ()
+    {
         form.iqcInspection.find('input').removeClass('is-valid');
         form.iqcInspection.find('input').removeClass('is-invalid');
         form.iqcInspection.find('input').attr('title', '');
@@ -179,7 +179,7 @@
             /*Mode of Defects Modal*/
             $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
             $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
-            for (let i = 0; i < response.length; i++) {
+            for (let i = 0; i < 1; i++) {
                 let optLotNo = `<option value="${lotNo}">${lotNo}</option>`;
                 $('#mod_lot_no').append(optLotNo);
             }
@@ -187,9 +187,8 @@
         },form.iqcInspection)
 
     }
-
-
-    const getPpdIqcInspectionById = function (iqcInpectionId,iqcCategoryMaterialId) {
+    const getPpdIqcInspectionById = function (iqcInpectionId,iqcCategoryMaterialId)
+    {
         let data = {
             "iqc_inspection_id"        : iqcInpectionId,
         }
@@ -280,6 +279,7 @@
                 for (let i = 0; i < iqcInspectionsMods.length; i++) {
                     let selectedLotNo = iqcInspectionsMods[i].lot_no
                     let selectedMod = iqcInspectionsMods[i].iqc_dropdown_detail.dropdown_details;
+                    // let selectedMod = iqcInspectionsMods[i].mode_of_defects;
                     let selectedLotQty = iqcInspectionsMods[i].quantity
                     arrCounter.ctr = i+1;
                     var html_body  = '<tr>';
@@ -309,5 +309,85 @@
             console.log('arrTableMod.lotQty',arrTableMod.lotQty);
         },form.iqcInspection);
 
+    }
+    const savePpdIqcInspection = function (categoryMaterialId)
+    { //amodify
+        let serialized_data = new FormData(form.iqcInspection[0]);
+            serialized_data.append('lotNo',arrTableMod.lotNo);
+            serialized_data.append('modeOfDefects',arrTableMod.modeOfDefects);
+            serialized_data.append('lotQty',arrTableMod.lotQty);
+        $.ajax({
+            type: "POST",
+            url: "save_ppd_iqc_inspection",
+            data: serialized_data,
+            dataType: "json",
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function(){
+                $('#modal-loading').modal('show');
+            },
+            success: function (response) {
+                $('#modal-loading').modal('hide');
+                if (response['result'] === 1){
+                    $('#modalSaveIqcInspection').modal('hide');
+                    if(categoryMaterialId == '44'){
+                        dataTable.iqcInspection.draw();
+                        dataTable.iqcInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterialId).load();
+                    }
+                    if(categoryMaterialId == '45'){
+                        dataTable.iqcPpdWhsPackaging.draw();
+                        dataTable.iqcPpdWhsPackagingInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterialId).load();
+                    }
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Your work has been saved",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    $('#modalScanQRSave').modal('hide');
+                    form.iqcInspection[0].reset();
+                }
+            },error: function (data, xhr, status){
+                let errors = data.responseJSON.errors ;
+                toastr.error(`Saving Failed, Please fill up all required fields`);
+                $('#modal-loading').modal('hide');
+                if(data.status === 422){
+                    errorHandler(errors.whs_transaction_id,form.iqcInspection.find('#whs_transaction_id'));
+                    errorHandler(errors.iqc_category_material_id,form.iqcInspection.find('#iqc_category_material_id'));
+                    errorHandler(errors.app_no,form.iqcInspection.find('#app_no'));
+                    errorHandler(errors.partcode,form.iqcInspection.find('#partcode'));
+                    errorHandler(errors.partname,form.iqcInspection.find('#partname'));
+                    errorHandler(errors.supplier,form.iqcInspection.find('#supplier'));
+                    errorHandler(errors.total_lot_qty,form.iqcInspection.find('#total_lot_qty'));
+                    errorHandler(errors.accept,form.iqcInspection.find('#accept'));
+                    errorHandler(errors.family,form.iqcInspection.find('#family'));
+                    errorHandler(errors.app_no_extension,form.iqcInspection.find('#app_no_extension'));
+                    errorHandler(errors.die_no,form.iqcInspection.find('#die_no'));
+                    errorHandler(errors.lot_no,form.iqcInspection.find('#lot_no'));
+                    errorHandler(errors.classification,form.iqcInspection.find('#classification'));
+                    errorHandler(errors.type_of_inspection,form.iqcInspection.find('#type_of_inspection'));
+                    errorHandler(errors.severity_of_inspection,form.iqcInspection.find('#severity_of_inspection'));
+                    errorHandler(errors.inspection_lvl,form.iqcInspection.find('#inspection_lvl'));
+                    errorHandler(errors.aql,form.iqcInspection.find('#aql'));
+                    errorHandler(errors.accept,form.iqcInspection.find('#accept'));
+                    errorHandler(errors.reject,form.iqcInspection.find('#reject'));
+                    errorHandler(errors.shift,form.iqcInspection.find('#shift'));
+                    errorHandler(errors.date_inspected,form.iqcInspection.find('#date_inspected'));
+                    errorHandler(errors.time_ins_from,form.iqcInspection.find('#time_ins_from'));
+                    errorHandler(errors.time_ins_to,form.iqcInspection.find('#time_ins_to'));
+                    errorHandler(errors.inspector,form.iqcInspection.find('#inspector'));
+                    errorHandler(errors.submission,form.iqcInspection.find('#submission'));
+                    errorHandler(errors.category,form.iqcInspection.find('#category'));
+                    errorHandler(errors.sampling_size,form.iqcInspection.find('#sampling_size'));
+                    errorHandler(errors.lot_inspected,form.iqcInspection.find('#lot_inspected'));
+                    errorHandler(errors.accepted,form.iqcInspection.find('#accepted'));
+                    errorHandler(errors.judgement,form.iqcInspection.find('#judgement'));
+                }else{
+                    toastr.error(`Error: ${data.status}`);
+                }
+            }
+        });
     }
 // });

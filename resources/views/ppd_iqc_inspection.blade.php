@@ -252,87 +252,15 @@
             </section>
         </div>
 
-        <!--- Modal modalSaveIqcInspection formSaveIqcInspection-->
-        <!--- Modal modalLotNum-->
+        <!--- Modal modalSaveIqcInspection formSaveIqcInspection modalModeOfDefect modalLotNum-->
         @include('component.modal')
-
-        <div class="modal fade" id="modalModeOfDefect" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
-            <div class="modal-dialog modal-md">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title"><i class="fa fa-edit"></i> Mode of Defects Details</h4>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-sm-12 mt-2">
-                                <div class="input-group input-group-sm mb-3">
-                                    <div class="input-group-prepend w-50">
-                                        <span class="input-group-text w-100" id="basic-addon1">Lot No.</span>
-                                    </div>
-                                    <select class="form-control select2bs4" name="mod_lot_no" id="mod_lot_no" style="width: 50%;">
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-12">
-                                <div class="input-group input-group-sm mb-3">
-                                    <div class="input-group-prepend w-50">
-                                        <span class="input-group-text w-100" id="basic-addon1">Mode of Defect</span>
-                                    </div>
-                                    <select class="form-control select2bs4" name="mode_of_defect" id="mode_of_defect" style="width: 50%;">
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-12">
-                                <div class="input-group input-group-sm mb-3">
-                                    <div class="input-group-prepend w-50">
-                                        <span class="input-group-text w-100" id="basic-addon1">Quantity</span>
-                                    </div>
-                                    <input class="form-control" type="number" name="mod_quantity" id="mod_quantity" value="0" min =0>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row justify-content-between">
-                            <div class="col-sm-3">
-                                <button type="button" class="btn btn-sm btn-danger" id="btnRemoveModLotNumber" disabled><i class="fas fa-trash-alt"></i> Remove </a></button>
-                            </div>
-                            <div class="col-sm-2">
-                                <button type="button" class="btn btn-sm btn-primary" id="btnAddModLotNumber"><i class="fas fa-plus"></i>Add</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12 mt-3">
-                                <table id="tblModeOfDefect" class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
-                                    <thead>
-                                        <tr>
-                                            <th>Counter</th>
-                                            <th>Lot No.</th>
-                                            <th>Mode of Defects</th>
-                                            <th>Quantity</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer justify-content-end">
-                        {{-- <button type="button" class="btn btn-sm btn-primary" id="btnSaveComputation"><i class="fas fa-save"></i> Compute</button> --}}
-                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
     @endsection
 
     @section('js_content')
         <script type="text/javascript">
             $(document).ready(function () {
-                
+
                 tbl = {
                     iqcInspection:'#tblIqcInspection',
                     iqcPpdWhsPackaging:'#tblIqcPpdWhsPackaging',
@@ -481,79 +409,7 @@
                         { "data" : "updated_at" },
                     ],
                 });
-                const savePpdIqcInspection = function (){ //amodify
-                    let serialized_data = new FormData(form.iqcInspection[0]);
-                        serialized_data.append('lotNo',arrTableMod.lotNo);
-                        serialized_data.append('modeOfDefects',arrTableMod.modeOfDefects);
-                        serialized_data.append('lotQty',arrTableMod.lotQty);
-                    $.ajax({
-                        type: "POST",
-                        url: "save_ppd_iqc_inspection",
-                        data: serialized_data,
-                        dataType: "json",
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        beforeSend: function(){
-                            $('#modal-loading').modal('show');
-                        },
-                        success: function (response) {
-                            $('#modal-loading').modal('hide');
-                            if (response['result'] === 1){
-                                $('#modalSaveIqcInspection').modal('hide');
-                                dataTable.iqcInspection.draw();
-                                dataTable.iqcPpdWhsPackagingInspected.draw();
-                                Swal.fire({
-                                    position: "center",
-                                    icon: "success",
-                                    title: "Your work has been saved",
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                });
-                                $('#modalScanQRSave').modal('hide');
-                                form.iqcInspection[0].reset();
-                            }
-                        },error: function (data, xhr, status){
-                            let errors = data.responseJSON.errors ;
-                            toastr.error(`Saving Failed, Please fill up all required fields`);
-                            $('#modal-loading').modal('hide');
-                            if(data.status === 422){
-                                errorHandler(errors.whs_transaction_id,form.iqcInspection.find('#whs_transaction_id'));
-                                errorHandler(errors.iqc_category_material_id,form.iqcInspection.find('#iqc_category_material_id'));
-                                errorHandler(errors.app_no,form.iqcInspection.find('#app_no'));
-                                errorHandler(errors.partcode,form.iqcInspection.find('#partcode'));
-                                errorHandler(errors.partname,form.iqcInspection.find('#partname'));
-                                errorHandler(errors.supplier,form.iqcInspection.find('#supplier'));
-                                errorHandler(errors.total_lot_qty,form.iqcInspection.find('#total_lot_qty'));
-                                errorHandler(errors.accept,form.iqcInspection.find('#accept'));
-                                errorHandler(errors.family,form.iqcInspection.find('#family'));
-                                errorHandler(errors.app_no_extension,form.iqcInspection.find('#app_no_extension'));
-                                errorHandler(errors.die_no,form.iqcInspection.find('#die_no'));
-                                errorHandler(errors.lot_no,form.iqcInspection.find('#lot_no'));
-                                errorHandler(errors.classification,form.iqcInspection.find('#classification'));
-                                errorHandler(errors.type_of_inspection,form.iqcInspection.find('#type_of_inspection'));
-                                errorHandler(errors.severity_of_inspection,form.iqcInspection.find('#severity_of_inspection'));
-                                errorHandler(errors.inspection_lvl,form.iqcInspection.find('#inspection_lvl'));
-                                errorHandler(errors.aql,form.iqcInspection.find('#aql'));
-                                errorHandler(errors.accept,form.iqcInspection.find('#accept'));
-                                errorHandler(errors.reject,form.iqcInspection.find('#reject'));
-                                errorHandler(errors.shift,form.iqcInspection.find('#shift'));
-                                errorHandler(errors.date_inspected,form.iqcInspection.find('#date_inspected'));
-                                errorHandler(errors.time_ins_from,form.iqcInspection.find('#time_ins_from'));
-                                errorHandler(errors.time_ins_to,form.iqcInspection.find('#time_ins_to'));
-                                errorHandler(errors.inspector,form.iqcInspection.find('#inspector'));
-                                errorHandler(errors.submission,form.iqcInspection.find('#submission'));
-                                errorHandler(errors.category,form.iqcInspection.find('#category'));
-                                errorHandler(errors.sampling_size,form.iqcInspection.find('#sampling_size'));
-                                errorHandler(errors.lot_inspected,form.iqcInspection.find('#lot_inspected'));
-                                errorHandler(errors.accepted,form.iqcInspection.find('#accepted'));
-                                errorHandler(errors.judgement,form.iqcInspection.find('#judgement'));
-                            }else{
-                                toastr.error(`Error: ${data.status}`);
-                            }
-                        }
-                    });
-                }
+
 
                 getDropdownDetailsByOptValue('TS',$('#txtCategoryMaterial'),'iqc_category_material_id','44');
 
@@ -828,7 +684,8 @@
                 /*Submit*/
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
-                    savePpdIqcInspection();
+                    let categoryMaterialId = $('#txtCategoryMaterial').val();
+                    savePpdIqcInspection(categoryMaterialId);
                     // $('#modalScanQRSave').modal('show');
                 });
                 form.iqcInspection.find('select').val(1);

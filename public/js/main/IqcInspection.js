@@ -1,7 +1,7 @@
 
 // $(document).ready(function () {
-
-    const editIqcInspected = function () {
+    const editIqcInspected = function ()
+    {
         let iqcInpectionId = $(this).attr('iqc-inspection-id')
         form.iqcInspection.find('input').removeClass('is-valid');
         form.iqcInspection.find('input').removeClass('is-invalid');
@@ -17,8 +17,8 @@
         getDieNo();
         getIqcInspectionById(iqcInpectionId);
     }
-
-    const editYeuIqcDetails = function () {
+    const editYeuIqcDetails = function ()
+    {
         getDieNo();
         form.iqcInspection.find('input').removeClass('is-valid');
         form.iqcInspection.find('input').removeClass('is-invalid');
@@ -102,15 +102,15 @@
             /*Mode of Defects Modal*/
             $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
             $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
-            for (let i = 0; i < response.length; i++) {
+            for (let i = 0; i < 1; i++) {
                 let optLotNo = `<option value="${lotNo}">${lotNo}</option>`;
                 $('#mod_lot_no').append(optLotNo);
             }
             console.log('whsarrTableMod',arrTableMod);
         },elFormId)
     }
-
-    const getTsWhsPackagingById = function () {
+    const getTsWhsPackagingById = function ()
+    {
         getDieNo();
         form.iqcInspection.find('input').removeClass('is-valid');
         form.iqcInspection.find('input').removeClass('is-invalid');
@@ -175,7 +175,7 @@
             getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_dppm'),'target_dppm');
             getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_lar'),'target_lar');
             getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection');
-            getDropdownDetailsByOptValue('TS','#mode_of_defect','mode_of_defects');
+            getDropdownDetailsByOptValue('TS',$('#mode_of_defect'),'mode_of_defects');
 
             // return;
             if( iqcCocFile === undefined || iqcCocFile === null ){
@@ -198,7 +198,7 @@
             /*Mode of Defects Modal*/
             $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
             $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
-            for (let i = 0; i < response.length; i++) {
+            for (let i = 0; i < 1; i++) {
                 let optLotNo = `<option value="${lotNo}">${lotNo}</option>`;
                 $('#mod_lot_no').append(optLotNo);
             }
@@ -206,8 +206,8 @@
         },elFormId)
 
     }
-
-    const getIqcInspectionById = function (iqcInpectionId) {
+    const getIqcInspectionById = function (iqcInpectionId)
+    {
         $.ajax({
             type: "GET",
             url: "get_iqc_inspection_by_id",
@@ -338,9 +338,8 @@
             }
         });
     }
-
-
-    const getDieNo = function () {
+    const getDieNo = function ()
+    {
         let opt = ``;
             opt += `<option value="" selected disabled>-Select-</option>`;
             opt += `<option value="">N/A</option>`;
@@ -350,17 +349,20 @@
             form.iqcInspection.find('#die_no').append(opt);
         }
     }
-    const disabledEnabledButton = function(arrCounter){
+    const disabledEnabledButton = function(arrCounter)
+    {
         if(arrCounter === 0 ){
             btn.removeModLotNumber.prop('disabled',true);
         }else{
             btn.removeModLotNumber.prop('disabled',false);
         }
     }
-    const getSum = function (total, num) {
+    const getSum = function (total, num)
+    {
         return total + Math.round(num);
     }
-    const divDisplayNoneClass =  function (elFormId = null,value){
+    const divDisplayNoneClass =  function (elFormId = null,value)
+    {
         if(value == 0){ //nmodify
             elFormId.find('.divMod').removeClass('d-none',true);
             elFormId.find('#judgement').val(2);
@@ -369,8 +371,8 @@
             elFormId.find('#judgement').val(1);
         }
     }
-
-    const saveIqcInspection = function (){ //amodify
+    const saveIqcInspection = function (categoryMaterialId)
+    { //amodify
         let serialized_data = new FormData(form.iqcInspection[0]);
             serialized_data.append('lotNo',arrTableMod.lotNo);
             serialized_data.append('modeOfDefects',arrTableMod.modeOfDefects);
@@ -390,8 +392,13 @@
                 $('#modal-loading').modal('hide');
                 if (response['result'] === 1){
                     $('#modalSaveIqcInspection').modal('hide');
-                    dataTable.iqcInspection.draw();
-                    dataTable.iqcInspected.draw();
+                    if(categoryMaterialId =="37"){
+                        dataTable.iqcTsWhsPackaging.draw();
+                        dataTable.iqcTsWhsPackagingInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterialId).draw();
+                    }else{
+                        dataTable.iqcYeuDetails.draw();
+                        dataTable.iqcYeuInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterialId).draw();
+                    }
                     Swal.fire({
                         position: "center",
                         icon: "success",
@@ -443,7 +450,6 @@
             }
         });
     }
-
     const getSamplingSizeBySamplingPlan = function (severityOfInspection,inspectionLvl,aql,totalLotQty){
         let data = {
             'severity_of_inspection' : severityOfInspection,

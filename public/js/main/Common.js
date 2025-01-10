@@ -341,7 +341,8 @@ const errorHandler = function (errors,formInput){
 const getDropdownDetailsByOptValue = function (section=null,cmb_element,iqc_inspection_column_ref,opt_value = null) {
     let opt = `<option value="" selected disabled>-Select-</option>`;
         opt += `<option value="N/A">N/A</option>`;
-    cmb_element.empty().append(opt)
+        console.log('cmb_element',cmb_element);
+        cmb_element.empty().append(opt)
     $.ajax({
         type: "GET",
         url: "get_dropdown_details_by_opt_value",
@@ -362,7 +363,6 @@ const getDropdownDetailsByOptValue = function (section=null,cmb_element,iqc_insp
                 cmb_element.append(opt);
             }
             console.log(opt_value);
-
             if(opt_value != null){
                 cmb_element.val(opt_value).trigger("change");
             }
