@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\IqcInspection;
+use App\Models\CnIqcInspection;
+use App\Models\YfIqcInspection;
+use App\Models\PpdIqcInspection;
 use App\Models\IqcDropdownDetail;
 use App\Interfaces\ResourceInterface;
+use Illuminate\Support\Facades\Storage;
 
 class CommonController extends Controller
 {
@@ -12,7 +17,7 @@ class CommonController extends Controller
     public function __construct(ResourceInterface $resourceInterface) {
         $this->resourceInterface = $resourceInterface;
     }
-        public function getSamplingSizeBySamplingPlan(Request $request)
+    public function getSamplingSizeBySamplingPlan(Request $request)
     {
         $arr_conditions = [
             $request->severity_of_inspection,
@@ -601,5 +606,25 @@ class CommonController extends Controller
             // 'inspector' =>session('rapidx_'),
             //'workweek' =>$this->getWorkWeek()
         ];
+    }
+    public function viewCocFileAttachment(Request $request,$section,$iqc_inspection_id)
+    {
+        if($section == "TS"){
+            $iqc_coc_file_name = IqcInspection::where('id',$iqc_inspection_id)->get('iqc_coc_file');
+            return Storage::response( 'public/iqc_inspection_coc/' . $iqc_inspection_id . $iqc_coc_file_name[0][ 'iqc_coc_file' ] );
+        }
+        if($section == "CN"){
+            $iqc_coc_file_name = CnIqcInspection::where('id',$iqc_inspection_id)->get('iqc_coc_file');
+            return Storage::response( 'public/cn_iqc_inspection_coc/' . $iqc_inspection_id . $iqc_coc_file_name[0][ 'iqc_coc_file' ] );
+        }
+        if($section == "YF"){
+            $iqc_coc_file_name = YfIqcInspection::where('id',$iqc_inspection_id)->get('iqc_coc_file');
+            return Storage::response( 'public/yf_iqc_inspection_coc/' . $iqc_inspection_id . $iqc_coc_file_name[0][ 'iqc_coc_file' ] );
+        }
+        if($section == "PPD"){
+            $iqc_coc_file_name = PpdIqcInspection::where('id',$iqc_inspection_id)->get('iqc_coc_file');
+            return Storage::response( 'public/ppd_iqc_inspection_coc/' . $iqc_inspection_id . $iqc_coc_file_name[0][ 'iqc_coc_file' ] );
+        }
+
     }
 }

@@ -377,7 +377,7 @@ class IqcInspectionController extends Controller
             /* Uploading of file if checked & iqc_coc_file is exist*/
             if(isset($request->iqc_coc_file) ){
                 $original_filename = $request->file('iqc_coc_file')->getClientOriginalName(); //'/etc#hosts/@Álix Ãxel likes - beer?!.pdf';
-                $filtered_filename = $this->fileInterface->Slug($original_filename, '_', '.');
+                $filtered_filename = '_'.$this->fileInterface->Slug($original_filename, '_', '.');
                 Storage::putFileAs('public/ts_iqc_inspection_coc', $request->iqc_coc_file,  $iqc_inspections_id .'_'. $filtered_filename);
 
 
@@ -438,11 +438,7 @@ class IqcInspectionController extends Controller
             'value' =>  $arr_dropdown_iqc_mode_of_defect_value
         ]);
     }
-    public function viewCocFileAttachment(Request $request,$iqc_inspection_id)
-    {
-        $iqc_coc_file_name = IqcInspection::where('id',$iqc_inspection_id)->get('iqc_coc_file');
-        return Storage::response( 'public/iqc_inspection_coc/' . $iqc_inspection_id .'_'. $iqc_coc_file_name[0][ 'iqc_coc_file' ] );
-    }
+
     public function getDropdownDetailsByOptValue(Request $request)
     {
         try {

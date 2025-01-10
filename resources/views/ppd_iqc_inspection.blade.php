@@ -260,6 +260,10 @@
     @section('js_content')
         <script type="text/javascript">
             $(document).ready(function () {
+                globalVar = {
+                    modeOfDefectsById: "",
+                    section: "PPD"
+                }
 
                 tbl = {
                     iqcInspection:'#tblIqcInspection',
@@ -615,8 +619,7 @@
                 form.iqcInspection.find('#iqc_coc_file_download').click(function (e) {
                     e.preventDefault();
                     let iqc_inspection_id = form.iqcInspection.find('#iqc_inspection_id').val();
-                    window.open('view_coc_file_attachment/'+iqc_inspection_id);
-
+                    window.open(`view_coc_file_attachment/${globalVar.section}/${iqc_inspection_id}`);
                 });
 
                 form.iqcInspection.find('#isUploadCoc').change(function (e) {

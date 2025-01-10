@@ -177,6 +177,10 @@
             getDropdownDetailsByOptValue('CN',$('#txtCategoryMaterial'),'iqc_category_material_id','46');
 
             $(document).ready(function () {
+                globalVar = {
+                    modeOfDefectsById: "",
+                    section: "CN"
+                }
 
                 tbl = {
                     iqcCnWhsPackaging:'#tblIqcCnWhsPackaging',
@@ -434,11 +438,16 @@
                     divDisplayNoneClass(form.iqcInspection,$(this).val());
                 });
 
+                // form.iqcInspection.find('#iqc_coc_file_download').click(function (e) {
+                //     e.preventDefault();
+                //     let iqc_inspection_id = form.iqcInspection.find('#iqc_inspection_id').val();
+                //     window.open('view_coc_file_attachment/'+iqc_inspection_id);
+
+                // });
                 form.iqcInspection.find('#iqc_coc_file_download').click(function (e) {
                     e.preventDefault();
                     let iqc_inspection_id = form.iqcInspection.find('#iqc_inspection_id').val();
-                    window.open('view_coc_file_attachment/'+iqc_inspection_id);
-
+                    window.open(`view_coc_file_attachment/${globalVar.section}/${iqc_inspection_id}`);
                 });
 
                 form.iqcInspection.find('#isUploadCoc').change(function (e) {

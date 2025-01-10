@@ -261,7 +261,8 @@
         <script type="text/javascript">
             $(document).ready(function () {
                 globalVar = {
-                    modeOfDefectsById: ""
+                    modeOfDefectsById: "",
+                    section: "TS"
                 }
 
                 tbl = {
@@ -453,7 +454,7 @@
                     var html_body  = '<tr>';
                         html_body += '<td>'+arrCounter.ctr+'</td>';
                         html_body += '<td>'+selectedLotNo+'</td>';
-                        html_body += '<td>'+globalVar.modeOfDefectsById+'</td>';
+                        html_body += '<td>'+selectedMod+'</td>';
                         html_body += '<td>'+selectedLotQty+'</td>';
                         html_body += '</tr>';
                     $('#tblModeOfDefect tbody').append(html_body);
@@ -612,8 +613,7 @@
                 form.iqcInspection.find('#iqc_coc_file_download').click(function (e) {
                     e.preventDefault();
                     let iqc_inspection_id = form.iqcInspection.find('#iqc_inspection_id').val();
-                    window.open('view_coc_file_attachment/'+iqc_inspection_id);
-
+                    window.open(`view_coc_file_attachment/${globalVar.section}/${iqc_inspection_id}`);
                 });
 
                 form.iqcInspection.find('#isUploadCoc').change(function (e) {

@@ -73,7 +73,6 @@ Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/get_ts_whs_packaging_by_id', 'getTsWhsPackagingById')->name('get_ts_whs_packaging_by_id');
     Route::get('/get_iqc_inspection_by_judgement', 'getIqcInspectionByJudgement')->name('get_iqc_inspection_by_judgement');
     Route::get('/get_iqc_inspection_by_id', 'getIqcInspectionById')->name('get_iqc_inspection_by_id');
-    Route::get('/view_coc_file_attachment/{id}', 'viewCocFileAttachment')->name('view_coc_file_attachment');
     Route::get('/get_dropdown_details_by_opt_value', 'getDropdownDetailsByOptValue')->name('get_dropdown_details_by_opt_value');
     Route::get('/get_yeu_receiving_by_id', 'getYeuReceivingById')->name('get_yeu_receiving_by_id');
 
@@ -145,6 +144,7 @@ Route::controller(SettingController::class)->group(function () {
 
 Route::controller(CommonController::class)->group(function () {
     Route::get('/get_sampling_size_by_sampling_plan', 'getSamplingSizeBySamplingPlan')->name('get_sampling_size_by_sampling_plan');
+    Route::get('/view_coc_file_attachment/{section}/{iqc_inspection_id}', 'viewCocFileAttachment')->name('view_coc_file_attachment');
 });
 
 //readDropdownDetailsByCategory
