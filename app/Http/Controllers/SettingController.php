@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Models\IqcDropdownDetail;
@@ -18,9 +19,20 @@ class SettingController extends Controller
         $this->resourceInterface = $resourceInterface;
     }
     public function readDropdownCategory(){
-        // return $this->resourceInterface->readAllRelationsAndConditions(IqcDropdownCategory::class,'iqc_dropdown_details');
+
+        $query = $this->resourceInterface->readCustomEloquent(Department::class);
+        $get_department_by_id = $query->where('department_id',session('rapidx_department_id'))->get(['department_group']);
+        $department = ($get_department_by_id[0]['department_group'] == "PPS" )? "PPD": $get_department_by_id[0]['department_group'];
+
         $query = $this->resourceInterface->readCustomEloquent(IqcDropdownCategory::class);
-        $iqcDropdownCategory = $query->whereNull('deleted_at')->get();
+        $iqcDropdownCategory = $query->whereNull('deleted_at')->orderBy('dropdown_category')
+        ->get();
+        if($department != "ISS"){
+            $iqcDropdownCategory = $query->whereNull('deleted_at')
+            ->where("dropdown_category", "!=","Material Category")
+            ->where('section',$department)
+            ->get();
+        }
         return DataTables::of($iqcDropdownCategory)
         ->addColumn('raw_action', function($row){
             $result = '';

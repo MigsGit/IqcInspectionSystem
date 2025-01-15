@@ -72,13 +72,13 @@
             form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
             form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
             form.iqcInspection.find('#isUploadCoc').prop('required',true);
-            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#aql'),'aql');
-            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#family'),'family');
-            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');
-            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_dppm'),'target_dppm');
-            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_lar'),'target_lar');
-            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection');
-            getDropdownDetailsByOptValue('TS',$('#mode_of_defect'),'mode_of_defects');
+            getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#aql'),'aql');
+            getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#family'),'family');
+            getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');
+            getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#target_dppm'),'target_dppm');
+            getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#target_lar'),'target_lar');
+            getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection');
+            getDropdownDetailsByOptValue(globalVar.section,$('#mode_of_defect'),'mode_of_defects');
 
             console.log('iqcCocFile',iqcCocFile);
 
@@ -169,13 +169,13 @@
             form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
             form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
             form.iqcInspection.find('#isUploadCoc').prop('required',true);
-            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#aql'),'aql');
-            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#family'),'family');
-            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');
-            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_dppm'),'target_dppm');
-            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_lar'),'target_lar');
-            getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection');
-            getDropdownDetailsByOptValue('TS',$('#mode_of_defect'),'mode_of_defects');
+            getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#aql'),'aql');
+            getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#family'),'family');
+            getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');
+            getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#target_dppm'),'target_dppm');
+            getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#target_lar'),'target_lar');
+            getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection');
+            getDropdownDetailsByOptValue(globalVar.section,$('#mode_of_defect'),'mode_of_defects');
 
             // return;
             if( iqcCocFile === undefined || iqcCocFile === null ){
@@ -274,13 +274,13 @@
                 form.iqcInspection.find('#iqc_coc_file').val('');
                 form.iqcInspection.find('#isUploadCoc').prop('required',false);
 
-                getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#aql'),'aql',tblWhsTrasanction['aql'])
-                getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#family'),'family',tblWhsTrasanction['family'])
-                getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#inspection_lvl'),'inspection_lvl',tblWhsTrasanction['inspection_lvl'])
-                getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_dppm'),'target_dppm');
-                getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#target_lar'),'target_lar');
-                getDropdownDetailsByOptValue('TS',form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection',tblWhsTrasanction['severity_of_inspection']);
-                getDropdownDetailsByOptValue('TS',$('#mode_of_defect'),'mode_of_defects')
+                getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#aql'),'aql',tblWhsTrasanction['aql'])
+                getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#family'),'family',tblWhsTrasanction['family'])
+                getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#inspection_lvl'),'inspection_lvl',tblWhsTrasanction['inspection_lvl'])
+                getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#target_dppm'),'target_dppm');
+                getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#target_lar'),'target_lar');
+                getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection',tblWhsTrasanction['severity_of_inspection']);
+                getDropdownDetailsByOptValue(globalVar.section,$('#mode_of_defect'),'mode_of_defects')
 
 
                 if( iqcCocFile === undefined || iqcCocFile === null ){

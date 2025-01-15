@@ -30,7 +30,10 @@ use App\Http\Controllers\PpdIqcInspectionController;
 //     return 'link';
 // })->name('link');
 
-Route::view('/','dashboard')->name('dashboard');
+Route::view('/','index')->name('index');
+// Route::get('/{any}', function (Request $request) {
+//     return view('dashboard');
+// })->where('any', '.*');
 Route::middleware('CheckSessionExist')->group(function(){
     Route::view('/dashboard','dashboard')->name('dashboard');
     // * ADMIN VIEW

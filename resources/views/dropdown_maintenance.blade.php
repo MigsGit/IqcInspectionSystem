@@ -203,10 +203,12 @@ table.table thead th{
                                     <option value="YF">YF</option>
                                 </select>
                             </div>
+                            {{-- nmodify --}}
                             <div class="form-group">
                                 <label>Iqc Inspection Column Reference</label>
                                 <input type="text" class="form-control" name="iqc_inspection_column_ref" id="iqc_inspection_column_ref">
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -318,7 +320,7 @@ $(document).ready(function () {
         form.saveDropdownCategory[0].reset()
     });
 
-    
+
 
     $(document).on('click', `${settingTbl.dropdownCategory} tbody tr`, function (e) {
         $(this).closest('tbody').find('tr').removeClass('table-active');

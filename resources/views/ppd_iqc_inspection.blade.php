@@ -415,7 +415,7 @@
                 });
 
 
-                getDropdownDetailsByOptValue('TS',$('#txtCategoryMaterial'),'iqc_category_material_id','44');
+                getDropdownDetailsByOptValue(globalVar.section,$('#txtCategoryMaterial'),'iqc_category_material_id','48');
 
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', function(){
@@ -498,21 +498,21 @@
                     e.preventDefault();
                     $('#btnModalLotNum').attr('el-btn-attr','ppdWhsDatabase')
                     $('#txtSearchLotNum').val('');
-                    let categoryMaterial = '44';
+                    let categoryMaterial = '48';
                     dataTable.iqcInspection.draw();
                     dataTable.iqcInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
-                    getDropdownDetailsByOptValue('TS',$('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
+                    getDropdownDetailsByOptValue(globalVar.section,$('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
                 });
 
                 $('a[href="#menu2"]').click(function (e) {
                     e.preventDefault();
                     $('#btnModalLotNum').attr('el-btn-attr','ppdWhsPackaging')
                     $('#txtSearchLotNum').val('');
-                    let categoryMaterial = '45';
+                    let categoryMaterial = '49';
 
                     dataTable.iqcPpdWhsPackaging.draw();
                     dataTable.iqcPpdWhsPackagingInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
-                    getDropdownDetailsByOptValue('TS',$('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
+                    getDropdownDetailsByOptValue(globalVar.section,$('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
                 });
 
                 $('a[href="#menu1_1"]').click(function (e) {
@@ -524,7 +524,7 @@
                 $('a[href="#menu2_1"]').click(function (e) {
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
-                    let categoryMaterial = '44';
+                    let categoryMaterial = '48';
                     dataTable.iqcInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
                 });
 
@@ -538,7 +538,7 @@
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
                     console.log('menu2_2');
-                    let categoryMaterial = '45';
+                    let categoryMaterial = '49';
                     dataTable.iqcPpdWhsPackagingInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
                 });
 
