@@ -13,9 +13,10 @@
     <!-- Right navbar links -->
     <div class="navbar-nav">
         <li class="nav-item dropdown">
-            <button class="btn dropdown-toggle theme-color" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn theme-color" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                 @php
-                        echo $_SESSION["rapidx_name"];
+                        // echo session("rapidx_name");
+                        echo session("rapidx_department_id");
                         echo '&nbsp;<i class="far fa-user"></i>';
                 @endphp
                 {{-- {{ ucwords($_SESSION["session_firstname"]) .' '. ucwords($_SESSION["session_lastname"]) }}&nbsp;<i class="far fa-user"></i> --}}

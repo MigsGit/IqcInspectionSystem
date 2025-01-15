@@ -7,19 +7,20 @@ use Mail;
 use QrCode;
 use DataTables;
 use App\Models\User;
-use App\Models\RapidxUser;
-use App\Models\RapidXUserAccess;
 use App\Model\OQCStamp;
+use App\Models\Department;
+use App\Models\RapidxUser;
 use App\Models\HRISDetails;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 // use App\Jobs\SendUserPasswordJob;
 use App\Imports\CSVUserImport;
+use App\Models\RapidXUserAccess;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -700,5 +701,14 @@ class UserController extends Controller
 
         }
 
+    }
+    public function check_department(Request $request){
+        try {
+            $get_department_by_id = Department::where('department_id',session('rapidx_department_id'))->get(['department_group']);
+            $department = ($get_department_by_id[0]['department_group'] == "PPS" )? "PPD": $get_department_by_id[0]['department_group'];
+            return response()->json(['is_success' => 'true','department' => $department]);
+        } catch (Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
     }
 }

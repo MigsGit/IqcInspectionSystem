@@ -57,15 +57,28 @@
         "hideMethod": "fadeOut",
         "iconClass":  "toast-custom"
     };
-
+    globalVar = {
+        department : ""
+    }
     $.ajax({
         type: 'GET',
         url: 'check_user',
         dataType: 'json',
         success: function (response) {
-            console.log(response);
+            console.log('SESSION');
+            
+        },error: function (data, xhr, status){
+           toastr.error(`Error: ${data.status}`);
+        }
+    });
+    $.ajax({
+        type: 'GET',
+        url: 'check_department',
+        dataType: 'json',
+        success: function (response) {
             if(response.is_success === 'true'){
-            }else{
+                globalVar.department =  response.department
+                console.log('Department',globalVar.department);
             }
         },error: function (data, xhr, status){
            toastr.error(`Error: ${data.status}`);

@@ -1,9 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Models\Department;
 
 // Controllers
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\SettingController;
@@ -61,11 +62,11 @@ Route::get('check_user', function (Request $request) {
         // return session()->all();
         // return session('rapidx_employee_number');
         return true;
-    }
-    else{
+    }else{
         return false;
     }
 });
+
 
 Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/load_iqc_inspection', 'loadIqcInspection')->name('load_iqc_inspection');
@@ -134,6 +135,7 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/generate_user_qrcode', 'generate_user_qrcode');
     Route::post('/import_user', 'import_user');
     Route::get('/get_emp_details_by_id', 'get_emp_details_by_id')->name('get_emp_details_by_id');
+    Route::get('/check_department', 'check_department')->name('check_department');
 });
 Route::controller(SettingController::class)->group(function () {
     Route::get('/read_dropdown_category', 'readDropdownCategory')->name('read_dropdown_category');
