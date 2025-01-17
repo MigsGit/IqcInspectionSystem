@@ -262,7 +262,9 @@
             $(document).ready(function () {
                 globalVar = {
                     modeOfDefectsById: "",
-                    section: "TS"
+                    section: "TS",
+                    categoryMaterialPackaging: "37",
+                    categoryMaterialYeu: "38",
                 }
 
                 tbl = {
@@ -310,6 +312,8 @@
                     lotQty : []
                 };
 
+                getDropdownDetailsByOptValue(globalVar.section,$('#txtCategoryMaterial'),'iqc_category_material_id',globalVar.categoryMaterialPackaging);
+
                 dataTable.iqcTsWhsPackaging = $(tbl.iqcWhsReceivingPackaging).DataTable({
                     "processing" : true,
                     "serverSide" : true,
@@ -317,6 +321,7 @@
                         url: "load_whs_packaging", //Rapid Ts Warehouse Packaging
                         data: function (param){
                             param.lotNum = $('#txtSearchLotNum').val()
+                            param.categoryMaterial = globalVar.categoryMaterialPackaging;
                         },
                     },
                     fixedHeader: true,
@@ -338,6 +343,7 @@
                         url: "load_yeu_details", //Rapidx TS YEU Receiving
                         data: function (param){
                             param.lotNum = $('#txtSearchLotNum').val()
+                            param.categoryMaterial = globalVar.categoryMaterialYeu;
                         },
                     },
                     fixedHeader: true,
@@ -418,7 +424,6 @@
                     ],
                 });
 
-                getDropdownDetailsByOptValue(globalVar.section,$('#txtCategoryMaterial'),'iqc_category_material_id','37');
                 $(tbl.iqcWhsReceivingPackaging).on('click','#btnEditIqcInspection', getTsWhsPackagingById);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspected);
                 $(tbl.iqcYeuDetails).on('click','#btnEditIqcInspection', editYeuIqcDetails);
@@ -492,7 +497,7 @@
                     e.preventDefault();
                     $('#btnModalLotNum').attr('el-btn-attr','whseTransaction')
                     $('#txtSearchLotNum').val('');
-                    let categoryMaterial = '37';
+                    let categoryMaterial = globalVar.categoryMaterialPackaging;
                     dataTable.iqcTsWhsPackaging.draw();
                     dataTable.iqcTsWhsPackagingInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                     getDropdownDetailsByOptValue(globalVar.section,$('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
@@ -502,7 +507,7 @@
                     e.preventDefault();
                     $('#btnModalLotNum').attr('el-btn-attr','yeu')
                     $('#txtSearchLotNum').val('');
-                    let categoryMaterial = '38';
+                    let categoryMaterial = globalVar.categoryMaterialYeu;
 
                     dataTable.iqcYeuDetails.draw();
                     dataTable.iqcYeuInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
@@ -518,7 +523,7 @@
                 $('a[href="#menu2_1"]').click(function (e) {
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
-                    let categoryMaterial = '37';
+                    let categoryMaterial = globalVar.categoryMaterialPackaging;
                     dataTable.iqcTsWhsPackagingInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                 });
 
@@ -532,7 +537,7 @@
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
                     console.log('menu2_2');
-                    let categoryMaterial = '38';
+                    let categoryMaterial = globalVar.categoryMaterialYeu;
                     dataTable.iqcYeuInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                 });
 

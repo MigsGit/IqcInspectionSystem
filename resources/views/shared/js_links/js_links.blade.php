@@ -65,8 +65,7 @@
         url: 'check_user',
         dataType: 'json',
         success: function (response) {
-            console.log('SESSION');
-            
+            console.log('IS SESSION TRUE');
         },error: function (data, xhr, status){
            toastr.error(`Error: ${data.status}`);
         }
@@ -77,13 +76,29 @@
         dataType: 'json',
         success: function (response) {
             if(response.is_success === 'true'){
-                globalVar.department =  response.department
-                console.log('Department',globalVar.department);
+                let department = response.department;
+                if(department === 'TS' || department === 'ISS'){
+                    $('.nav-item-ts').removeClass('d-none',true)
+                    console.log(response.department);
+                }
+                if(department === 'CN' || department === 'ISS'){
+                    $('.nav-item-cn').removeClass('d-none',true)
+                    console.log(response.department);
+                }
+                if(department === 'PPS' || department === 'ISS'){
+                    $('.nav-item-ppd').removeClass('d-none',true)
+                    console.log(response.department);
+                }
+                if(department === 'YF' || department === 'ISS'){
+                    $('.nav-item-yf').removeClass('d-none',true)
+                    console.log(response.department);
+                }
             }
         },error: function (data, xhr, status){
            toastr.error(`Error: ${data.status}`);
         }
     });
+
 </script>
 
 <script src="{{ asset('public/js/main/Common.js') }}?t=<?=time()?>"></script>

@@ -57,14 +57,19 @@ Route::get('check_user', function (Request $request) {
             'rapidx_email' => $_SESSION["rapidx_email"],
             'rapidx_department_id' => $_SESSION["rapidx_department_id"],
             'rapidx_employee_number' => $_SESSION["rapidx_employee_number"],
-
         ]);
-        // return session()->all();
-        // return session('rapidx_employee_number');
         return true;
+        // return session('rapidx_employee_number');
+        // return session();
     }else{
         return false;
     }
+});
+Route::get('check_department', function (Request $request) {
+    session_start();
+    $get_department_by_id = Department::where('department_id',$_SESSION["rapidx_department_id"])->get(['department_group']);
+    $department = ($get_department_by_id[0]['department_group'] == "PPS" )? "PPD": $get_department_by_id[0]['department_group'];
+    return response()->json(['is_success' => 'true','department' => $department,'dept_code' => $_SESSION["rapidx_department_id"] ]);
 });
 
 
@@ -135,7 +140,7 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/generate_user_qrcode', 'generate_user_qrcode');
     Route::post('/import_user', 'import_user');
     Route::get('/get_emp_details_by_id', 'get_emp_details_by_id')->name('get_emp_details_by_id');
-    Route::get('/check_department', 'check_department')->name('check_department');
+    // Route::get('/check_department', 'check_department')->name('check_department');
 });
 Route::controller(SettingController::class)->group(function () {
     Route::get('/read_dropdown_category', 'readDropdownCategory')->name('read_dropdown_category');

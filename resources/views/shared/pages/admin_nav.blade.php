@@ -32,25 +32,25 @@
                 </li>
                 {{-- @if ( in_array(Auth::user()->position, [0,2,5])) --}}
                     <li class="nav-header mt-3"><strong>QUALITY CONTROL</strong></li>
-                    <li class="nav-item">
+                    <li class="nav-item nav-item-ts d-none">
                         <a href="{{ route('ts_iqc_inspection') }}" class="nav-link">
                             <i class="far fa-circle nav-icon ml-2"> </i>
                             <p>TS IQC</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item nav-item-cn d-none">
                         <a href="{{ route('cn_iqc_inspection') }}" class="nav-link">
                             <i class="far fa-circle nav-icon ml-2"> </i>
                             <p>CN IQC</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item nav-item-ppd d-none">
                         <a href="{{ route('ppd_iqc_inspection') }}" class="nav-link">
                             <i class="far fa-circle nav-icon ml-2"> </i>
                             <p>PPD IQC</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item nav-item-yf d-none">
                         <a href="{{ route('yf_iqc_inspection') }}" class="nav-link">
                             <i class="far fa-circle nav-icon ml-2"> </i>
                             <p>YF IQC</p>

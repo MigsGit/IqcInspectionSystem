@@ -16,13 +16,13 @@
             <button class="btn theme-color" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                 @php
                         // echo session("rapidx_name");
-                        echo session("rapidx_department_id");
-                        echo '&nbsp;<i class="far fa-user"></i>';
+                        // echo session("rapidx_department_id");
+                        echo $_SESSION["rapidx_name"];
                 @endphp
                 {{-- {{ ucwords($_SESSION["session_firstname"]) .' '. ucwords($_SESSION["session_lastname"]) }}&nbsp;<i class="far fa-user"></i> --}}
                 {{-- {{ Auth::user()->firstname." ".Auth::user()->lastname}} --}}
                 {{-- {{ session('rapidx_name') }}
-                <i class="far fa-user"></i> --}}
+                 --}}
                 {{-- MIGZ --}}
             </button>
         </li>

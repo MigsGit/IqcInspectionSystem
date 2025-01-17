@@ -706,7 +706,7 @@ class UserController extends Controller
         try {
             $get_department_by_id = Department::where('department_id',session('rapidx_department_id'))->get(['department_group']);
             $department = ($get_department_by_id[0]['department_group'] == "PPS" )? "PPD": $get_department_by_id[0]['department_group'];
-            return response()->json(['is_success' => 'true','department' => $department]);
+            return response()->json(['is_success' => 'true','department' => $department,'dept_code' => session('rapidx_department_id') ]);
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }

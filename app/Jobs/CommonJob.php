@@ -59,4 +59,25 @@ class CommonJob implements CommonInterface
             'today' =>  date('Y-m-d')
         ];
     }
+    /**
+     * readIqcInspectionByMaterialCategory
+     * Get the array where condition of IqcInspection
+     * Resulting to load only on going inpection
+     * Remove materials that is already inspected
+     * @param mixed $model
+     * @param mixed $categoryMaterial
+     * @return string
+     */
+    public function readIqcInspectionByMaterialCategory($model,$categoryMaterial){
+        // return 'true' ;
+        $iqcInspection = $this->resourceInterface->readCustomEloquent($model)->where('iqc_category_material_id',$categoryMaterial)->get();
+        $whereWhsTransactionId = "";
+        if(count ($iqcInspection) > 0){
+            foreach ($iqcInspection as $key => $valIqcInspection) {
+                $arrWhsTransactionId[] = "AND vw_list_of_received.pkid_received != '".$valIqcInspection->whs_transaction_id."' ";
+            }
+            $whereWhsTransactionId = implode(' ',$arrWhsTransactionId);
+        }
+        return $whereWhsTransactionId;
+    }
 }

@@ -30,6 +30,8 @@ class CnIqcInspectionController extends Controller
     public function loadCnWhsPackaging(Request $request)
     {
         try {
+            $categoryMaterial = $request->categoryMaterial;
+            $whereWhsTransactionId =   $this->commonInterface->readIqcInspectionByMaterialCategory(CnIqcInspection::class,$categoryMaterial);
             /*
                 TODO: Get the data only with whs_transaction.inspection_class = 1 - For Inspection, while
                 Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
@@ -44,7 +46,11 @@ class CnIqcInspectionController extends Controller
             }else{
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_cn_whs_packaging')
                 ->select('SELECT pkid_received as "receiving_detail_id",supplier as "Supplier",partcode as "PartNumber",
-                        partname as "MaterialType",date as "Lot_number",invoiceno as "InvoiceNo"  FROM  vw_list_of_received
+                    partname as "MaterialType",date as "Lot_number",invoiceno as "InvoiceNo"
+                    FROM  vw_list_of_received
+                    WHERE 1=1
+                    '.$whereWhsTransactionId.'
+
                 ');
             }
             return DataTables::of($tbl_whs_trasanction)

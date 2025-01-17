@@ -3,33 +3,23 @@
 namespace App\Http\Controllers;
 
 use DataTables;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\IqcInspectionRequest;
+
 use App\Models\User;
 use App\Models\YeuReceive;
-use App\Models\TblWarehouse;
-use Illuminate\Http\Request;
 use App\Models\IqcInspection;
-
 use App\Models\DropdownIqcAql;
-use App\Models\ReceivingDetails;
 use App\Models\VwListOfReceived;
-use App\Interfaces\FileInterface;
-use App\Models\DropdownIqcFamily;
 use App\Models\IqcDropdownDetail;
 use App\Models\IqcInspectionsMod;
-use Illuminate\Support\Facades\DB;
-use App\Interfaces\CommonInterface;
 use App\Models\IqcDropdownCategory;
-use App\Models\DropdownIqcTargetLar;
-use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Interfaces\ResourceInterface;
-use App\Models\DropdownIqcTargetDppm;
 use App\Models\DropdownIqcModeOfDefect;
-use App\Models\TblWarehouseTransaction;
-
-use Illuminate\Support\Facades\Storage;
-use App\Models\DropdownIqcInspectionLevel;
-use App\Http\Requests\IqcInspectionRequest;
+use App\Interfaces\FileInterface;
+use App\Interfaces\CommonInterface;
+use App\Interfaces\ResourceInterface;
 
 
 
@@ -39,8 +29,11 @@ class IqcInspectionController extends Controller
     protected $resourceInterface;
     protected $commonInterface;
     protected $fileInterface;
-    public function __construct(ResourceInterface $resourceInterface,CommonInterface $commonInterface,FileInterface $fileInterface)
-    {
+    public function __construct(
+        ResourceInterface $resourceInterface,
+        CommonInterface $commonInterface,
+        FileInterface $fileInterface
+    ){
         $this->resourceInterface = $resourceInterface;
         $this->commonInterface = $commonInterface;
         $this->fileInterface = $fileInterface;
@@ -56,6 +49,9 @@ class IqcInspectionController extends Controller
                 TODO: Get the data only with whs_transaction.inspection_class = 1 - For Inspection, while
                 Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
             */
+            $categoryMaterial = $request->categoryMaterial;
+            $whereWhsTransactionId =   $this->commonInterface->readIqcInspectionByMaterialCategory(IqcInspection::class,$categoryMaterial);
+
             if( isset( $request->lotNum ) ){
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_ts_whs_packaging')
                 ->select('SELECT vw_list_of_received.pkid_received as "receiving_detail_id",vw_list_of_received.supplier as "Supplier",vw_list_of_received.partcode as "PartNumber",
@@ -73,8 +69,9 @@ class IqcInspectionController extends Controller
                     FROM  vw_list_of_received vw_list_of_received
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.partcode = vw_list_of_received.partcode
                     WHERE 1=1
-                    AND tbl_itemList.is_iqc_inspection = 1
+                    '.$whereWhsTransactionId.'
                 ');
+                    // AND tbl_itemList.is_iqc_inspection = 1
             }
             // if( isset( $request->lotNum ) ){
             //     $tbl_whs_trasanction = DB::connection('mysql_rapidx_yeu')
@@ -117,6 +114,9 @@ class IqcInspectionController extends Controller
     }
     public function loadYeuDetails(Request $request)
     {
+        $categoryMaterial = $request->categoryMaterial;
+        $whereWhsTransactionId =   $this->commonInterface->readIqcInspectionByMaterialCategory(IqcInspection::class,$categoryMaterial);
+
         if( isset( $request->lotNum ) ){
             $tbl_whs_trasanction = DB::connection('mysql_rapidx_yeu')
             ->select('SELECT yeu_receives.*  FROM yeu_receives yeu_receives

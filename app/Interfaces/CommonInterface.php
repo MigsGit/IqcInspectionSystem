@@ -10,7 +10,6 @@ interface CommonInterface
      * @return void
      */
     public function generateControlNumber($model);
-
-
+    public function readIqcInspectionByMaterialCategory($model,$categoryMaterial);
 
 }

@@ -178,7 +178,8 @@
                 globalVar = {
                     modeOfDefectsById: "",
                     section: "YF",
-                    dropdownSection: "TS"
+                    dropdownSection: "TS",
+                    categoryMaterialPackaging: "47",
 
                 }
                 tbl = {
@@ -227,6 +228,8 @@
                         url: "load_yf_whs_packaging", //Rapid PPS WHS Transaction
                         data: function (param){
                             param.lotNum = $('#txtSearchLotNum').val()
+                            param.categoryMaterial = globalVar.categoryMaterialPackaging;
+
                         },
                     },
                     fixedHeader: true,
