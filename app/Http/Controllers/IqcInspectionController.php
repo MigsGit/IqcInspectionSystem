@@ -381,6 +381,7 @@ class IqcInspectionController extends Controller
                 ->update([
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
+                    // 'inspector' => $_SESSION['rapidx_user_id'],
                     'inspector' => session('rapidx_user_id'),
                 ]);
 
@@ -398,6 +399,8 @@ class IqcInspectionController extends Controller
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
                     'inspector' => session('rapidx_user_id'),
+                    // 'inspector' => $_SESSION['rapidx_user_id'],
+
                 ]);
 
                 /* TODO: Update rapid/db_pps TblWarehouseTransaction, set inspection_class to 3 */

@@ -179,7 +179,8 @@
             $(document).ready(function () {
                 globalVar = {
                     modeOfDefectsById: "",
-                    section: "CN"
+                    section: "CN",
+                    dropdownSection: "TS"
                 }
 
                 tbl = {

@@ -177,7 +177,9 @@
             $(document).ready(function () {
                 globalVar = {
                     modeOfDefectsById: "",
-                    section: "YF"
+                    section: "YF",
+                    dropdownSection: "TS"
+
                 }
                 tbl = {
                     iqcYfWhsPackaging:'#tblIqcYfWhsPackaging',

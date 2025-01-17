@@ -2,7 +2,7 @@
     <div class="float-right d-none d-sm-block">
         <b id="footerTimer"></b>
     </div>
-    <strong>PATS-PPD</strong>&nbsp;<small>Ver. 1.0</small>
+    <strong>IIS</strong>&nbsp;<small>Ver. 1.0</small>
 </footer>
 
 <script type="text/javascript">
