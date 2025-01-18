@@ -342,7 +342,7 @@
     {
         let opt = ``;
             opt += `<option value="" selected disabled>-Select-</option>`;
-            opt += `<option value="">N/A</option>`;
+            opt += `<option value="N/A">N/A</option>`;
         form.iqcInspection.find('#die_no').empty().prepend(opt)
         for (let i = 0; i < 15; i++) {
             let opt = `<option value="${i+1}">${i+1}</option>`;

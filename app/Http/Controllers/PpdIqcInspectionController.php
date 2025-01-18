@@ -166,21 +166,26 @@ class PpdIqcInspectionController extends Controller
     public function loadPpdWhsPackaging(Request $request)
     {
         try {
-            /*
-                TODO: Get the data only with whs_transaction.inspection_class = 1 - For Inspection, while
-                Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
-            */
+
+            // Read IqcInspection (Material already Inspected) then do not
+            // display it to the ON-GOING status
+            $categoryMaterial = $request->categoryMaterial;
+            $whereWhsTransactionId =   $this->commonInterface->readIqcInspectionByMaterialCategory(PpdIqcInspection::class,$categoryMaterial);
             if( isset( $request->lotNum ) ){
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_ppd_whs_packaging')
                 ->select('SELECT pkid_received as "receiving_detail_id",supplier as "Supplier",partcode as "PartNumber",
-                    partname as "MaterialType",date as "Lot_number",invoiceno as "InvoiceNo" FROM  vw_list_of_received
+                    partname as "MaterialType",date as "Lot_number",invoiceno as "InvoiceNo"
+                    FROM  vw_list_of_received
                     WHERE 1=1
                     AND date = "'.$request->lotNum.'"
                 ');
             }else{
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_ppd_whs_packaging')
                 ->select('SELECT pkid_received as "receiving_detail_id",supplier as "Supplier",partcode as "PartNumber",
-                        partname as "MaterialType",date as "Lot_number",invoiceno as "InvoiceNo"  FROM  vw_list_of_received
+                    partname as "MaterialType",date as "Lot_number",invoiceno as "InvoiceNo"
+                    FROM  vw_list_of_received
+                    WHERE 1=1
+                    '.$whereWhsTransactionId.'
                 ');
             }
             return DataTables::of($tbl_whs_trasanction)

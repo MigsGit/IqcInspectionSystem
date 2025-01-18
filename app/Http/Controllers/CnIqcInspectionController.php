@@ -32,10 +32,8 @@ class CnIqcInspectionController extends Controller
         try {
             $categoryMaterial = $request->categoryMaterial;
             $whereWhsTransactionId =   $this->commonInterface->readIqcInspectionByMaterialCategory(CnIqcInspection::class,$categoryMaterial);
-            /*
-                TODO: Get the data only with whs_transaction.inspection_class = 1 - For Inspection, while
-                Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
-            */
+            // Read IqcInspection (Material already Inspected) then do not
+            // display it to the ON-GOING status
             if( isset( $request->lotNum ) ){
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_cn_whs_packaging')
                 ->select('SELECT pkid_received as "receiving_detail_id",supplier as "Supplier",partcode as "PartNumber",

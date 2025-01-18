@@ -45,10 +45,8 @@ class IqcInspectionController extends Controller
     public function loadWhsPackaging(Request $request)
     {
         try {
-            /*
-                TODO: Get the data only with whs_transaction.inspection_class = 1 - For Inspection, while
-                Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
-            */
+            // Read IqcInspection (Material already Inspected) then do not
+            // display it to the ON-GOING status
             $categoryMaterial = $request->categoryMaterial;
             $whereWhsTransactionId =   $this->commonInterface->readIqcInspectionByMaterialCategory(IqcInspection::class,$categoryMaterial);
 

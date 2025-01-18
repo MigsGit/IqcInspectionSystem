@@ -263,7 +263,9 @@
                 globalVar = {
                     modeOfDefectsById: "",
                     section: "PPD",
-                    dropdownSection: "TS"
+                    dropdownSection: "TS",
+                    categoryMaterialRapidDatabase : "48",
+                    categoryMaterialPackaging : "49",
                 }
 
                 tbl = {
@@ -338,6 +340,7 @@
                         url: "load_ppd_whs_packaging", //Rapid PPS WHS Transaction
                         data: function (param){
                             param.lotNum = $('#txtSearchLotNum').val()
+                            param.categoryMaterial = globalVar.categoryMaterialPackaging;
                         },
                     },
                     fixedHeader: true,
@@ -416,7 +419,7 @@
                 });
 
 
-                getDropdownDetailsByOptValue(globalVar.section,$('#txtCategoryMaterial'),'iqc_category_material_id','48');
+                getDropdownDetailsByOptValue(globalVar.section,$('#txtCategoryMaterial'),'iqc_category_material_id',globalVar.categoryMaterialRapidDatabase);
 
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', function(){
@@ -424,9 +427,12 @@
                     let iqcCategoryMaterialId = $('#txtCategoryMaterial').val();
                     getPpdIqcInspectionById (iqcInspectionId,iqcCategoryMaterialId);
                 });
-
                 $(tbl.iqcPpdWhsPackaging).on('click','#btnEditIqcInspection', getPpdWhsPackagingById);
-                $(tbl.iqcPpdWhsPackagingInspected).on('click','#btnEditIqcInspection', editIqcInspected);
+                $(tbl.iqcPpdWhsPackagingInspected).on('click','#btnEditIqcInspection', function(){
+                    let iqcInspectionId = ($(this).attr('iqc-inspection-id') != undefined) ?  $(this).attr('iqc-inspection-id') : 0;
+                    let iqcCategoryMaterialId = $('#txtCategoryMaterial').val();
+                    getPpdIqcInspectionById (iqcInspectionId,iqcCategoryMaterialId);
+                });
 
                 $('#btnLotNo').click(function (e) {
                     e.preventDefault();
@@ -499,7 +505,7 @@
                     e.preventDefault();
                     $('#btnModalLotNum').attr('el-btn-attr','ppdWhsDatabase')
                     $('#txtSearchLotNum').val('');
-                    let categoryMaterial = '48';
+                    let categoryMaterial = globalVar.categoryMaterialRapidDatabase;
                     dataTable.iqcInspection.draw();
                     dataTable.iqcInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
                     getDropdownDetailsByOptValue(globalVar.section,$('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
@@ -509,7 +515,7 @@
                     e.preventDefault();
                     $('#btnModalLotNum').attr('el-btn-attr','ppdWhsPackaging')
                     $('#txtSearchLotNum').val('');
-                    let categoryMaterial = '49';
+                    let categoryMaterial = globalVar.categoryMaterialPackaging;
 
                     dataTable.iqcPpdWhsPackaging.draw();
                     dataTable.iqcPpdWhsPackagingInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
@@ -525,7 +531,7 @@
                 $('a[href="#menu2_1"]').click(function (e) {
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
-                    let categoryMaterial = '48';
+                    let categoryMaterial = globalVar.categoryMaterialRapidDatabase;
                     dataTable.iqcInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
                 });
 
@@ -539,7 +545,7 @@
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
                     console.log('menu2_2');
-                    let categoryMaterial = '49';
+                    let categoryMaterial = globalVar.categoryMaterialPackaging;
                     dataTable.iqcPpdWhsPackagingInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
                 });
 

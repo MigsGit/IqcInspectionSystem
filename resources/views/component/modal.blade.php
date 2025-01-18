@@ -113,6 +113,7 @@
                                 <!--NOTE: Get all classification in Rapid/Warehouse Transaction, this field must be the same-->
                                 <select class="form-select form-control-sm" id="classification" name="classification">
                                     <option value="" selected disabled>-Select-</option>
+                                    <option value="N/A">N/A</option>
                                     <option value="1">PPD-Molding Plastic Resin</option>
                                     <option value="2">PPD-Molding Metal Parts</option>
                                     <option value="3">For grinding</option>
