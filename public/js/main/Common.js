@@ -377,6 +377,50 @@ const getDropdownDetailsByOptValue = function (section=null,cmb_element,iqc_insp
         }
     });
 }
+const getSamplingSizeBySamplingPlan = function (severityOfInspection,inspectionLvl,aql,totalLotQty){
+    let data = {
+        'severity_of_inspection' : severityOfInspection,
+        'inspection_lvl' : inspectionLvl,
+        'aql' : aql,
+        'total_lot_qty' : totalLotQty,
+    }
+    call_ajax(data,'get_sampling_size_by_sampling_plan',function(response){
+        console.log(response.sample_size);
+
+        form.iqcInspection.find('#sampling_size').val(response.sample_size)
+        // form.iqcInspection.find('#sampling_size').val(tblWhsTrasanction['sampling_size']);
+    })
+}
+const getSamplingSizeBySamplingPlanCn = function (severityOfInspection,inspectionLvl,aql,totalLotQty){
+    let data = {
+        'severity_of_inspection' : severityOfInspection,
+        'inspection_lvl' : inspectionLvl,
+        'aql' : aql,
+        'total_lot_qty' : totalLotQty,
+    }
+    call_ajax(data,'get_sampling_size_by_sampling_plan_cn',function(response){
+        console.log(response.sample_size);
+        console.log('CN');
+
+        form.iqcInspection.find('#sampling_size').val(response.sample_size)
+        // form.iqcInspection.find('#sampling_size').val(tblWhsTrasanction['sampling_size']);
+    })
+}
+const getSamplingSizeBySamplingPlanYf = function (severityOfInspection,inspectionLvl,aql,totalLotQty){
+    let data = {
+        'severity_of_inspection' : severityOfInspection,
+        'inspection_lvl' : inspectionLvl,
+        'aql' : aql,
+        'total_lot_qty' : totalLotQty,
+    }
+    call_ajax(data,'get_sampling_size_by_sampling_plan_yf',function(response){
+        console.log(response.sample_size);
+        console.log('YF');
+
+        form.iqcInspection.find('#sampling_size').val(response.sample_size)
+        // form.iqcInspection.find('#sampling_size').val(tblWhsTrasanction['sampling_size']);
+    })
+}
 
 
 

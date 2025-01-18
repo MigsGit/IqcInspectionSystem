@@ -85,7 +85,7 @@
                     $('.nav-item-cn').removeClass('d-none',true)
                     console.log(response.department);
                 }
-                if(department === 'PPS' || department === 'ISS'){
+                if(department === 'PPS' || department === 'PPD' || department === 'ISS'){
                     $('.nav-item-ppd').removeClass('d-none',true)
                     console.log(response.department);
                 }

@@ -474,7 +474,7 @@
                     let aql = form.iqcInspection.find('#aql').val();
                     let totalLotQty = form.iqcInspection.find('#total_lot_qty').val();
 
-                    getSamplingSizeBySamplingPlan (severityOfInspection,inspectionLvl,aql,totalLotQty)
+                    getSamplingSizeBySamplingPlanCn (severityOfInspection,inspectionLvl,aql,totalLotQty)
                 });
 
                 form.iqcInspection.find('#inspection_lvl').change(function (e) {
@@ -484,7 +484,7 @@
                     let aql = form.iqcInspection.find('#aql').val();
                     let totalLotQty = form.iqcInspection.find('#total_lot_qty').val();
 
-                    getSamplingSizeBySamplingPlan (severityOfInspection,inspectionLvl,aql,totalLotQty)
+                    getSamplingSizeBySamplingPlanCn (severityOfInspection,inspectionLvl,aql,totalLotQty)
                 });
 
                 form.iqcInspection.find('#aql').change(function (e) {
@@ -494,7 +494,7 @@
                     let aql = form.iqcInspection.find(this).val();
                     let totalLotQty = form.iqcInspection.find('#total_lot_qty').val();
 
-                    getSamplingSizeBySamplingPlan (severityOfInspection,inspectionLvl,aql,totalLotQty)
+                    getSamplingSizeBySamplingPlanCn (severityOfInspection,inspectionLvl,aql,totalLotQty)
                 });
 
                 $('#txtScanUserId').on('keyup', function(e){

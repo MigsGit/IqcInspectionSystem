@@ -702,13 +702,14 @@ class UserController extends Controller
         }
 
     }
-    public function check_department(Request $request){
-        try {
-            $get_department_by_id = Department::where('department_id',session('rapidx_department_id'))->get(['department_group']);
-            $department = ($get_department_by_id[0]['department_group'] == "PPS" )? "PPD": $get_department_by_id[0]['department_group'];
-            return response()->json(['is_success' => 'true','department' => $department,'dept_code' => session('rapidx_department_id') ]);
-        } catch (Exception $e) {
-            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
-        }
-    }
+    // public function check_department(Request $request){
+    //     try {
+    //         return session('rapidx_department_id');
+    //         $get_department_by_id = Department::where('department_id',session('rapidx_department_id'))->get(['department_group']);
+    //         $department = ($get_department_by_id[0]['department_group'] == "PPS" )? "PPD": $get_department_by_id[0]['department_group'];
+    //         return response()->json(['is_success' => 'true','department' => $department,'dept_code' => session('rapidx_department_id') ]);
+    //     } catch (Exception $e) {
+    //         return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+    //     }
+    // }
 }
