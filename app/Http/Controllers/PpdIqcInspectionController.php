@@ -331,10 +331,10 @@ class PpdIqcInspectionController extends Controller
             /* Get iqc_inspections_id, delete the previous MOD then  save new MOD*/
             if($request->accepted == 1){
                 // return 'true';
-                IqcInspectionsMod::where('iqc_inspection_id', $iqc_inspections_id)->update([
+                PpdIqcInspectionsMod::where('ppd_iqc_inspection_id', $iqc_inspections_id)->update([
                     'deleted_at' => date('Y-m-d H:i:s')
                 ]);
-                IqcInspection::where('id', $iqc_inspections_id)
+                PpdIqcInspection::where('id', $iqc_inspections_id)
                 ->update([
                     'no_of_defects' => 0,
                 ]);
