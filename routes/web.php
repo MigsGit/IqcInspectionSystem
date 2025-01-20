@@ -156,6 +156,7 @@ Route::controller(CommonController::class)->group(function () {
     Route::get('/get_sampling_size_by_sampling_plan', 'getSamplingSizeBySamplingPlan')->name('get_sampling_size_by_sampling_plan');
     Route::get('/get_sampling_size_by_sampling_plan_cn', 'getSamplingSizeBySamplingPlanCn')->name('get_sampling_size_by_sampling_plan_cn');
     Route::get('/get_sampling_size_by_sampling_plan_yf', 'getSamplingSizeBySamplingPlanYf')->name('get_sampling_size_by_sampling_plan_yf');
+    Route::get('/get_sampling_size_by_sampling_plan_ppd', 'getSamplingSizeBySamplingPlanPpd')->name('get_sampling_size_by_sampling_plan_ppd');
     //TODO : PPD
     // Route::get('/get_sampling_size_by_sampling_plan_ppd', 'getSamplingSizeBySamplingPlanPpd')->name('get_sampling_size_by_sampling_plan_ppd');
     Route::get('/view_coc_file_attachment/{section}/{iqc_inspection_id}', 'viewCocFileAttachment')->name('view_coc_file_attachment');
