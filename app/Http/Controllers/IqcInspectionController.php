@@ -120,6 +120,7 @@ class IqcInspectionController extends Controller
             ->select('SELECT yeu_receives.*  FROM yeu_receives yeu_receives
                 RIGHT JOIN item_masters item_masters ON yeu_receives.item_code = item_masters.part_code
                 WHERE 1=1
+                '.$whereWhsTransactionId.'
                 AND yeu_receives.lot_no = "'.$request->lotNum.'"
                 AND item_masters.for_iqc = 1
                 ORDER BY item_code DESC
@@ -129,6 +130,7 @@ class IqcInspectionController extends Controller
             ->select('SELECT yeu_receives.*,item_masters.part_code  FROM yeu_receives yeu_receives
                 RIGHT JOIN item_masters item_masters ON yeu_receives.item_code = item_masters.part_code
                 WHERE 1=1
+                '.$whereWhsTransactionId.'
                 AND item_masters.for_iqc = 1
                 ORDER BY item_code DESC
             ');

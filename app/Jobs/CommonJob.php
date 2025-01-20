@@ -12,9 +12,18 @@ class CommonJob implements CommonInterface
 {
 
     protected $resourceInterface;
+    /**
+     * __construct
+     * @param \App\Interfaces\ResourceInterface $resourceInterface
+     */
     public function __construct(ResourceInterface $resourceInterface){
         $this->resourceInterface = $resourceInterface;
     }
+    /**
+     * generateControlNumber
+     * @param mixed $model
+     * @return array
+     */
     public function generateControlNumber($model){
         date_default_timezone_set('Asia/Manila');
         $query = $this->resourceInterface->readCustomEloquent($model);
@@ -70,13 +79,25 @@ class CommonJob implements CommonInterface
      */
     public function readIqcInspectionByMaterialCategory($model,$categoryMaterial){
         // return 'true' ;
-        $iqcInspection = $this->resourceInterface->readCustomEloquent($model)->where('iqc_category_material_id',$categoryMaterial)->get();
+        $iqcInspection = $this->resourceInterface->readCustomEloquent($model)
+        ->where('iqc_category_material_id',$categoryMaterial)
+        ->whereNull('deleted_at')
+        ->get();
         $whereWhsTransactionId = "";
-        if(count ($iqcInspection) > 0){
-            foreach ($iqcInspection as $key => $valIqcInspection) {
-                $arrWhsTransactionId[] = "AND vw_list_of_received.pkid_received != '".$valIqcInspection->whs_transaction_id."' ";
+        if($categoryMaterial == "37"){
+            if(count ($iqcInspection) > 0){
+                foreach ($iqcInspection as $key => $valIqcInspection) {
+                    $arrWhsTransactionId[] = "AND vw_list_of_received.pkid_received != '".$valIqcInspection->whs_transaction_id."' ";
+                }
+                $whereWhsTransactionId = implode(' ',$arrWhsTransactionId);
             }
-            $whereWhsTransactionId = implode(' ',$arrWhsTransactionId);
+        }else{
+            if(count ($iqcInspection) > 0){
+                foreach ($iqcInspection as $key => $valIqcInspection) {
+                    $arrWhsTransactionId[] = "AND yeu_receives.id != '".$valIqcInspection->whs_transaction_id."' ";
+                }
+                $whereWhsTransactionId = implode(' ',$arrWhsTransactionId);
+            }
         }
         return $whereWhsTransactionId;
     }
