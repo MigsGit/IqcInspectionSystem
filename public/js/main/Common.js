@@ -340,7 +340,7 @@ const errorHandler = function (errors,formInput){
 //IQC FUNCTION
 const getDropdownDetailsByOptValue = function (section=null,cmb_element,iqc_inspection_column_ref,opt_value = null) {
     let opt = `<option value="" selected disabled>-Select-</option>`;
-        opt += `<option value="N/A">N/A</option>`;
+        // opt += `<option value="N/A">N/A</option>`;
         console.log('cmb_element',cmb_element);
         cmb_element.empty().append(opt)
     $.ajax({

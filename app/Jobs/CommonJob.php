@@ -51,6 +51,12 @@ class CommonJob implements CommonInterface
             $division = ($subcon_data[0]->Division == "PPS" || $subcon_data[0]->Division == "PPD") ? "PPD" :  $hris_data[0]->Division;
         }
 
+        if(count( $iqc_inspection ) == 0){
+            return [
+                'app_no' => $division."-".date('y').date('m').'-',
+                'app_no_extension'=> "001",
+            ];
+        }
         if(date_format($iqc_inspection[0]->created_at,'Y-m-d') != date('Y-m-d')){
             return [
                 'app_no' => $division."-".date('y').date('m').'-',
@@ -64,8 +70,8 @@ class CommonJob implements CommonInterface
         return [
             'app_no' => $division."-".date('y').date('m').'-',
             'app_no_extension'=> sprintf("%03d", $iqc_inspection[0]->app_no_extension + 1),
-            'created_at'=> $iqc_inspection[0]->created_at,
-            'today' =>  date('Y-m-d')
+            // 'created_at'=> $iqc_inspection[0]->created_at,
+            // 'today' =>  date('Y-m-d')
         ];
     }
     /**

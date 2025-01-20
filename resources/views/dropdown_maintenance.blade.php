@@ -81,7 +81,6 @@ table.table thead th{
 
                         <!-- Start Page Content -->
                         <div class="card-body">
-                            <div style="float: right;">
                             {{-- @if(Auth::user()->user_level_id == 1)
                                 <button class="btn btn-primary" data-toggle="modal" data-target="#modalImportPackingMatrix" id="btnShowImport" title="Import Packing Matrix"><i class="fa fa-file-excel"></i> Import</button>
                             @else
@@ -89,11 +88,14 @@ table.table thead th{
                                 <button class="btn btn-primary" data-toggle="modal" data-target="#modalImportPackingMatrix" id="btnShowImport" title="Import Packing Matrix"><i class="fa fa-file-excel"></i> Import</button>
                                 @endif
                             @endif --}}
-
-                                <button class="btn btn-dark" data-bs-toggle="modal"
-                                    data-bs-target="#modalCreateDropdownCategory" id="btnShowAddDropdownCategoryModal"><i
-                                        class="fa fa-initial-icon"></i> Add Dropdown Category</button>
-                            </div> <br><br>
+                            @if(session('rapidx_department_id') == 1)
+                                <div style="float: right;">
+                                    <button class="btn btn-dark" data-bs-toggle="modal"
+                                        data-bs-target="#modalCreateDropdownCategory" id="btnShowAddDropdownCategoryModal"><i
+                                            class="fa fa-initial-icon"></i> Add Dropdown Category
+                                    </button>
+                                </div> <br><br>
+                            @endif
                             <div class="table-responsive">
                                 <!-- style="max-height: 600px; overflow-y: auto;" -->
                                 <table id="dropdownCategory" class="table table-sm table-bordered table-striped table-hover"
@@ -188,7 +190,7 @@ table.table thead th{
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-sm-12">
-                            <input type="" id="dropdown_category_id" name="dropdown_category_id">
+                            <input type="hidden" id="dropdown_category_id" name="dropdown_category_id">
                             <div class="form-group">
                                 <label>Dropdown Category</label>
                                 <input type="text" class="form-control" name="dropdown_category" id="dropdown_category">
@@ -236,8 +238,8 @@ table.table thead th{
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-sm-12">
-                            <input type="" id="dropdown_details_id" name="dropdown_details_id">
-                            <input type="" id="iqc_dropdown_categories_id" name="iqc_dropdown_categories_id">
+                            <input type="hidden" id="dropdown_details_id" name="dropdown_details_id">
+                            <input type="hidden" id="iqc_dropdown_categories_id" name="iqc_dropdown_categories_id">
                             <div class="form-group">
                                 <label>Dropdown  category</label>
                                 <input type="text" class="form-control" name="dropdown_details" id="dropdown_details">
@@ -280,7 +282,10 @@ $(document).ready(function () {
         dropdownCategory:'',
         dropdownDetails:'',
     };
-
+    if(globalVar.department === 'ISS'){
+        $('#btnDropdownCategory').removeClass('d-none',true)
+        console.log('dept',globalVar.department);
+    }
 
     settingDataTable.dropdownCategory = $(settingTbl.dropdownCategory).DataTable({
         "processing" : true,

@@ -36,9 +36,11 @@ class SettingController extends Controller
         return DataTables::of($iqcDropdownCategory)
         ->addColumn('raw_action', function($row){
             $result = '';
-            $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1' dropdown-category-id='".$row->id."' id='btnDropdownCategory'><i class='fa-solid fa-pen-to-square'></i></button>";
-            $result .= '</center>';
+            if(session('rapidx_department_id') === 1){
+                $result .= '<center>';
+                $result .= "<button class='btn btn-info btn-sm mr-1' dropdown-category-id='".$row->id."' id='btnDropdownCategory'><i class='fa-solid fa-pen-to-square'></i></button>";
+                $result .= '</center>';
+            }
             $result .= '<input type="hidden" value="' . $row->id . '" class="form-control" id="tdDropdownCategoryId">';
             $result .= '<input type="hidden" value="' . $row->dropdown_category . '" class="form-control" id="tdDropdownCategory">';
 

@@ -38,6 +38,8 @@ class IqcInspectionController extends Controller
         $this->commonInterface = $commonInterface;
         $this->fileInterface = $fileInterface;
     }
+
+    //getTsWhsPackagingById
     public function getIqcInspectionByJudgement(Request $request)
     {
         return $iqc_inspection_by = IqcInspection::where('judgement',1)->get();

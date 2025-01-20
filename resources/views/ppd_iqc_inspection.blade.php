@@ -263,7 +263,7 @@
                 globalVar = {
                     modeOfDefectsById: "",
                     section: "PPD",
-                    dropdownSection: "TS",
+                    dropdownSection: "PPD",
                     categoryMaterialRapidDatabase : "48",
                     categoryMaterialPackaging : "49",
                 }

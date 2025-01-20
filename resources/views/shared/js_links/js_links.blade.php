@@ -58,7 +58,7 @@
         "iconClass":  "toast-custom"
     };
     globalVar = {
-        department : ""
+        department : "add"
     }
     $.ajax({
         type: 'GET',
@@ -76,28 +76,27 @@
         dataType: 'json',
         success: function (response) {
             if(response.is_success === 'true'){
-                let department = response.department;
-                if(department === 'TS' || department === 'ISS'){
+                globalVar.department = response.department;
+                if(globalVar.department === 'TS' || globalVar.department === 'ISS'){
                     $('.nav-item-ts').removeClass('d-none',true)
-                    console.log(response.department);
                 }
-                if(department === 'CN' || department === 'ISS'){
+                if(globalVar.department === 'CN' || globalVar.department === 'ISS'){
                     $('.nav-item-cn').removeClass('d-none',true)
-                    console.log(response.department);
                 }
-                if(department === 'PPS' || department === 'PPD' || department === 'ISS'){
+                if(globalVar.department === 'PPS' || globalVar.department === 'PPD' || globalVar.department === 'ISS'){
                     $('.nav-item-ppd').removeClass('d-none',true)
-                    console.log(response.department);
                 }
-                if(department === 'YF' || department === 'ISS'){
+                if(globalVar.department === 'YF' || globalVar.department === 'ISS'){
                     $('.nav-item-yf').removeClass('d-none',true)
-                    console.log(response.department);
                 }
+                console.log('j',globalVar.department);
+
             }
         },error: function (data, xhr, status){
            toastr.error(`Error: ${data.status}`);
         }
     });
+
 
 </script>
 

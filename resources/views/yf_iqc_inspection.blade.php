@@ -178,7 +178,7 @@
                 globalVar = {
                     modeOfDefectsById: "",
                     section: "YF",
-                    dropdownSection: "TS",
+                    dropdownSection: "YF",
                     categoryMaterialPackaging: "47",
 
                 }
