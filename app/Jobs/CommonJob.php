@@ -107,4 +107,19 @@ class CommonJob implements CommonInterface
         }
         return $whereWhsTransactionId;
     }
+
+    public function getIqcInspectionShift() {
+        $time_now = date('H:i:s');
+
+        // Check if the current time is within the first shift range
+        if ($time_now >= '07:30:00' && $time_now <= '19:29:00') {
+            // Set the shift to 1
+            $shift = '1';
+        } else {
+            // Set the shift to 2
+            $shift = '2';
+        }
+        return $shift;
+    }
+
 }

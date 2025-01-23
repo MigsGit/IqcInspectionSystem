@@ -202,8 +202,8 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Shift</span>
                                 </div>
-                                <select class="form-select form-control-sm" id="shift" name="shift">
-                                    <option value="" selected disabled>-Select-</option>
+                                <select class="form-select form-control-sm" id="shift" name="shift" disabled>
+                                    <option value="" selected disabled>-Auto Generated-</option>
                                     <option value="1">A</option>
                                     <option value="2">B</option>
                                 </select>

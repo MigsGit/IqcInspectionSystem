@@ -11,5 +11,6 @@ interface CommonInterface
      */
     public function generateControlNumber($model);
     public function readIqcInspectionByMaterialCategory($model,$categoryMaterial);
+    public function getIqcInspectionShift();
 
 }

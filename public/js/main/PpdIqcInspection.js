@@ -20,7 +20,6 @@
 
         call_ajax(data, 'get_whs_receiving_by_id', function(response){
             $('#modalSaveIqcInspection').modal('show');
-            form.iqcInspection.find('select').val(2);
             let whsDetails =response['tblWhsTrasanction'];
             let generateControlNumber = response['generateControlNumber'];
             let partCode =whsDetails['partcode'];

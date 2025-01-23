@@ -202,6 +202,7 @@ class YfIqcInspectionController extends Controller
         date_default_timezone_set('Asia/Manila');
         DB::beginTransaction();
         try {
+            $iqcInspectionShift = $this->commonInterface->getIqcInspectionShift();
             $mod_lot_no = explode(',',$request->lotNo);
             $mod_defects = explode(',',$request->modeOfDefects);
             $mod_lot_qty = explode(',',$request->lotQty);
@@ -212,9 +213,12 @@ class YfIqcInspectionController extends Controller
 
                 YfIqcInspection::where('id', $request->iqc_inspection_id)
                 ->update([
+                    'invoice_no' => $request->invoice_no,
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
                     'inspector' => session('rapidx_user_id'),
+                    'shift' => $iqcInspectionShift
+
                 ]);
 
                 $iqc_inspections_id = $request->iqc_inspection_id;
@@ -228,10 +232,13 @@ class YfIqcInspectionController extends Controller
                 */
                 YfIqcInspection::where('id', $create_iqc_inspection_id)
                 ->update([
+                    'invoice_no' => $request->invoice_no,
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
                     'inspector' => session('rapidx_user_id'),
-                    'created_at' => date('Y-m-d H:i:s')
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'shift' => $iqcInspectionShift
+
                 ]);
 
                 /* Update rapid/db_pps TblWarehouseTransaction, set inspection_class to 3 */

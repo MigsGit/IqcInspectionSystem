@@ -133,9 +133,6 @@
         call_ajax(data, 'get_ts_whs_packaging_by_id', function(response){
 
             $('#modalSaveIqcInspection').modal('show')
-
-            form.iqcInspection.find('select').val(2);
-
             let tsWhsReceivedPackaging = response.tsWhsReceivedPackaging;
             let partCode =tsWhsReceivedPackaging['partcode'];
             let partName =tsWhsReceivedPackaging['partname'];
@@ -450,6 +447,19 @@
             }
         });
     }
-    
+    // const getSamplingSizeBySamplingPlan = function (severityOfInspection,inspectionLvl,aql,totalLotQty){
+    //     let data = {
+    //         'severity_of_inspection' : severityOfInspection,
+    //         'inspection_lvl' : inspectionLvl,
+    //         'aql' : aql,
+    //         'total_lot_qty' : totalLotQty,
+    //     }
+    //     call_ajax(data,'get_sampling_size_by_sampling_plan',function(response){
+    //         console.log(response.sample_size);
+
+    //         form.iqcInspection.find('#sampling_size').val(response.sample_size)
+    //         // form.iqcInspection.find('#sampling_size').val(tblWhsTrasanction['sampling_size']);
+    //     })
+    // }
 
 // }) //end Doc Ready

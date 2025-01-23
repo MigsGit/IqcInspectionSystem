@@ -263,9 +263,9 @@
                 globalVar = {
                     modeOfDefectsById: "",
                     section: "TS",
-                    categoryMaterialPackaging: "37",
-                    categoryMaterialYeu: "38",
-                    
+                    categoryMaterialPackaging: "37", //Rapid TS Whs Packaging V3
+                    categoryMaterialYeu: "38", //YEU Receiving
+
                 }
 
                 tbl = {
@@ -690,6 +690,7 @@
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
                     let categoryMaterialId = $('#txtCategoryMaterial').val();
+                    form.iqcInspection.find('#shift').attr('disabled',false);
                     saveIqcInspection(categoryMaterialId);
                     // $('#modalScanQRSave').modal('show');
                 });

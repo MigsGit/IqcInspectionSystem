@@ -264,8 +264,8 @@
                     modeOfDefectsById: "",
                     section: "PPD",
                     dropdownSection: "PPD",
-                    categoryMaterialRapidDatabase : "48",
-                    categoryMaterialPackaging : "49",
+                    categoryMaterialRapidDatabase : "48", //Rapid PPD Whs Database
+                    categoryMaterialPackaging : "49", // Rapid PPD Whs Packaging V3
                 }
 
                 tbl = {
@@ -695,10 +695,10 @@
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
                     let categoryMaterialId = $('#txtCategoryMaterial').val();
+                    form.iqcInspection.find('#shift').attr('disabled',false);
                     savePpdIqcInspection(categoryMaterialId);
                     // $('#modalScanQRSave').modal('show');
                 });
-                form.iqcInspection.find('select').val(1);
             });
 
         </script>

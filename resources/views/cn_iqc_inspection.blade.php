@@ -181,7 +181,7 @@
                     modeOfDefectsById: "",
                     section: "CN",
                     dropdownSection: "CN",
-                    categoryMaterialPackaging: "46",
+                    categoryMaterialPackaging: "46", //	Rapid CN Whse Packaging V3
                 }
 
                 tbl = {
@@ -519,11 +519,11 @@
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
                     let categoryMaterialId = $('#txtCategoryMaterial').val();
+                    form.iqcInspection.find('#shift').attr('disabled',false);
                     saveCnIqcInspection(categoryMaterialId);
 
                     // $('#modalScanQRSave').modal('show');
                 });
-                form.iqcInspection.find('select').val(1);
             });
 
         </script>

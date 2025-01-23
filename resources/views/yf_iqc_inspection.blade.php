@@ -179,7 +179,7 @@
                     modeOfDefectsById: "",
                     section: "YF",
                     dropdownSection: "YF",
-                    categoryMaterialPackaging: "47",
+                    categoryMaterialPackaging: "47", //Rapid YF Whse Packaging V3
 
                 }
                 tbl = {
@@ -441,7 +441,7 @@
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
                     let categoryMaterialId = $('#txtCategoryMaterial').val();
-
+                    form.iqcInspection.find('#shift').attr('disabled',false);
                     saveYfIqcInspection(categoryMaterialId);
                     // $('#modalScanQRSave').modal('show');
                 });

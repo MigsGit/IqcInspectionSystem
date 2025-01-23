@@ -436,6 +436,16 @@ const getSamplingSizeBySamplingPlanPpd = function (severityOfInspection,inspecti
         // form.iqcInspection.find('#sampling_size').val(tblWhsTrasanction['sampling_size']);
     })
 }
+const getIqcInspectionShift  = function (){
+    $time_now = moment().format('HH:mm:ss');
+    console.log($time_now);
+    if($time_now >= '7:30:00' || $time_now <= '19:29:00'){
+        form.iqcInspection.find('#shift').val('1');
+    }
+    else{
+        form.iqcInspection.find('#shift').val('2');
+    }
+}
 
 
 

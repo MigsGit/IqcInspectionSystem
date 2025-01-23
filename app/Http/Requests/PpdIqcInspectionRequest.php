@@ -43,7 +43,6 @@ class PpdIqcInspectionRequest extends FormRequest
             'aql'=>'required',
             'accept'=>'required',
             'reject'=>'required',
-            'shift'=>'required',
             'date_inspected'=>'required',
             'time_ins_from'=>'required',
             'time_ins_to'=>'required',

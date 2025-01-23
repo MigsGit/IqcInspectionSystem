@@ -124,6 +124,8 @@ class IqcInspectionController extends Controller
                 WHERE 1=1
                 '.$whereWhsTransactionId.'
                 AND yeu_receives.lot_no = "'.$request->lotNum.'"
+                AND yeu_receives.item_code IS NOT NULL
+                AND yeu_receives.item_name IS NOT NULL
                 AND item_masters.for_iqc = 1
                 ORDER BY item_code DESC
             ');
@@ -132,10 +134,13 @@ class IqcInspectionController extends Controller
             ->select('SELECT yeu_receives.*,item_masters.part_code  FROM yeu_receives yeu_receives
                 RIGHT JOIN item_masters item_masters ON yeu_receives.item_code = item_masters.part_code
                 WHERE 1=1
-                '.$whereWhsTransactionId.'
+                AND yeu_receives.item_code IS NOT NULL
+                AND yeu_receives.item_name IS NOT NULL
                 AND item_masters.for_iqc = 1
                 ORDER BY item_code DESC
             ');
+
+            // '.$whereWhsTransactionId.'
         }
         // if( isset( $request->lotNum ) ){
         //     $tbl_whs_trasanction = DB::connection('mysql_rapidx_yeu')
@@ -365,11 +370,13 @@ class IqcInspectionController extends Controller
         ]);
     }
     public function saveIqcInspection(IqcInspectionRequest $request)
+    // public function saveIqcInspection(Request $request)
     {
-        // return $request->accepted;
+
         date_default_timezone_set('Asia/Manila');
         DB::beginTransaction();
         try {
+            $iqcInspectionShift = $this->commonInterface->getIqcInspectionShift();
             $mod_lot_no = explode(',',$request->lotNo);
             $mod_defects = explode(',',$request->modeOfDefects);
             $mod_lot_qty = explode(',',$request->lotQty);
@@ -381,10 +388,11 @@ class IqcInspectionController extends Controller
 
                 IqcInspection::where('id', $request->iqc_inspection_id)
                 ->update([
+                    'invoice_no' => $request->invoice_no,
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
-                    // 'inspector' => $_SESSION['rapidx_user_id'],
                     'inspector' => session('rapidx_user_id'),
+                    'shift' => $iqcInspectionShift
                 ]);
 
                 $iqc_inspections_id = $request->iqc_inspection_id;
@@ -398,11 +406,11 @@ class IqcInspectionController extends Controller
                 */
                 IqcInspection::where('id', $create_iqc_inspection_id)
                 ->update([
+                    'invoice_no' => $request->invoice_no,
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
                     'inspector' => session('rapidx_user_id'),
-                    // 'inspector' => $_SESSION['rapidx_user_id'],
-
+                    'shift' => $iqcInspectionShift
                 ]);
 
                 /* TODO: Update rapid/db_pps TblWarehouseTransaction, set inspection_class to 3 */
@@ -509,8 +517,21 @@ class IqcInspectionController extends Controller
                 'status' => 1,
             ];
 
-            $iqcDropdownDetail = $this->resourceInterface->readAllRelationsAndConditions(IqcDropdownCategory::class,$relations,$conditions);
+            // Ascending order of specific value (like "N/A") appears first
+            $iqcDropdownDetail = $this->resourceInterface->readCustomEloquent(IqcDropdownCategory::class)
+            ->with('iqc_dropdown_details')
+            ->where('iqc_inspection_column_ref' , $request->iqc_inspection_column_ref)
+            ->where('section' , $request->section)
+            ->where('status', 1)
+            ->whereHas('iqc_dropdown_details',
+               function($query) use ($request){
+                    $query->orderByRaw("CASE WHEN  dropdown_details = 'N/A' THEN 0 ELSE 1 END, dropdown_details ASC");
+                },
+            )
+            ->get();
+            // $results = Model::orderByRaw("CASE WHEN name = 'N/A' THEN 0 ELSE 1 END, name ASC")->get();
             $iqcDropdownDetail = $iqcDropdownDetail[0]->iqc_dropdown_details;
+
             foreach ($iqcDropdownDetail as $key => $valueIqcDropdownDetail) {
                 $arrIqcDropdownDetailId[] =$valueIqcDropdownDetail['id'];
                 $arrIqcDropdownDetailValue[] =$valueIqcDropdownDetail['dropdown_details'];
