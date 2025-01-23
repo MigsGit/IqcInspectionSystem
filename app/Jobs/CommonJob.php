@@ -50,8 +50,7 @@ class CommonJob implements CommonInterface
              ");
             $division = ($subcon_data[0]->Division == "PPS" || $subcon_data[0]->Division == "PPD") ? "PPD" :  $hris_data[0]->Division;
         }
-
-        if(count( $iqc_inspection ) == 0){
+        if(count( $iqc_inspection ) == 0 ||  $iqc_inspection[0]->created_at == null ){
             return [
                 'app_no' => $division."-".date('y').date('m').'-',
                 'app_no_extension'=> "001",
@@ -109,8 +108,8 @@ class CommonJob implements CommonInterface
     }
 
     public function getIqcInspectionShift() {
+        date_default_timezone_set('Asia/Manila');
         $time_now = date('H:i:s');
-
         // Check if the current time is within the first shift range
         if ($time_now >= '07:30:00' && $time_now <= '19:29:00') {
             // Set the shift to 1

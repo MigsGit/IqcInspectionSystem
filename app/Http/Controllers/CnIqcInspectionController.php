@@ -217,7 +217,6 @@ class CnIqcInspectionController extends Controller
                     'remarks' => $request->remarks,
                     'inspector' => session('rapidx_user_id'),
                     'shift' => $iqcInspectionShift
-
                 ]);
 
                 $iqc_inspections_id = $request->iqc_inspection_id;

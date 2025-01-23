@@ -173,14 +173,14 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Accept</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="accept" name="accept" min="0" step="0.01">
+                                <input type="number" class="form-control form-control-sm" id="accept" name="accept" min="0" step="0.01" readonly>
 
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Reject</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="reject" name="reject" min="0" step="0.01">
+                                <input type="number" class="form-control form-control-sm" id="reject" name="reject" min="0" step="0.01" readonly>
                             </div>
                         </div>
                     </div>
@@ -254,14 +254,14 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Target LAR</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="target_lar" name="target_lar" min="0" min="0" readonly>
+                                <input type="text" class="form-control form-control-sm" id="target_lar" name="target_lar" readonly>
 
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Target DPPM</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="target_dppm" name="target_dppm" min="0" min="0" readonly>
+                                <input type="text" class="form-control form-control-sm" id="target_dppm" name="target_dppm" readonly>
 
                             </div>
                             <div class="input-group input-group-sm mb-3">
@@ -284,13 +284,13 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Lot Accepted</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="accepted" name="accepted" min="0" max="1" step="0.01">
+                                <input type="number" class="form-control form-control-sm" id="accepted" name="accepted" min="0" max="1" step="0.01" >
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Sampling Size</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="sampling_size" name="sampling_size" min="0" step="0.01">
+                                <input type="number" class="form-control form-control-sm" id="sampling_size" name="sampling_size" min="0" step="0.01" readonly>
                             </div>
                             <div class="input-group input-group-sm mb-3 d-none divMod">
                                 <div class="input-group-prepend w-50">
@@ -302,7 +302,7 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Judgement</span>
                                 </div>
-                                <select class="form-select form-control-sm" id="judgement" name="judgement">
+                                <select class="form-select form-control-sm" id="judgement" name="judgement" disabled>
                                     <option value="" selected disabled>-Select-</option>
                                     <option value="1">Accept</option>
                                     <option value="2">Reject</option>

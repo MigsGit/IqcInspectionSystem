@@ -442,6 +442,7 @@
                     e.preventDefault();
                     let categoryMaterialId = $('#txtCategoryMaterial').val();
                     form.iqcInspection.find('#shift').attr('disabled',false);
+                    form.iqcInspection.find('#judgement').attr('disabled',false);
                     saveYfIqcInspection(categoryMaterialId);
                     // $('#modalScanQRSave').modal('show');
                 });
