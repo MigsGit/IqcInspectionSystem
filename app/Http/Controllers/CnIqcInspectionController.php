@@ -36,19 +36,24 @@ class CnIqcInspectionController extends Controller
             // display it to the ON-GOING status
             if( isset( $request->lotNum ) ){
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_cn_whs_packaging')
-                ->select('SELECT pkid_received as "receiving_detail_id",supplier as "Supplier",partcode as "PartNumber",
-                    partname as "MaterialType",date as "Lot_number",invoiceno as "InvoiceNo" FROM  vw_list_of_received
+                ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_received.partcode as "PartNumber",
+                    tbl_received.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
+                    FROM  tbl_received tbl_received
+                    LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
+                    AND tbl_itemList.is_iqc_inspection = 1
                     AND date = "'.$request->lotNum.'"
+                    '.$whereWhsTransactionId.'
                 ');
             }else{
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_cn_whs_packaging')
-                ->select('SELECT pkid_received as "receiving_detail_id",supplier as "Supplier",partcode as "PartNumber",
-                    partname as "MaterialType",date as "Lot_number",invoiceno as "InvoiceNo"
-                    FROM  vw_list_of_received
+                ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
+                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
+                    FROM  tbl_received tbl_received
+                    LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
+                    AND tbl_itemList.is_iqc_inspection = 1
                     '.$whereWhsTransactionId.'
-
                 ');
             }
             return DataTables::of($tbl_whs_trasanction)

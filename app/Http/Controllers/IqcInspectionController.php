@@ -54,43 +54,27 @@ class IqcInspectionController extends Controller
 
             if( isset( $request->lotNum ) ){
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_ts_whs_packaging')
-                ->select('SELECT vw_list_of_received.pkid_received as "receiving_detail_id",vw_list_of_received.supplier as "Supplier",vw_list_of_received.partcode as "PartNumber",
-                    vw_list_of_received.partname as "MaterialType",vw_list_of_received.date as "Lot_number",vw_list_of_received.invoiceno as "InvoiceNo"
-                    FROM  vw_list_of_received vw_list_of_received
-                    LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.partcode = vw_list_of_received.partcode
+                ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_received.partcode as "PartNumber",
+                    tbl_received.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
+                    FROM  tbl_received tbl_received
+                    LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
                     AND date = "'.$request->lotNum.'"
-                ');
-            }else{
-                $tbl_whs_trasanction = DB::connection('mysql_rapid_ts_whs_packaging')
-                ->select('SELECT vw_list_of_received.pkid_received as "receiving_detail_id",vw_list_of_received.supplier as "Supplier",vw_list_of_received.partcode as "PartNumber",
-                    vw_list_of_received.partname as "MaterialType",vw_list_of_received.date as "Lot_number",vw_list_of_received.invoiceno as "InvoiceNo"
-                    FROM  vw_list_of_received vw_list_of_received
-                    LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.partcode = vw_list_of_received.partcode
-                    WHERE 1=1
                     '.$whereWhsTransactionId.'
                 ');
-                    // AND tbl_itemList.is_iqc_inspection = 1
-            }
-            // if( isset( $request->lotNum ) ){
-            //     $tbl_whs_trasanction = DB::connection('mysql_rapidx_yeu')
-            //     ->select('SELECT yeu_receives.*  FROM yeu_receives yeu_receives
-            //         RIGHT JOIN item_masters item_masters ON yeu_receives.item_code = item_masters.part_code
-            //         WHERE 1=1
-            //         AND yeu_receives.lot_no = "'.$request->lotNum.'"
-            //         AND item_masters.for_iqc = 1
-            //         ORDER BY item_code DESC
-            //     ');
-            // }else{
-            //     $tbl_whs_trasanction = DB::connection('mysql_rapidx_yeu')
-            //     ->select('SELECT yeu_receives.*,item_masters.part_code  FROM yeu_receives yeu_receives
-            //         RIGHT JOIN item_masters item_masters ON yeu_receives.item_code = item_masters.part_code
-            //         WHERE 1=1
-            //         AND item_masters.for_iqc = 1
-            //         ORDER BY item_code DESC
-            //     ');
-            // }
+                //TODO : Lot Number
+            }else{
+                $tbl_whs_trasanction = DB::connection('mysql_rapid_ts_whs_packaging')
+                ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
+                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
+                    FROM  tbl_received tbl_received
+                    LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
+                    WHERE 1=1
+                    AND tbl_itemList.is_iqc_inspection = 1
+                    '.$whereWhsTransactionId.'
+                ');
+            } //TODO : Lot Number
             return DataTables::of($tbl_whs_trasanction)
             ->addColumn('rawAction', function($row){
                 $result = '';
