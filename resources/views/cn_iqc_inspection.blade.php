@@ -54,7 +54,10 @@
                                     <!-- Start Page Content -->
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link active .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">Rapid CN WHS Packaging V3</a>
+                                            <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">Fixed - Material Packaging</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">ROP Based - Material Packaging </a>
                                         </li>
                                     </ul>
                                     <div class="tab-content mt-4" id="myTabContent">
@@ -74,7 +77,91 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="tab-pane fade show active" id="menu2" role="tabpanel" aria-labelledby="menu2-tab">
+                                        <div class="tab-pane fade show active" id="menu1" role="tabpanel" aria-labelledby="menu1-tab">
+                                            <div class="card card-primary">
+                                                <div class="card-header">
+                                                    <h3 class="card-title">FIXED - Rapid Whse Receiving</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    {{-- <br><br> --}}
+                                                    {{-- TABS --}}
+                                                    {{-- <div class="row">
+                                                        <div class="col-12">
+                                                            <button class="btn btn-lg btn-outline-info float-end"><i class="fa fa-users" aria-hidden="true"></i>  Group by</button>
+                                                        </div>
+                                                    </div> txtScanVerifyData modalVerifyData --}}
+                                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                                        <li class="nav-item">
+                                                            <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1_1" role="tab" aria-controls="menu1_1" aria-selected="true">On-going</a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2_1" role="tab" aria-controls="menu2_1" aria-selected="false">Inspected</a>
+                                                        </li>
+                                                    </ul>
+                                                    <br>
+                                                    <div class="tab-content" id="myTabContent">
+                                                        <div class="tab-pane fade show active" id="menu1_1" role="tabpanel" aria-labelledby="menu1_1-tab">
+                                                            <div class="table-responsive">
+                                                                <!-- style="max-height: 600px; overflow-y: auto;" -->
+                                                                <table id="tblIqcCnFixedWhsPackaging" class="table table-sm table-bordered table-striped table-hover"
+                                                                    style="width: 100%;">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th><center><i  class="fa fa-cog"></i></center></th>
+                                                                            <th>Status</th>
+                                                                            <th>Invoice</th>
+                                                                            {{-- <th>Date Inspected</th> --}}
+                                                                            {{-- <th>Time Inspected</th> --}}
+                                                                            {{-- <th>App Ctrl No.</th> --}}
+                                                                            {{-- <th>Classification</th> --}}
+                                                                            {{-- <th>Family</th> --}}
+                                                                            {{-- <th>Category</th> --}}
+                                                                            <th>Supplier</th>
+                                                                            <th>Part Code</th>
+                                                                            <th>Part Name</th>
+                                                                            <th>Lot No.</th>
+                                                                            {{-- <th>Lot Qty.</th> --}}
+                                                                            {{-- <th>Total Lot Size</th> --}}
+                                                                            {{-- <th>AQL</th> --}}
+                                                                        </tr>
+                                                                    </thead>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane fade" id="menu2_1" role="tabpanel" aria-labelledby="menu2_1-tab">
+                                                            <div class="table-responsive">
+                                                                <!-- style="max-height: 600px; overflow-y: auto;" -->
+                                                                <table id="tblIqcCnFixedWhsPackagingInspected" class="table table-sm table-bordered table-striped table-hover"
+                                                                    style="width: 100%;">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th><center><i  class="fa fa-cog"></i></center></th>
+                                                                            <th>Status</th>
+                                                                            <th>Date Inspected</th>
+                                                                            <th>Time Inspected</th>
+                                                                            <th>Supplier</th>
+                                                                            <th>App Ctrl No.</th>
+                                                                            {{-- <th>Classification</th> --}}
+                                                                            {{-- <th>Family</th> --}}
+                                                                            {{-- <th>Category</th> --}}
+                                                                            <th>Part Code</th>
+                                                                            <th>Part Name</th>
+                                                                            <th>Lot No.</th>
+                                                                            <th>Lot Qty.</th>
+                                                                            {{-- <th>AQL</th> --}}
+                                                                            <th>Inspector</th>
+                                                                            <th>Date Created</th>
+                                                                            <th>Date Updated</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="menu2" role="tabpanel" aria-labelledby="menu2-tab">
                                             <div class="card card-primary">
                                                 <div class="card-header">
                                                     <h3 class="card-title">Rapid CN WHS Packaging V3</h3>
@@ -107,19 +194,10 @@
                                                                             <th><center><i  class="fa fa-cog"></i></center></th>
                                                                             <th>Status</th>
                                                                             <th>Invoice</th>
-                                                                            {{-- <th>Date Inspected</th> --}}
-                                                                            {{-- <th>Time Inspected</th> --}}
-                                                                            {{-- <th>App Ctrl No.</th> --}}
-                                                                            {{-- <th>Classification</th> --}}
-                                                                            {{-- <th>Family</th> --}}
-                                                                            {{-- <th>Category</th> --}}
                                                                             <th>Supplier</th>
                                                                             <th>Part Code</th>
                                                                             <th>Part Name</th>
                                                                             <th>Lot No.</th>
-                                                                            {{-- <th>Lot Qty.</th> --}}
-                                                                            {{-- <th>Total Lot Size</th> --}}
-                                                                            {{-- <th>AQL</th> --}}
                                                                         </tr>
                                                                     </thead>
                                                                 </table>
@@ -181,19 +259,23 @@
                     modeOfDefectsById: "",
                     section: "CN",
                     dropdownSection: "CN",
-                    categoryMaterialPackaging: "46", //	Rapid CN Whse Packaging V3
+                    categoryMaterialPackaging: "46", //	Rapid CN ROP Whse Packaging V3
+                    categoryMaterialPackagingCnFixed: "123", //	Rapid CN FIXED Whse Packaging V3
                 }
 
                 tbl = {
                     iqcCnWhsPackaging:'#tblIqcCnWhsPackaging',
-                    iqcWhsDetails :'#tblWhsDetails',
                     iqcCnWhsPackagingInspected:'#tblIqcCnWhsPackagingInspected',
+                    iqcCnFixedWhsPackaging:'#tblIqcCnFixedWhsPackaging',
+                    iqcCnFixedWhsPackagingInspected:'#tblIqcCnFixedWhsPackagingInspected',
 
                 };
 
                 dataTable = {
                     iqcCnWhsPackaging: '',
                     iqcCnWhsPackagingInspected: '',
+                    iqcCnFixedWhsPackaging: '',
+                    iqcCnFixedWhsPackagingInspected: '',
 
                 };
 
@@ -246,7 +328,61 @@
                     ],
                 });
 
+                dataTable.iqcCnFixedWhsPackaging = $(tbl.iqcCnFixedWhsPackaging).DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "load_cn_fixed_whs_packaging", //Rapid PPS WHS Transaction
+                        data: function (param){
+                            param.lotNum = $('#txtSearchLotNum').val()
+                            param.categoryMaterial = globalVar.categoryMaterialPackaging;
+                        },
+                    },
+                    fixedHeader: true,
+                    "columns":[
+                        { "data" : "rawAction", orderable:false, searchable:false },
+                        { "data" : "rawStatus", orderable:false, searchable:false },
+                        { "data" : "InvoiceNo" },
+                        { "data" : "Supplier" },
+                        { "data" : "PartNumber" },
+                        { "data" : "MaterialType" },
+                        { "data" : "Lot_number" },
+                    ],
+                });
+
                 dataTable.iqcCnWhsPackagingInspected = $(tbl.iqcCnWhsPackagingInspected).DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "load_cn_iqc_inspection",
+                        data: function (param){
+                            param.lotNum = $('#txtSearchLotNum').val()
+                            // param.categoryMaterial = $('#txtCategoryMaterial').val()
+                        },
+                    },
+                    fixedHeader: true,
+                    "columns":[
+                        { "data" : "rawAction", orderable:false, searchable:false },
+                        { "data" : "rawStatus", orderable:false, searchable:false },
+                        { "data" : "date_inspected" },
+                        { "data" : "time_inspected" },
+                        { "data" : "app_ctrl_no" },
+                        { "data": "supplier" },
+                        // { "data" : "classification" },//
+                        // { "data" : "family" },//
+                        // { "data" : "category" },//
+                        { "data" : "partcode" },
+                        { "data" : "partname" },
+                        { "data" : "lot_no" },
+                        { "data" : "total_lot_qty" },
+                        // { "data" : "aql" }, //
+                        { "data" : "qc_inspector" }, //
+                        { "data" : "created_at" },
+                        { "data" : "updated_at" },
+                    ],
+                });
+
+                dataTable.iqcCnFixedWhsPackagingInspected = $(tbl.iqcCnFixedWhsPackagingInspected).DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
@@ -284,6 +420,7 @@
                     getCnIqcInspectionById (iqcInspectionId,iqcCategoryMaterialId);
                 });
                 $(tbl.iqcCnWhsPackaging).on('click','#btnEditIqcInspection', getCnWhsPackagingById);
+                $(tbl.iqcCnFixedWhsPackaging).on('click','#btnEditIqcInspection', getCnWhsFixedPackagingById);
                 // $(tbl.iqcCnWhsPackagingInspected).on('click','#btnEditIqcInspection', editIqcInspected);
 
                 $('#btnLotNo').click(function (e) {
@@ -353,6 +490,38 @@
                     $('#modalLotNum').attr('el-modal-attr',elModalAttr).modal('show')
                 });
 
+                //Menu Rapid CN ROP Whse Packaging V3
+                $('a[href="#menu1"]').click(function (e) {
+                    e.preventDefault();
+                    $('#btnModalLotNum').attr('el-btn-attr','whseTransaction')
+                    $('#txtSearchLotNum').val('');
+                    let categoryMaterial = globalVar.categoryMaterialPackagingCnFixed;
+                    dataTable.iqcCnFixedWhsPackaging.draw();
+                    dataTable.iqcCnFixedWhsPackagingInspected.ajax.url("load_cn_iqc_inspection?category_material="+categoryMaterial).draw();
+                    getDropdownDetailsByOptValue(globalVar.section,$('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
+                });
+                $('a[href="#menu1_1"]').click(function (e) {
+                    e.preventDefault();
+                    $('#txtSearchLotNum').val('');
+                    dataTable.iqcCnFixedWhsPackaging.draw();
+                });
+                $('a[href="#menu2_1"]').click(function (e) {
+                    e.preventDefault();
+                    $('#txtSearchLotNum').val('');
+                    let categoryMaterial = globalVar.categoryMaterialPackagingCnFixed;
+                    dataTable.iqcCnFixedWhsPackagingInspected.ajax.url("load_cn_iqc_inspection?category_material="+categoryMaterial).draw();
+                });
+
+                //Menu Rapid CN FIXED Whse Packaging V3
+                $('a[href="#menu2"]').click(function (e) {
+                    e.preventDefault();
+                    let categoryMaterial = globalVar.categoryMaterialPackaging;
+                    $('#btnModalLotNum').attr('el-btn-attr','yeu')
+                    $('#txtSearchLotNum').val('');
+                    dataTable.iqcCnWhsPackaging.draw();
+                    dataTable.iqcCnWhsPackagingInspected.ajax.url("load_cn_iqc_inspection?category_material="+categoryMaterial).draw();
+                    getDropdownDetailsByOptValue(globalVar.section,$('#txtCategoryMaterial'),'iqc_category_material_id',categoryMaterial)
+                });
 
                 $('a[href="#menu1_2"]').click(function (e) {
                     e.preventDefault();
@@ -364,7 +533,7 @@
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
                     console.log('menu2_2');
-                    let categoryMaterial = '46';
+                    let categoryMaterial = globalVar.categoryMaterialPackaging;
                     dataTable.iqcCnWhsPackagingInspected.ajax.url("load_cn_iqc_inspection?category_material="+categoryMaterial).draw();
                 });
 

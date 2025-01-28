@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
-use Illuminate\Support\Facades\DB;
-
 use App\Models\User;
+use Illuminate\Http\Request;
 use App\Models\CnIqcInspection;
-use App\Models\CnIqcInspectionsMod;
-use App\Models\VwCnListOfReceived;
-use App\Http\Requests\CnIqcInspectionRequest;
 
+use Yajra\DataTables\DataTables;
 use App\Interfaces\FileInterface;
+use App\Models\VwCnListOfReceived;
+use Illuminate\Support\Facades\DB;
 use App\Interfaces\CommonInterface;
+
+use App\Models\CnIqcInspectionsMod;
 use App\Interfaces\ResourceInterface;
+use App\Models\VwCnFixedListOfReceived;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\CnIqcInspectionRequest;
 
 class CnIqcInspectionController extends Controller
 {
@@ -36,6 +38,56 @@ class CnIqcInspectionController extends Controller
             // display it to the ON-GOING status
             if( isset( $request->lotNum ) ){
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_cn_whs_packaging')
+                ->select(' SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_received.partcode as "PartNumber",
+                    tbl_received.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
+                    FROM  vw_list_of_received2 tbl_received
+                    LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
+                    WHERE 1=1
+                    AND tbl_itemList.is_iqc_inspection = 1
+                    AND date = "'.$request->lotNum.'"
+                    '.$whereWhsTransactionId.'
+                ');
+            }else{
+                $tbl_whs_trasanction = DB::connection('mysql_rapid_cn_whs_packaging')
+                ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
+                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
+                    FROM  tbl_received tbl_received
+                    LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
+                    WHERE 1=1
+                    AND tbl_itemList.is_iqc_inspection = 1
+                    '.$whereWhsTransactionId.'
+                ');
+            }
+            return DataTables::of($tbl_whs_trasanction)
+            ->addColumn('rawAction', function($row){
+                $result = '';
+                $result .= '<center>';
+                $result .= "<button class='btn btn-info btn-sm mr-1' pkid-received='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+                $result .= '</center>';
+                return $result;
+            })
+            ->addColumn('rawStatus', function($row){
+                $result = '';
+                $result .= '<center>';
+                $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
+                $result .= '</center>';
+                return $result;
+            })
+            ->rawColumns(['rawAction','rawStatus'])
+            ->make(true);
+        } catch (Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
+    public function loadCnFixedWhsPackaging(Request $request)
+    {
+        try {
+            $categoryMaterial = $request->categoryMaterial;
+            $whereWhsTransactionId =   $this->commonInterface->readIqcInspectionByMaterialCategory(CnIqcInspection::class,$categoryMaterial);
+            // Read IqcInspection (Material already Inspected) then do not
+            // display it to the ON-GOING status
+            if( isset( $request->lotNum ) ){
+                $tbl_whs_trasanction = DB::connection('mysql_rapid_cn_fixed_whs_packaging')
                 ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_received.partcode as "PartNumber",
                     tbl_received.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
                     FROM  tbl_received tbl_received
@@ -46,7 +98,7 @@ class CnIqcInspectionController extends Controller
                     '.$whereWhsTransactionId.'
                 ');
             }else{
-                $tbl_whs_trasanction = DB::connection('mysql_rapid_cn_whs_packaging')
+                $tbl_whs_trasanction = DB::connection('mysql_rapid_cn_fixed_whs_packaging')
                 ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
                     tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
                     FROM  tbl_received tbl_received
@@ -169,6 +221,32 @@ class CnIqcInspectionController extends Controller
     {
         try {
             $query = $this->resourceInterface->readCustomEloquent( VwCnListOfReceived::class);
+            $cnWhsReceivedPackaging = $query->where('pkid_received',$request->pkid_received)->get(
+                [
+                    'pkid_received as whs_transaction_id',
+                    'invoiceno as invoice_no',
+                    'date as lot_no',
+                    'partcode as partcode',
+                    'partname as partname',
+                    'supplier as supplier',
+                    'rcvqty as total_lot_qty',
+                ]
+            );
+            $generateControlNumber = $this->commonInterface->generateControlNumber(CnIqcInspection::class);
+
+            return response()->json(['is_success' => 'true',
+                'cnWhsReceivedPackaging' => $cnWhsReceivedPackaging[0],
+                'generateControlNumber' => $generateControlNumber
+            ]);
+            return response()->json(['is_success' => 'true']);
+        } catch (Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
+    public function getCnFixedWhsPackagingById(Request $request)
+    {
+        try {
+            $query = $this->resourceInterface->readCustomEloquent( VwCnFixedListOfReceived::class);
             $cnWhsReceivedPackaging = $query->where('pkid_received',$request->pkid_received)->get(
                 [
                     'pkid_received as whs_transaction_id',

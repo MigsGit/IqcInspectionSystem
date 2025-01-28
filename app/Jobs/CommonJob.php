@@ -89,14 +89,17 @@ class CommonJob implements CommonInterface
         ->whereNull('deleted_at')
         ->get();
         $whereWhsTransactionId = "";
-        if($categoryMaterial == "37"){
+        if($categoryMaterial == "37" || $categoryMaterial == "46"
+            || $categoryMaterial == "123" || $categoryMaterial == "47"
+            || $categoryMaterial == "49" ) //Packaging Material Category
+        {
             if(count ($iqcInspection) > 0){
                 foreach ($iqcInspection as $key => $valIqcInspection) {
-                    $arrWhsTransactionId[] = "AND vw_list_of_received.pkid_received != '".$valIqcInspection->whs_transaction_id."' ";
+                    $arrWhsTransactionId[] = "AND tbl_received.pkid_received != '".$valIqcInspection->whs_transaction_id."' ";
                 }
                 $whereWhsTransactionId = implode(' ',$arrWhsTransactionId);
             }
-        }else{
+        }else{ //YEU Material Category
             if(count ($iqcInspection) > 0){
                 foreach ($iqcInspection as $key => $valIqcInspection) {
                     $arrWhsTransactionId[] = "AND yeu_receives.id != '".$valIqcInspection->whs_transaction_id."' ";
