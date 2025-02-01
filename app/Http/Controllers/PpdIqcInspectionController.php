@@ -60,7 +60,7 @@ class PpdIqcInspectionController extends Controller
                 $result = '';
                 $result .= '<center>';
                 // if($row->inspector == Auth::user()->id || Auth::user()->username =='mclegaspi'){ //nmodify
-                    $result .= "<button class='btn btn-info btn-sm mr-1' iqc-inspection-id='".$row->id."'id='btnEditIqcInspection' inspector='".$row->inspector."'><i class='fa-solid fa-pen-to-square'></i></button>";
+                    $result .= "<button class='btn btn-outline-info btn-sm mr-1' iqc-inspection-id='".$row->id."'id='btnEditIqcInspection' inspector='".$row->inspector."'><i class='fa-solid fa-pen-to-square'></i></button>";
                 // }
                 $result .= '</center>';
                 return $result;
@@ -149,7 +149,7 @@ class PpdIqcInspectionController extends Controller
         ->addColumn('rawAction', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1' whs-trasaction-id='".$row->pkid."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= "<button class='btn btn-outline-info btn-sm mr-1' whs-trasaction-id='".$row->pkid."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
             $result .= '</center>';
             return $result;
         })
@@ -198,7 +198,7 @@ class PpdIqcInspectionController extends Controller
             ->addColumn('rawAction', function($row){
                 $result = '';
                 $result .= '<center>';
-                $result .= "<button class='btn btn-info btn-sm mr-1' pkid-received='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+                $result .= "<button class='btn btn-outline-info btn-sm mr-1' pkid-received='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
                 $result .= '</center>';
                 return $result;
             })
@@ -243,7 +243,7 @@ class PpdIqcInspectionController extends Controller
             $ppdWhsReceivedPackaging = $query->where('pkid_received',$request->pkid_received)->get([
                 'pkid_received as whs_transaction_id',
                 'invoiceno as invoice_no',
-                'date as lot_no',
+                'lot_no as lot_no',
                 'partcode as partcode',
                 'partname as partname',
                 'supplier as supplier',
@@ -292,7 +292,7 @@ class PpdIqcInspectionController extends Controller
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
                     'inspector' => session('rapidx_user_id'),
-                    'shift' => $iqcInspectionShift
+                    'shift' => $iqcInspectionShift,
 
                 ]);
 
@@ -312,30 +312,34 @@ class PpdIqcInspectionController extends Controller
                     'remarks' => $request->remarks,
                     'inspector' => session('rapidx_user_id'),
                     'created_at' => date('Y-m-d H:i:s'),
-                    'shift' => $iqcInspectionShift
+                    'shift' => $iqcInspectionShift,
+
 
                 ]);
 
                 /* Update rapid/db_pps TblWarehouseTransaction, set inspection_class to 3 */
-                // if($request->whs_transaction_id != 0){
-                //     TblWarehouseTransaction::where('pkid', $request->whs_transaction_id)
-                //     ->update([
-                //         'inspection_class' => 3,
-                //     ]);
-                // }
-                // /* Update status ReceivingDetails into 2*/
-                // if($request->receiving_detail_id != 0){
-                //     ReceivingDetails::where('id', $request->receiving_detail_id)
-                //     ->update([
-                //         'rawStatus' => 2,
-                //     ]);
-                // }
+                if($request->category_material == '48'){
+                    if($request->whs_transaction_id != 0){
+                        TblWarehouseTransaction::where('pkid', $request->whs_transaction_id)
+                        ->update([
+                            'inspection_class' => 3,
+                        ]);
+                    }
+                    /* Update status ReceivingDetails into 2*/
+                    if($request->receiving_detail_id != 0){
+                        ReceivingDetails::where('id', $request->receiving_detail_id)
+                        ->update([
+                            'rawStatus' => 2,
+                        ]);
+                    }
+                }
+
                 $iqc_inspections_id = $create_iqc_inspection_id;
             }
             /* Uploading of file if checked & iqc_coc_file is exist*/
             if(isset($request->iqc_coc_file) ){
                 $original_filename = $request->file('iqc_coc_file')->getClientOriginalName(); //'/etc#hosts/@Álix Ãxel likes - beer?!.pdf';
-                $filtered_filename = '_'.$this->fileInterface->Slug($original_filename, '_', '.');
+                $filtered_filename = $this->fileInterface->Slug($original_filename, '_', '.');
                 Storage::putFileAs('public/ppd_iqc_inspection_coc', $request->iqc_coc_file,  $iqc_inspections_id .'_'. $filtered_filename);
 
 

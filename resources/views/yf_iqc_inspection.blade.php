@@ -75,7 +75,7 @@
                                             </div>
                                         </div>
                                         <div class="tab-pane fade show active" id="menu2" role="tabpanel" aria-labelledby="menu2-tab">
-                                            <div class="card card-primary">
+                                            <div class="card card-danger">
                                                 <div class="card-header">
                                                     <h3 class="card-title">Rapid YF WHS Packaging V3</h3>
                                                 </div>

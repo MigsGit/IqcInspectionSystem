@@ -55,6 +55,8 @@ class CnIqcInspectionController extends Controller
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
+                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
+                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
                     '.$whereWhsTransactionId.'
                 ');
             }
@@ -62,7 +64,7 @@ class CnIqcInspectionController extends Controller
             ->addColumn('rawAction', function($row){
                 $result = '';
                 $result .= '<center>';
-                $result .= "<button class='btn btn-info btn-sm mr-1' pkid-received='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+                $result .= "<button class='btn btn-outline-info btn-sm mr-1' pkid-received='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
                 $result .= '</center>';
                 return $result;
             })
@@ -93,8 +95,8 @@ class CnIqcInspectionController extends Controller
                     FROM  tbl_received tbl_received
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
-                    AND tbl_itemList.is_iqc_inspection = 1
-                    AND date = "'.$request->lotNum.'"
+                    -- AND tbl_itemList.is_iqc_inspection = 1
+                    -- AND date = "'.$request->lotNum.'"
                     '.$whereWhsTransactionId.'
                 ');
             }else{
@@ -105,6 +107,9 @@ class CnIqcInspectionController extends Controller
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
+                    -- AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
+                    -- AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+
                     '.$whereWhsTransactionId.'
                 ');
             }
@@ -112,7 +117,7 @@ class CnIqcInspectionController extends Controller
             ->addColumn('rawAction', function($row){
                 $result = '';
                 $result .= '<center>';
-                $result .= "<button class='btn btn-info btn-sm mr-1' pkid-received='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+                $result .= "<button class='btn btn-outline-info btn-sm mr-1' pkid-received='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
                 $result .= '</center>';
                 return $result;
             })
@@ -160,7 +165,7 @@ class CnIqcInspectionController extends Controller
                 $result = '';
                 $result .= '<center>';
                 // if($row->inspector == Auth::user()->id || Auth::user()->username =='mclegaspi'){ //nmodify
-                    $result .= "<button class='btn btn-info btn-sm mr-1' iqc-inspection-id='".$row->id."'id='btnEditIqcInspection' inspector='".$row->inspector."'><i class='fa-solid fa-pen-to-square'></i></button>";
+                    $result .= "<button class='btn btn-outline-info btn-sm mr-1' iqc-inspection-id='".$row->id."'id='btnEditIqcInspection' inspector='".$row->inspector."'><i class='fa-solid fa-pen-to-square'></i></button>";
                 // }
                 $result .= '</center>';
                 return $result;
@@ -225,7 +230,7 @@ class CnIqcInspectionController extends Controller
                 [
                     'pkid_received as whs_transaction_id',
                     'invoiceno as invoice_no',
-                    'date as lot_no',
+                    'lot_no as lot_no',
                     'partcode as partcode',
                     'partname as partname',
                     'supplier as supplier',
@@ -251,7 +256,7 @@ class CnIqcInspectionController extends Controller
                 [
                     'pkid_received as whs_transaction_id',
                     'invoiceno as invoice_no',
-                    'date as lot_no',
+                    'lot_no as lot_no',
                     'partcode as partcode',
                     'partname as partname',
                     'supplier as supplier',
@@ -317,8 +322,8 @@ class CnIqcInspectionController extends Controller
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
                     'inspector' => session('rapidx_user_id'),
+                    'shift' => $iqcInspectionShift,
                     'created_at' => date('Y-m-d H:i:s'),
-                    'shift' => $iqcInspectionShift
 
                 ]);
 
@@ -341,7 +346,7 @@ class CnIqcInspectionController extends Controller
             /* Uploading of file if checked & iqc_coc_file is exist*/
             if(isset($request->iqc_coc_file) ){
                 $original_filename = $request->file('iqc_coc_file')->getClientOriginalName(); //'/etc#hosts/@Álix Ãxel likes - beer?!.pdf';
-                $filtered_filename = '_'.$this->fileInterface->Slug($original_filename, '_', '.');
+                $filtered_filename = $this->fileInterface->Slug($original_filename, '_', '.');
                 Storage::putFileAs('public/cn_iqc_inspection_coc', $request->iqc_coc_file,  $iqc_inspections_id .'_'. $filtered_filename);
 
 

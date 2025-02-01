@@ -27,7 +27,6 @@ class CommonJob implements CommonInterface
     public function generateControlNumber($model){
         date_default_timezone_set('Asia/Manila');
         $query = $this->resourceInterface->readCustomEloquent($model);
-        $iqc_inspection = $query->orderBy('created_at','desc')->whereNull('deleted_at')->limit(1)->get(['app_no_extension','created_at']);
 
         $rapidx_employee_number = session('rapidx_employee_number');
 
@@ -50,24 +49,28 @@ class CommonJob implements CommonInterface
              ");
             $division = ($subcon_data[0]->Division == "PPS" || $subcon_data[0]->Division == "PPD") ? "PPD" :  $hris_data[0]->Division;
         }
+        //Check if the Created At & App No / Division is exisiting
+        $current_division = $division."-".date('y').date('m').'-';
+        $iqc_inspection = $query->orderBy('created_at','desc')->where('app_no',$current_division)
+            ->whereNull('deleted_at')->limit(1)->get(['app_no_extension','created_at']);
+
         if(count( $iqc_inspection ) == 0 ||  $iqc_inspection[0]->created_at == null ){
             return [
-                'app_no' => $division."-".date('y').date('m').'-',
+                'app_no' => $current_division,
                 'app_no_extension'=> "001",
             ];
         }
         if(date_format($iqc_inspection[0]->created_at,'Y-m-d') != date('Y-m-d')){
             return [
-                'app_no' => $division."-".date('y').date('m').'-',
+                'app_no' => $current_division,
                 'app_no_extension'=>"001",
                 'id'=>$iqc_inspection[0]->created_at,
                 'created_at'=> $iqc_inspection[0]->created_at,
                 'today' =>  date('Y-m-d')
-
             ];
         }
         return [
-            'app_no' => $division."-".date('y').date('m').'-',
+            'app_no' => $current_division,
             'app_no_extension'=> sprintf("%03d", $iqc_inspection[0]->app_no_extension + 1),
             // 'created_at'=> $iqc_inspection[0]->created_at,
             // 'today' =>  date('Y-m-d')
@@ -83,11 +86,10 @@ class CommonJob implements CommonInterface
      * @return string
      */
     public function readIqcInspectionByMaterialCategory($model,$categoryMaterial){
-        // return 'true' ;
         $iqcInspection = $this->resourceInterface->readCustomEloquent($model)
-        ->where('iqc_category_material_id',$categoryMaterial)
-        ->whereNull('deleted_at')
-        ->get();
+            ->where('iqc_category_material_id',$categoryMaterial)
+            ->whereNull('deleted_at')
+            ->get();
         $whereWhsTransactionId = "";
         if($categoryMaterial == "37" || $categoryMaterial == "46"
             || $categoryMaterial == "123" || $categoryMaterial == "47"

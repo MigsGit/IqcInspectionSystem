@@ -78,7 +78,7 @@
                                             </div>
                                         </div>
                                         <div class="tab-pane fade show active" id="menu1" role="tabpanel" aria-labelledby="menu1-tab">
-                                            <div class="card card-primary">
+                                            <div class="card card-success">
                                                 <div class="card-header">
                                                     <h3 class="card-title">FIXED - Rapid Whse Receiving</h3>
                                                 </div>
@@ -162,7 +162,7 @@
                                             </div>
                                         </div>
                                         <div class="tab-pane fade" id="menu2" role="tabpanel" aria-labelledby="menu2-tab">
-                                            <div class="card card-primary">
+                                            <div class="card card-success">
                                                 <div class="card-header">
                                                     <h3 class="card-title">Rapid CN WHS Packaging V3</h3>
                                                 </div>

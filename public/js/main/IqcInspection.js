@@ -71,7 +71,8 @@
             form.iqcInspection.find('#lot_inspected').val(1);
             form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
             form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
-            form.iqcInspection.find('#isUploadCoc').prop('required',true);
+            // form.iqcInspection.find('#isUploadCoc').prop('required',true);
+
             getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#aql'),'aql');
             getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#family'),'family');
             getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');
@@ -137,7 +138,7 @@
             let partCode =tsWhsReceivedPackaging['partcode'];
             let partName =tsWhsReceivedPackaging['partname'];
             let supplier =tsWhsReceivedPackaging['supplier']; // aql
-            let lotNo =tsWhsReceivedPackaging['date'];
+            let lotNo =tsWhsReceivedPackaging['lot_no'];
             let lotQty =tsWhsReceivedPackaging['rcvqty'];
             let iqcCocFile = tsWhsReceivedPackaging['iqc_coc_file'];
             let pkidReceived = (tsWhsReceivedPackaging['pkid_received'] != undefined ||tsWhsReceivedPackaging['pkid_received'] != null) ?tsWhsReceivedPackaging['pkid_received'] : 0;
@@ -165,7 +166,7 @@
             form.iqcInspection.find('#lot_inspected').val(1);
             form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
             form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
-            form.iqcInspection.find('#isUploadCoc').prop('required',true);
+            // form.iqcInspection.find('#isUploadCoc').prop('required',true);
             getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#aql'),'aql');
             getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#family'),'family');
             getDropdownDetailsByOptValue(globalVar.section,form.iqcInspection.find('#inspection_lvl'),'inspection_lvl');

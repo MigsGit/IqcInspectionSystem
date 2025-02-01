@@ -11,7 +11,7 @@
             <form method="post" id="formSaveIqcInspection" autocomplete="off">
                 @csrf
                 <div class="modal-body modal-body-custom">
-                    <div class="row">
+                    <div class="row d-none">
                         <div class="col-sm-6 mt-3">
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
@@ -81,8 +81,8 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Application Ctrl. No.</span>
                                 </div>
-                                <input type="text" class="form-control form-control-sm" id="app_no" name="app_no">
-                                <input type="text" class="form-control form-control-sm" id="app_no_extension" name="app_no_extension">
+                                <input type="text" class="form-control form-control-sm" id="app_no" name="app_no" readonly>
+                                <input type="text" class="form-control form-control-sm" id="app_no_extension" name="app_no_extension" >
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
