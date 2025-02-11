@@ -32,8 +32,11 @@
         form.iqcInspection.find('#fileIqcCocUpload').addClass('d-none',true);
 
         let yeuReceivesId = ($(this).attr('yeu-receives-id') != undefined) ?  $(this).attr('yeu-receives-id') : 0;
+        let iqcCategoryMaterialId = $('#txtCategoryMaterial').val();
         let data = {
-            yeuReceivesId : yeuReceivesId
+            yeuReceivesId : yeuReceivesId,
+            "iqc_category_material_id"        : iqcCategoryMaterialId,
+
         }
         let elFormId = form.iqcInspection;
         call_ajax(data, 'get_yeu_receiving_by_id', function(response){
@@ -49,12 +52,12 @@
             let lotQty = iqcInspection['qty'];
             let invoiceNo = iqcInspection['invoice_no'];
             let iqcCocFile = iqcInspection['iqc_coc_file'];
-            let whsTransactionId = ( iqcInspection['id'] != undefined || iqcInspection['id'] != null) ? iqcInspection['id'] : 0;
+            // let whsTransactionId = ( iqcInspection['id'] != undefined || iqcInspection['id'] != null) ? iqcInspection['id'] : 0;
             let lotAccepted = iqcInspection['accepted'];
             /* Visual Inspection */
             form.iqcInspection.find('#app_no').val(generateControlNumber.app_no);
             form.iqcInspection.find('#app_no_extension').val(generateControlNumber.app_no_extension);
-            form.iqcInspection.find('#whs_transaction_id').val(whsTransactionId);
+            form.iqcInspection.find('#whs_transaction_id').val(yeuReceivesId);
             form.iqcInspection.find('#iqc_category_material_id').val($('#txtCategoryMaterial').val());
             form.iqcInspection.find('#invoice_no').val(invoiceNo);
             form.iqcInspection.find('#partcode').val(partCode);
@@ -112,6 +115,7 @@
     }
     const getTsWhsPackagingById = function ()
     {
+
         getDieNo();
         form.iqcInspection.find('input').removeClass('is-valid');
         form.iqcInspection.find('input').removeClass('is-invalid');
@@ -129,22 +133,23 @@
         let elFormId = form.iqcInspection;
         let data = {
             "pkid_received"        : pkidReceived,
+            "iqc_category_material_id"        : iqcCategoryMaterialId,
         }
 
         call_ajax(data, 'get_ts_whs_packaging_by_id', function(response){
-
             $('#modalSaveIqcInspection').modal('show')
             let tsWhsReceivedPackaging = response.tsWhsReceivedPackaging;
             let partCode =tsWhsReceivedPackaging['partcode'];
             let partName =tsWhsReceivedPackaging['partname'];
             let supplier =tsWhsReceivedPackaging['supplier']; // aql
             let lotNo =tsWhsReceivedPackaging['lot_no'];
-            let lotQty =tsWhsReceivedPackaging['rcvqty'];
+            let lotQty =tsWhsReceivedPackaging['total_lot_qty'];
             let iqcCocFile = tsWhsReceivedPackaging['iqc_coc_file'];
-            let pkidReceived = (tsWhsReceivedPackaging['pkid_received'] != undefined ||tsWhsReceivedPackaging['pkid_received'] != null) ?tsWhsReceivedPackaging['pkid_received'] : 0;
+            // let pkidReceived = (tsWhsReceivedPackaging['whs_transaction_id'] != undefined ||tsWhsReceivedPackaging['whs_transaction_id'] != null) ?tsWhsReceivedPackaging['whs_transaction_id'] : 0;
             let lotAccepted =tsWhsReceivedPackaging['accepted'];
             let invoiceNo = tsWhsReceivedPackaging['invoiceno'];
             let generateControlNumber = response['generateControlNumber'];
+            //whs_transaction_id
 
             /* Visual Inspection */
             form.iqcInspection.find('#app_no').val(generateControlNumber.app_no);
@@ -217,7 +222,6 @@
                 $('#modal-loading').modal('show');
             },
             success: function (response) {
-                console.log(response);
                 $('#modal-loading').modal('hide');
                 $('#modalSaveIqcInspection').modal('show');
                 let tblWhsTrasanction = response.tbl_whs_trasanction[0];
@@ -234,7 +238,7 @@
                 let iqcInspectionsMods = tblWhsTrasanction.iqc_inspections_mods;
                 let lotAccepted = tblWhsTrasanction['accepted'];
                 let iqcCocFile = tblWhsTrasanction['iqc_coc_file'];
-
+                //total_lot_qty
 
                 form.iqcInspection.find('#whs_transaction_id').val(whsTransactionId);
                 form.iqcInspection.find('#iqc_category_material_id').val(iqcCategoryMaterialId);

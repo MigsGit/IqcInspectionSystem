@@ -380,8 +380,8 @@
                         { "data" : "rawStatus",orderable:false, searchable:false },
                         { "data" : "date_inspected" },
                         { "data" : "time_inspected" }, //
-                        { "data" : "app_ctrl_no" }, //
                         { "data": "supplier" },
+                        { "data" : "app_ctrl_no" }, //
                         // { "data" : "classification" },//
                         // { "data" : "family" },//
                         // { "data" : "category" },//
@@ -412,8 +412,8 @@
                         { "data" : "rawStatus",orderable:false, searchable:false },
                         { "data" : "date_inspected" },
                         { "data" : "time_inspected" }, //
-                        { "data" : "app_ctrl_no" }, //
                         { "data": "supplier" },
+                        { "data" : "app_ctrl_no" }, //
                         // { "data" : "classification" },//
                         // { "data" : "family" },//
                         // { "data" : "category" },//

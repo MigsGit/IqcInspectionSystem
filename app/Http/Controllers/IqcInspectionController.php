@@ -320,7 +320,7 @@ class IqcInspectionController extends Controller
             ];
             $query = $this->resourceInterface->readAllWithConditions(YeuReceive::class,$conditions);
             $iqcInspection = $query->get();
-            $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class);
+            $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class,$request->iqc_category_material_id);
             return response()->json(['is_success' => 'true','iqcInspection' => $iqcInspection,'generateControlNumber' => $generateControlNumber]);
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
@@ -347,7 +347,7 @@ class IqcInspectionController extends Controller
                 'supplier as supplier',
                 'rcvqty as total_lot_qty',
             ]);
-            $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class);
+            $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class,$request->iqc_category_material_id);
 
             return response()->json(['is_success' => 'true',
                 'tsWhsReceivedPackaging' => $tsWhsReceivedPackaging[0],
@@ -369,8 +369,8 @@ class IqcInspectionController extends Controller
             'value' =>  $arr_dropdown_aql_value
         ]);
     }
-    // public function saveIqcInspection(IqcInspectionRequest $request)
-    public function saveIqcInspection(Request $request)
+    public function saveIqcInspection(IqcInspectionRequest $request)
+    // public function saveIqcInspection(Request $request)
     {
 
         date_default_timezone_set('Asia/Manila');
@@ -381,7 +381,7 @@ class IqcInspectionController extends Controller
             $mod_defects = explode(',',$request->modeOfDefects);
             $mod_lot_qty = explode(',',$request->lotQty);
             $arr_sum_mod_lot_qty = array_sum($mod_lot_qty);
-            $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class);
+            $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class,$request->iqc_category_material_id);
             $appNoExtension = $generateControlNumber['app_no_extension'];
             if(isset($request->iqc_inspection_id)){ //Edit
 

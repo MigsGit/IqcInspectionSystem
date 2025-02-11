@@ -111,8 +111,7 @@ class CnIqcInspectionController extends Controller
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
                     AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
-                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
-
+                    -- AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
                     '.$whereWhsTransactionId.'
                 ');
             }
@@ -240,7 +239,7 @@ class CnIqcInspectionController extends Controller
                     'rcvqty as total_lot_qty',
                 ]
             );
-            $generateControlNumber = $this->commonInterface->generateControlNumber(CnIqcInspection::class);
+            $generateControlNumber = $this->commonInterface->generateControlNumber(CnIqcInspection::class,$request->iqc_category_material_id);
 
             return response()->json(['is_success' => 'true',
                 'cnWhsReceivedPackaging' => $cnWhsReceivedPackaging[0],
@@ -266,7 +265,7 @@ class CnIqcInspectionController extends Controller
                     'rcvqty as total_lot_qty',
                 ]
             );
-            $generateControlNumber = $this->commonInterface->generateControlNumber(CnIqcInspection::class);
+            $generateControlNumber = $this->commonInterface->generateControlNumber(CnIqcInspection::class,$request->iqc_category_material_id);
 
             return response()->json(['is_success' => 'true',
                 'cnWhsReceivedPackaging' => $cnWhsReceivedPackaging[0],
@@ -297,7 +296,7 @@ class CnIqcInspectionController extends Controller
             $mod_defects = explode(',',$request->modeOfDefects);
             $mod_lot_qty = explode(',',$request->lotQty);
             $arr_sum_mod_lot_qty = array_sum($mod_lot_qty);
-            $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class);
+            $generateControlNumber = $this->commonInterface->generateControlNumber(CnIqcInspection::class,$request->iqc_category_material_id);
             $appNoExtension = $generateControlNumber['app_no_extension'];
             if(isset($request->iqc_inspection_id)){ //Edit
                 CnIqcInspection::where('id', $request->iqc_inspection_id)->update($request->validated()); //PO and packinglist number

@@ -24,7 +24,7 @@ class CommonJob implements CommonInterface
      * @param mixed $model
      * @return array
      */
-    public function generateControlNumber($model){
+    public function generateControlNumber($model,$categoryMaterial){
         date_default_timezone_set('Asia/Manila');
         $query = $this->resourceInterface->readCustomEloquent($model);
 
@@ -49,31 +49,37 @@ class CommonJob implements CommonInterface
              ");
             $division = ($subcon_data[0]->Division == "PPS" || $subcon_data[0]->Division == "PPD") ? "PPD" :  $hris_data[0]->Division;
         }
-        //Check if the Created At & App No / Division is exisiting
-        $current_division = $division."-".date('y').date('m').'-';
-        $iqc_inspection = $query->orderBy('created_at','desc')->where('app_no',$current_division)
-            ->whereNull('deleted_at')->limit(1)->get(['app_no_extension','created_at']);
+        // Check if the Created At & App No / Division / Material Category is exisiting
+        // Example:TS-F1-250211-
+        $current_app_no = $division."-".date('y').date('m').date('d').'-';
+        $iqc_inspection = $query->orderBy('created_at','desc')->where('app_no',$current_app_no)
+            ->where('iqc_category_material_id',$categoryMaterial)
+            ->whereNull('deleted_at')
+            ->whereNotNull('created_at')
+            ->limit(1)->get(['app_no_extension','created_at']);
 
-        if(count( $iqc_inspection ) == 0 ||  $iqc_inspection[0]->created_at == null ){
+        //If not exist reset the app_no_extension to 1
+        if(count( $iqc_inspection ) == 0){
             return [
-                'app_no' => $current_division,
+                'app_no' => $current_app_no,
                 'app_no_extension'=> "001",
             ];
         }
-        if(date_format($iqc_inspection[0]->created_at,'Y-m-d') != date('Y-m-d')){
+        //If last data created by month not equal to current month reset the app_no_extension to 1
+        if(date_format($iqc_inspection[0]->created_at,'m') != date('m')){
             return [
-                'app_no' => $current_division,
+                'app_no' => $current_app_no,
                 'app_no_extension'=>"001",
-                'id'=>$iqc_inspection[0]->created_at,
-                'created_at'=> $iqc_inspection[0]->created_at,
-                'today' =>  date('Y-m-d')
+                'month_created_at'=> date_format($iqc_inspection[0]->created_at,'m'),
+                'current_month' =>  date('m')
             ];
         }
+        //Return increment app_no_extension
         return [
-            'app_no' => $current_division,
+            'app_no' => $current_app_no,
             'app_no_extension'=> sprintf("%03d", $iqc_inspection[0]->app_no_extension + 1),
-            // 'created_at'=> $iqc_inspection[0]->created_at,
-            // 'today' =>  date('Y-m-d')
+            'month_created_at'=> date_format($iqc_inspection[0]->created_at,'m'),
+            'current_month' =>  date('m')
         ];
     }
     /**

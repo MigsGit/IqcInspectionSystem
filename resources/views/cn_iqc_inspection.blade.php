@@ -365,9 +365,9 @@
                         { "data" : "rawAction", orderable:false, searchable:false },
                         { "data" : "rawStatus", orderable:false, searchable:false },
                         { "data" : "date_inspected" },
-                        { "data" : "time_inspected" },
-                        { "data" : "app_ctrl_no" },
+                        { "data" : "time_inspected" }, //
                         { "data": "supplier" },
+                        { "data" : "app_ctrl_no" }, //
                         // { "data" : "classification" },//
                         // { "data" : "family" },//
                         // { "data" : "category" },//
@@ -397,9 +397,9 @@
                         { "data" : "rawAction", orderable:false, searchable:false },
                         { "data" : "rawStatus", orderable:false, searchable:false },
                         { "data" : "date_inspected" },
-                        { "data" : "time_inspected" },
-                        { "data" : "app_ctrl_no" },
+                        { "data" : "time_inspected" }, //
                         { "data": "supplier" },
+                        { "data" : "app_ctrl_no" }, //
                         // { "data" : "classification" },//
                         // { "data" : "family" },//
                         // { "data" : "category" },//
