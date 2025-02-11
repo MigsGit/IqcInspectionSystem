@@ -42,6 +42,9 @@ class YfIqcInspectionController extends Controller
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
+                    AND tbl_received.lot_no = "'.$request->lotNum.'"
+                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
+                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
                     '.$whereWhsTransactionId.'
                 ');
             }else{
@@ -52,6 +55,9 @@ class YfIqcInspectionController extends Controller
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
+                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
+                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+
                     '.$whereWhsTransactionId.'
                 ');
             }
@@ -212,12 +218,14 @@ class YfIqcInspectionController extends Controller
             $mod_defects = explode(',',$request->modeOfDefects);
             $mod_lot_qty = explode(',',$request->lotQty);
             $arr_sum_mod_lot_qty = array_sum($mod_lot_qty);
-
+            $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class);
+            $appNoExtension = $generateControlNumber['app_no_extension'];
             if(isset($request->iqc_inspection_id)){ //Edit
                 YfIqcInspection::where('id', $request->iqc_inspection_id)->update($request->validated()); //PO and packinglist number
 
                 YfIqcInspection::where('id', $request->iqc_inspection_id)
                 ->update([
+                    // 'app_no_extension' => $appNoExtension,
                     'invoice_no' => $request->invoice_no,
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
@@ -238,6 +246,7 @@ class YfIqcInspectionController extends Controller
                 */
                 YfIqcInspection::where('id', $create_iqc_inspection_id)
                 ->update([
+                    // 'app_no_extension' => $appNoExtension,
                     'invoice_no' => $request->invoice_no,
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,

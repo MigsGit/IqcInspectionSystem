@@ -60,7 +60,10 @@ class IqcInspectionController extends Controller
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
-                    AND date = "'.$request->lotNum.'"
+                    AND tbl_received.lot_no = "'.$request->lotNum.'"
+                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
+                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+
                     '.$whereWhsTransactionId.'
                 ');
                 //TODO : Lot Number
@@ -72,8 +75,8 @@ class IqcInspectionController extends Controller
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
-                    -- AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
-                    -- AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
+                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
                     '.$whereWhsTransactionId.'
                 ');
             } //TODO : Lot Number 	133707
@@ -112,6 +115,7 @@ class IqcInspectionController extends Controller
                 AND yeu_receives.lot_no = "'.$request->lotNum.'"
                 AND yeu_receives.item_code IS NOT NULL
                 AND yeu_receives.item_name IS NOT NULL
+                AND yeu_receives.lot_no IS NOT NULL
                 AND item_masters.for_iqc = 1
                 ORDER BY item_code DESC
             ');
@@ -123,6 +127,7 @@ class IqcInspectionController extends Controller
                 '.$whereWhsTransactionId.'
                 AND yeu_receives.item_code IS NOT NULL
                 AND yeu_receives.item_name IS NOT NULL
+                AND yeu_receives.lot_no IS NOT NULL
                 AND item_masters.for_iqc = 1
                 ORDER BY item_code DESC
             ');
@@ -364,8 +369,8 @@ class IqcInspectionController extends Controller
             'value' =>  $arr_dropdown_aql_value
         ]);
     }
-    public function saveIqcInspection(IqcInspectionRequest $request)
-    // public function saveIqcInspection(Request $request)
+    // public function saveIqcInspection(IqcInspectionRequest $request)
+    public function saveIqcInspection(Request $request)
     {
 
         date_default_timezone_set('Asia/Manila');
@@ -376,13 +381,15 @@ class IqcInspectionController extends Controller
             $mod_defects = explode(',',$request->modeOfDefects);
             $mod_lot_qty = explode(',',$request->lotQty);
             $arr_sum_mod_lot_qty = array_sum($mod_lot_qty);
-
+            $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class);
+            $appNoExtension = $generateControlNumber['app_no_extension'];
             if(isset($request->iqc_inspection_id)){ //Edit
 
                 IqcInspection::where('id', $request->iqc_inspection_id)->update($request->validated()); //PO and packinglist number
 
                 IqcInspection::where('id', $request->iqc_inspection_id)
                 ->update([
+                    // 'app_no_extension' => $appNoExtension,
                     'invoice_no' => $request->invoice_no,
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
@@ -401,6 +408,7 @@ class IqcInspectionController extends Controller
                 */
                 IqcInspection::where('id', $create_iqc_inspection_id)
                 ->update([
+                    // 'app_no_extension' => $appNoExtension,
                     'invoice_no' => $request->invoice_no,
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
