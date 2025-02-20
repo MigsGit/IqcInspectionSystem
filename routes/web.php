@@ -44,6 +44,7 @@ Route::middleware('CheckSessionExist')->group(function(){
     Route::view('/cn_iqc_inspection','cn_iqc_inspection')->name('cn_iqc_inspection');
     Route::view('/yf_iqc_inspection','yf_iqc_inspection')->name('yf_iqc_inspection');
     Route::view('/dropdown_maintenance','dropdown_maintenance')->name('dropdown_maintenance');
+    Route::view('/export_group_by','export_group_by')->name('export_group_by');
 });
 
 Route::get('check_user', function (Request $request) {
@@ -159,6 +160,7 @@ Route::controller(CommonController::class)->group(function () {
     Route::get('/get_sampling_size_by_sampling_plan_cn', 'getSamplingSizeBySamplingPlanCn')->name('get_sampling_size_by_sampling_plan_cn');
     Route::get('/get_sampling_size_by_sampling_plan_yf', 'getSamplingSizeBySamplingPlanYf')->name('get_sampling_size_by_sampling_plan_yf');
     Route::get('/get_sampling_size_by_sampling_plan_ppd', 'getSamplingSizeBySamplingPlanPpd')->name('get_sampling_size_by_sampling_plan_ppd');
+    Route::get('/get_search_group_by', 'getSearchGroupBy')->name('get_search_group_by');
     //TODO : PPD
     // Route::get('/get_sampling_size_by_sampling_plan_ppd', 'getSamplingSizeBySamplingPlanPpd')->name('get_sampling_size_by_sampling_plan_ppd');
     Route::get('/view_coc_file_attachment/{section}/{iqc_inspection_id}', 'viewCocFileAttachment')->name('view_coc_file_attachment');

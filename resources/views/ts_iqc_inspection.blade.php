@@ -85,11 +85,12 @@
                                                 <div class="card-body">
                                                     {{-- <br><br> --}}
                                                     {{-- TABS --}}
-                                                    {{-- <div class="row">
+                                                    <div class="row">
                                                         <div class="col-12">
                                                             <button class="btn btn-lg btn-outline-info float-end"><i class="fa fa-users" aria-hidden="true"></i>  Group by</button>
                                                         </div>
-                                                    </div> txtScanVerifyData modalVerifyData --}}
+                                                    </div>
+                                                    {{-- txtScanVerifyData modalVerifyData --}}
                                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                                         <li class="nav-item">
                                                             <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1_1" role="tab" aria-controls="menu1_1" aria-selected="true">On-going</a>
@@ -171,7 +172,7 @@
                                                     {{-- TABS --}}
                                                     {{-- <div class="row">
                                                         <div class="col-12">
-                                                            <button class="btn btn-lg btn-outline-info float-end"><i class="fa fa-users" aria-hidden="true"></i>  Group by</button>
+                                                            <button class="btn btn-lg btn-outline-info float-end"><i class="fa fa-users" aria-hidden="true"></i>  Export Group by</button>
                                                         </div>
                                                     </div> txtScanVerifyData modalVerifyData --}}
                                                     <ul class="nav nav-tabs" id="myTab" role="tablist">

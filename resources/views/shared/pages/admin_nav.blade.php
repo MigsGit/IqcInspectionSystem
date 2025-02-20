@@ -56,7 +56,15 @@
                             <p>YF IQC</p>
                         </a>
                     </li>
-                {{-- @endif --}}
+                @if ( in_array($_SESSION["rapidx_user_level_id"], [1]))
+
+                    <li class="nav-item">
+                        <a href="{{ route('export_group_by') }}" class="nav-link">
+                            <i class="far fa-circle nav-icon ml-2"> </i>
+                            <p>Export Group By</p>
+                        </a>
+                    </li>
+                @endif
                 @if ( in_array($_SESSION["rapidx_username"], ["jpsustento"]) || in_array($_SESSION["rapidx_user_level_id"], [1]))
                     <li class="nav-header mt-3"><strong>Settings</strong></li>
                     <li class="nav-item">

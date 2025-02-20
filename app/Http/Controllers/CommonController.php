@@ -8,6 +8,7 @@ use App\Models\CnIqcInspection;
 use App\Models\YfIqcInspection;
 use App\Models\PpdIqcInspection;
 use App\Models\IqcDropdownDetail;
+use App\Models\IqcDropdownCategory;
 use App\Interfaces\ResourceInterface;
 use Illuminate\Support\Facades\Storage;
 
@@ -2166,6 +2167,13 @@ class CommonController extends Controller
             $iqc_coc_file_name = PpdIqcInspection::where('id',$iqc_inspection_id)->get('iqc_coc_file');
             return Storage::response( 'public/ppd_iqc_inspection_coc/' . $iqc_inspection_id .'_'. $iqc_coc_file_name[0][ 'iqc_coc_file' ] );
         }
+
+    }
+    public function getSearchGroupBy(Request $request){
+        $conditions = [
+            'section' =>  $request->section
+        ];
+        return $readDropdownCategoryById = $this->resourceInterface->readOnlyRelationsAndConditions(IqcDropdownCategory::class,[],[],$conditions);
 
     }
 }
