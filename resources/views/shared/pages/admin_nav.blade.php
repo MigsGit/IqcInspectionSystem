@@ -57,7 +57,7 @@
                         </a>
                     </li>
                 {{-- @endif --}}
-                {{-- @if ( in_array(Auth::user()->position, [0,2,5])) --}}
+                @if ( in_array($_SESSION["rapidx_username"], ["jpsustento"]) || in_array($_SESSION["rapidx_user_level_id"], [1]))
                     <li class="nav-header mt-3"><strong>Settings</strong></li>
                     <li class="nav-item">
                         <a href="{{ route('dropdown_maintenance') }}" class="nav-link">
@@ -65,7 +65,7 @@
                             <p>Dropdown Maintenance</p>
                         </a>
                     </li>
-                {{-- @endif --}}
+                @endif
             </ul>
         </nav>
     </div><!-- Sidebar -->

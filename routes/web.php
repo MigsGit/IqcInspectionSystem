@@ -59,7 +59,7 @@ Route::get('check_user', function (Request $request) {
             'rapidx_employee_number' => $_SESSION["rapidx_employee_number"],
         ]);
         return true;
-        // return session('rapidx_employee_number');
+        // return session('rapidx_username');
         // return session();
     }else{
         return false;

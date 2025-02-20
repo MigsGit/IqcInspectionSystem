@@ -116,7 +116,7 @@ class IqcInspectionController extends Controller
                 AND yeu_receives.item_code IS NOT NULL
                 AND yeu_receives.item_name IS NOT NULL
                 AND yeu_receives.lot_no IS NOT NULL
-                AND item_masters.for_iqc = 1
+                AND YEAR(yeu_receives.created_at) != 2024
                 ORDER BY item_code DESC
             ');
         }else{
@@ -129,10 +129,9 @@ class IqcInspectionController extends Controller
                 AND yeu_receives.item_name IS NOT NULL
                 AND yeu_receives.lot_no IS NOT NULL
                 AND item_masters.for_iqc = 1
+                AND YEAR(yeu_receives.created_at) != 2024
                 ORDER BY item_code DESC
             ');
-
-            // '.$whereWhsTransactionId.'
         }
         // if( isset( $request->lotNum ) ){
         //     $tbl_whs_trasanction = DB::connection('mysql_rapidx_yeu')
