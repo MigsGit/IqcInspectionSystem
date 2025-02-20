@@ -111,6 +111,7 @@ class CnIqcInspectionController extends Controller
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
                     AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
+                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "")
                     -- AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
                     '.$whereWhsTransactionId.'
                 ');

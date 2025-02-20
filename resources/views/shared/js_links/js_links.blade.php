@@ -100,16 +100,16 @@
 
 </script>
 
-<script src="{{ asset('public/js/main/Common.js') }}?t=<?=time()?>"></script>
-<script src="{{ asset('public/js/main/User.js') }}?t=<?=time()?>"></script>
-<script src="{{ asset('public/js/main/UserLevel.js') }}?t=<?=time()?>"></script>
+<script src="{{ asset('public/js/main/Common.js') }}?<?=time()?>"></script>
+<script src="{{ asset('public/js/main/User.js') }}?<?=time()?>"></script>
+<script src="{{ asset('public/js/main/UserLevel.js') }}?<?=time()?>"></script>
 
 {{-- IQC --}}
-<script src="{{ asset('public/js/main/IqcInspection.js') }}?t=<?=time()?>"></script>
-<script src="{{ asset('public/js/main/CnIqcInspection.js') }}?t=<?=time()?>"></script>
-<script src="{{ asset('public/js/main/PpdIqcInspection.js') }}?t=<?=time()?>"></script>
-<script src="{{ asset('public/js/main/YfIqcInspection.js') }}?t=<?=time()?>"></script>
-<script src="{{ asset('public/js/main/Setting.js') }}?t=<?=time()?>"></script>
+<script src="{{ asset('public/js/main/IqcInspection.js') }}?<?=time()?>"></script>
+<script src="{{ asset('public/js/main/CnIqcInspection.js') }}?<?=time()?>"></script>
+<script src="{{ asset('public/js/main/PpdIqcInspection.js') }}?<?=time()?>"></script>
+<script src="{{ asset('public/js/main/YfIqcInspection.js') }}?<?=time()?>"></script>
+<script src="{{ asset('public/js/main/Setting.js') }}?<?=time()?>"></script>
 
 
 

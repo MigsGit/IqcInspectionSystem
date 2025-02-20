@@ -27,28 +27,15 @@ class CommonJob implements CommonInterface
     public function generateControlNumber($model,$categoryMaterial){
         date_default_timezone_set('Asia/Manila');
         $query = $this->resourceInterface->readCustomEloquent($model);
-
-        $rapidx_employee_number = session('rapidx_employee_number');
-
-        $hris_data = DB::connection('mysql_systemone_hris')
-        ->select(" SELECT division.Division
-            FROM tbl_EmployeeInfo employee_info
-            LEFT JOIN tbl_Division division on division.pkid = employee_info.fkDivision
-            WHERE EmpNo = '$rapidx_employee_number'
+        //Rapidx User
+        //TODO: I cannot access the systemone/db_subcon, so I came up with rapidx user DB
+        $rapidx_user = DB::connection('mysql_rapidx')
+        ->select(" SELECT department_group
+            FROM departments
+            WHERE department_id = '".session('rapidx_department_id')."'
         ");
 
-
-        if(count($hris_data) > 0){
-            $division = ($hris_data[0]->Division == "PPS" ||  $hris_data[0]->Division == "PPD") ? "PPD" :  $hris_data[0]->Division;
-        }else{
-            $subcon_data = DB::connection('mysql_systemone_subcon')
-            ->select("SELECT division.Division
-                FROM tbl_EmployeeInfo employee_info
-                LEFT JOIN tbl_Division division on division.pkid = employee_info.fkDivision
-                WHERE EmpNo = '$rapidx_employee_number'
-             ");
-            $division = ($subcon_data[0]->Division == "PPS" || $subcon_data[0]->Division == "PPD") ? "PPD" :  $hris_data[0]->Division;
-        }
+        $division = ($rapidx_user[0]->department_group == "PPS" || $rapidx_user[0]->department_group == "PPD") ? "PPD" :  $rapidx_user[0]->department_group;
         // Check if the Created At & App No / Division / Material Category is exisiting
         // Example:TS-F1-250211-
         $current_app_no = $division."-".date('y').date('m').date('d').'-';
