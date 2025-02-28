@@ -14,7 +14,13 @@ class User extends Authenticatable // Authenticatable this will allow the use of
 
     protected $table = "users";
     protected $connection = "rapidx";
-
+    protected $hidden = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'password',
+    ];
     public function user_level(){
         return $this->hasOne(UserLevel::class, 'id', 'user_level_id');
     }

@@ -8,9 +8,12 @@ use App\Models\CnIqcInspection;
 use App\Models\YfIqcInspection;
 use App\Models\PpdIqcInspection;
 use App\Models\IqcDropdownDetail;
+use Illuminate\Support\Facades\DB;
 use App\Models\IqcDropdownCategory;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Interfaces\ResourceInterface;
 use Illuminate\Support\Facades\Storage;
+use App\Exports\IqcInspectionReportExport;
 
 class CommonController extends Controller
 {
@@ -2175,5 +2178,13 @@ class CommonController extends Controller
         ];
         return $readDropdownCategoryById = $this->resourceInterface->readOnlyRelationsAndConditions(IqcDropdownCategory::class,[],[],$conditions);
 
+    }
+    public function exportIqcInspectionReport(Request $request){
+        try {
+            // return Excel::download(new IqcInspectionReportExport($collectIqcInspectionByMaterialCategoryDate), 'report.xlsx');
+            return Excel::download(new IqcInspectionReportExport, 'report.xlsx');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

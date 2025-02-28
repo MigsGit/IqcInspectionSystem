@@ -93,7 +93,7 @@
                                                                 <div class="input-group-prepend w-50">
                                                                     <span class="input-group-text w-100">From:</span>
                                                                 </div>
-                                                                <input type="date" class="form-control" name="from" id="txtSearchFrom" max="<?= date('Y-m-d'); ?>">
+                                                                <input type="date" class="form-control" name="from_date" id="txtSearchFrom" max="<?= date('Y-m-d'); ?>">
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-6">
@@ -101,7 +101,7 @@
                                                                 <div class="input-group-prepend w-50">
                                                                     <span class="input-group-text w-100">To:</span>
                                                                 </div>
-                                                                <input type="date" class="form-control" name="to" id="txtSearchTo" max="<?= date('Y-m-d'); ?>">
+                                                                <input type="date" class="form-control" name="to_date" id="txtSearchTo" max="<?= date('Y-m-d'); ?>">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -224,7 +224,7 @@
                 $('.rowGroupBy').html(search_group_html);
                 getSearchGroupBy();
             });
-
+            //TODO:Get group by LAR DDPM like WBS
 
             let allcolumns = [
                     // { id:`iqc_category_material_id`, label:"Firsname"},
@@ -260,7 +260,26 @@
                     { id:`no_of_defects`, label:"no_of_defects"},
                     { id:`judgement`, label:"judgement"},
                 ];
+                $('#btnExportIqcInspectionRecord').click(function () {
+                    let arr_group_by1 =[];
+                    let arr_group_by2 =[];
+                    for (let index = 1; index <= 3; index++) {
+                        let groupBy1 = $(`select[name="group_by_1_${index}"]`).val();
+                        let groupBy2 = $(`select[name="group_by_2_${index}"]`).val();
+                        arr_group_by1.push(groupBy1);
+                        arr_group_by2.push(groupBy2);
+                    }
+                    let params = {
+                        from_date: $('input[name="from_date"]').val(),
+                        to_date: $('input[name="to_date"]').val(),
+                        category: $('select[name="search_material_name"]').val(),
+                        arr_group_by1: arr_group_by1,
+                        arr_group_by2: arr_group_by2,
+                    };
 
+                    var queryString = $.param(params);
+                    window.location.href = "{{ route('download.export_iqc_inspection_report') }}?" + queryString;
+                });
         </script>
     @endsection
 {{-- @endauth --}}

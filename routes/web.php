@@ -164,6 +164,8 @@ Route::controller(CommonController::class)->group(function () {
     //TODO : PPD
     // Route::get('/get_sampling_size_by_sampling_plan_ppd', 'getSamplingSizeBySamplingPlanPpd')->name('get_sampling_size_by_sampling_plan_ppd');
     Route::get('/view_coc_file_attachment/{section}/{iqc_inspection_id}', 'viewCocFileAttachment')->name('view_coc_file_attachment');
+
+    Route::get('/export_iqc_inspection_report', 'exportIqcInspectionReport')->name('download.export_iqc_inspection_report');
 });
 
 //readDropdownDetailsByCategory

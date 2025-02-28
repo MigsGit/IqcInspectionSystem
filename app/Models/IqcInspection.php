@@ -53,6 +53,13 @@ class IqcInspection extends Model
         // 'iqc_inspection_id',
     ];
 
+    protected $hidden = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
     public function iqc_inspections_mods(){
         return $this->hasMany(IqcInspectionsMod::class)->whereNull('deleted_at');
     }

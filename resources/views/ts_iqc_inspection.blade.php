@@ -84,12 +84,6 @@
                                                 </div>
                                                 <div class="card-body">
                                                     {{-- <br><br> --}}
-                                                    {{-- TABS --}}
-                                                    <div class="row">
-                                                        <div class="col-12">
-                                                            <button class="btn btn-lg btn-outline-info float-end"><i class="fa fa-users" aria-hidden="true"></i>  Group by</button>
-                                                        </div>
-                                                    </div>
                                                     {{-- txtScanVerifyData modalVerifyData --}}
                                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                                         <li class="nav-item">
@@ -151,8 +145,6 @@
                                                                             <th>Lot Qty.</th>
                                                                             {{-- <th>AQL</th> --}}
                                                                             <th>Inspector</th>
-                                                                            <th>Date Created</th>
-                                                                            <th>Date Updated</th>
                                                                         </tr>
                                                                     </thead>
                                                                 </table>
@@ -168,13 +160,6 @@
                                                     <h3 class="card-title">YEU Receiving</h3>
                                                 </div>
                                                 <div class="card-body">
-                                                    {{-- <br><br> --}}
-                                                    {{-- TABS --}}
-                                                    {{-- <div class="row">
-                                                        <div class="col-12">
-                                                            <button class="btn btn-lg btn-outline-info float-end"><i class="fa fa-users" aria-hidden="true"></i>  Export Group by</button>
-                                                        </div>
-                                                    </div> txtScanVerifyData modalVerifyData --}}
                                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                                         <li class="nav-item">
                                                             <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1_2" role="tab" aria-controls="menu1_2" aria-selected="true">On-going</a>
@@ -234,8 +219,6 @@
                                                                             <th>Lot Qty.</th>
                                                                             {{-- <th>AQL</th> --}}
                                                                             <th>Inspector</th>
-                                                                            <th>Date Created</th>
-                                                                            <th>Date Updated</th>
                                                                         </tr>
                                                                     </thead>
                                                                 </table>
@@ -392,8 +375,6 @@
                         { "data" : "total_lot_qty" },
                         // { "data" : "aql" }, //
                         { "data" : "qc_inspector" }, //
-                        { "data" : "created_at" },
-                        { "data" : "updated_at" },
                     ],
                 });
 
@@ -424,8 +405,6 @@
                         { "data" : "total_lot_qty" },
                         // { "data" : "aql" }, //
                         { "data" : "qc_inspector" }, //
-                        { "data" : "created_at" },
-                        { "data" : "updated_at" },
                     ],
                 });
 
