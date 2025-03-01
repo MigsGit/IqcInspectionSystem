@@ -2181,33 +2181,25 @@ class CommonController extends Controller
     }
     public function exportIqcInspectionReport(Request $request){
         try {
-<<<<<<< HEAD
-            // return $request->from_date; //1,2 Sheet
-            // return $request->to_date; //1,2 Sheet
-            // return $request->category; //1,2 Sheet
-            // return $request->arr_group_by1;//2 Sheet
-            // return $request->arr_group_by2;//2 Sheet
-            //TODO: Multiple Sheet
-            // return Excel::download(new IqcInspectionReportExport($collectIqcInspectionByMaterialCategoryDate), 'report.xlsx');
-            // return Excel::download(new IqcInspectionReportExport(
+            // $export = new IqcInspectionReportExport(
             //     $request->from_date,
             //     $request->to_date,
-            //     $request->category
-            // ),
-            // 'report.xlsx');
-            $export = new IqcInspectionReportExport(
+            //     $request->category,
+            //     $request->arr_group_by1,
+            //     $request->arr_group_by2
+            // );
+            // return $export->collection();
+
+
+            return Excel::download(new IqcInspectionReportExport(
                 $request->from_date,
                 $request->to_date,
                 $request->category,
                 $request->arr_group_by1,
-                $request->arr_group_by2
-            );
-            $export = new IqcInspectionReportExport;
-            $export->collection();  // Calls collection() without Excel download
-=======
-            // return Excel::download(new IqcInspectionReportExport($collectIqcInspectionByMaterialCategoryDate), 'report.xlsx');
-            return Excel::download(new IqcInspectionReportExport, 'report.xlsx');
->>>>>>> parent of 7cf09d9 (Iqc Inspection Report | Relationship User Model)
+                $request->arr_group_by2,
+            ),
+            'report.xlsx');
+
         } catch (\Throwable $th) {
             throw $th;
         }
