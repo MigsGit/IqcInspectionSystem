@@ -60,6 +60,7 @@ class IqcInspection extends Model
         'deleted_at',
     ];
 
+
     public function iqc_inspections_mods(){
         return $this->hasMany(IqcInspectionsMod::class)->whereNull('deleted_at');
     }

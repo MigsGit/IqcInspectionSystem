@@ -2181,10 +2181,19 @@ class CommonController extends Controller
     }
     public function exportIqcInspectionReport(Request $request){
         try {
+            return $request->from_date;
+            return $request->to_date;
+            return $request->category;
+            return $request->arr_group_by1;
+            return $request->arr_group_by2;
             // return Excel::download(new IqcInspectionReportExport($collectIqcInspectionByMaterialCategoryDate), 'report.xlsx');
-            return Excel::download(new IqcInspectionReportExport, 'report.xlsx');
+            return Excel::download(new IqcInspectionReportExport($), 'report.xlsx');
+            // $export = new IqcInspectionReportExport();
+            // $export->collection();  // Calls collection() without Excel download
         } catch (\Throwable $th) {
             throw $th;
         }
     }
+
+
 }

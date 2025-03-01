@@ -17,6 +17,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 
 class IqcInspectionReportExport implements
     FromCollection,
@@ -24,27 +25,42 @@ class IqcInspectionReportExport implements
     WithMapping,
     WithStyles,
     WithCustomStartCell,
-    ShouldAutoSize
+    ShouldAutoSize,
+    WithStrictNullComparison
 {
+    /**
+     * Title of the Excel Sheet
+     * @return string
+     */
+    public function title(): string
+    {
+        return 'Iqc Inspection Report';
+    }
+    /**
+     * Collection of IqcInspection Data By Material Category and Date
+    */
     public function collection()
     {
         $getIqcInspectionByMaterialCategoryDate = IqcInspection::
-        select([
-            'partcode', 'partname', 'supplier', 'lot_no', 'total_lot_qty',
-            'inspector', 'submission', 'judgement', 'lot_inspected',
-            'accepted', 'sampling_size', 'no_of_defects', 'remarks', 'classification'
-        ])
+        with('user_iqc')
         ->where("iqc_category_material_id", "=", 38)
         ->whereBetween('date_inspected', ['2025-02-01', '2025-02-27'])
         ->get();
         return $getIqcInspectionByMaterialCategoryDate;
     }
-
+    /**
+     * Start Cell
+     * @return string
+     */
     public function startCell(): string
     {
         return 'A7';  // This ensures headings start from A1
     }
-
+    /**
+     * Summary of map
+     * @param mixed $data from the collection
+     * @return array
+     */
     public function map($data): array
     {
         return [
@@ -53,7 +69,7 @@ class IqcInspectionReportExport implements
             $data->supplier,
             $data->lot_no,
             $data->total_lot_qty,
-            $data->inspector,
+            $data->user_iqc->name, //Get Name by Id from User Database
             $data->submission,
             $data->judgement,
             $data->lot_inspected,
@@ -64,10 +80,14 @@ class IqcInspectionReportExport implements
             $data->classification,
         ];
     }
-
+    /**
+     * Excel design styles
+     * @param Worksheet $sheet
+     * @return array
+     */
     public function styles(Worksheet $sheet)
     {
-          // ✅ Insert custom header manually at G1
+        // ✅ Insert custom header manually
         $sheet->setCellValue('G1', 'Pricon Microelectronics, Inc.');
         $sheet->setCellValue('G2', '#14 Ampere St., Light Industry and Science Park 1, Cabuyao, Laguna');
         $sheet->setCellValue('G4', 'IQC INSPECTION SUMMARY');
@@ -95,8 +115,5 @@ class IqcInspectionReportExport implements
         ];
     }
 
-    public function title(): string
-    {
-        return 'Iqc Inspection Report';
-    }
+
 }
