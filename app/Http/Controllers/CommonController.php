@@ -2181,6 +2181,7 @@ class CommonController extends Controller
     }
     public function exportIqcInspectionReport(Request $request){
         try {
+<<<<<<< HEAD
             // return $request->from_date; //1,2 Sheet
             // return $request->to_date; //1,2 Sheet
             // return $request->category; //1,2 Sheet
@@ -2203,10 +2204,12 @@ class CommonController extends Controller
             );
             $export = new IqcInspectionReportExport;
             $export->collection();  // Calls collection() without Excel download
+=======
+            // return Excel::download(new IqcInspectionReportExport($collectIqcInspectionByMaterialCategoryDate), 'report.xlsx');
+            return Excel::download(new IqcInspectionReportExport, 'report.xlsx');
+>>>>>>> parent of 7cf09d9 (Iqc Inspection Report | Relationship User Model)
         } catch (\Throwable $th) {
             throw $th;
         }
     }
-
-
 }
