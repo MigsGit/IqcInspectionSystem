@@ -85,7 +85,7 @@
                                                         <div class="input-group-prepend w-50">
                                                             <span class="input-group-text w-100">Material Category:</span>
                                                         </div>
-                                                        <select class="form-control select2bs5 searcMaterialName" name="search_material_name" id="txtSearchMaterialName"></select>
+                                                        <select class="form-control select2bs5 searcMaterialName" name="material_category" id="txtSearchMaterialName"></select>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-sm-6">
@@ -272,7 +272,7 @@
                     let params = {
                         from_date: $('input[name="from_date"]').val(),
                         to_date: $('input[name="to_date"]').val(),
-                        category: $('select[name="search_material_name"]').val(),
+                        material_category: $('select[name="material_category"]').val(),
                         arr_group_by1: arr_group_by1,
                         arr_group_by2: arr_group_by2,
                     };

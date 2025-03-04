@@ -2181,22 +2181,52 @@ class CommonController extends Controller
     }
     public function exportIqcInspectionReport(Request $request){
         try {
-            // $export = new IqcInspectionReportExport(
-            //     $request->from_date,
-            //     $request->to_date,
-            //     $request->category,
-            //     $request->arr_group_by1,
-            //     $request->arr_group_by2
-            // );
-            // return $export->collection();
+            // return  $request->all();
+            $arr_filtered_arr_group_by1 = [];
+            $arr_filtered_arr_group_by2 = [];
+            $arr_group_by1 = $request->arr_group_by1;
+            $arr_group_by2 = $request->arr_group_by2;
+
+            foreach ($arr_group_by1 as $key => $value) {
+                if($arr_group_by1[$key] != null){
+                    $arr_filtered_arr_group_by1[] =$arr_group_by1[$key];
+                }
+            }
+            foreach ($arr_group_by2 as $key => $value) {
+                if($arr_group_by2[$key] != null){
+                    $arr_filtered_arr_group_by2[] = $arr_group_by2[$key];
+                }
+            }
+
+            //Check if $arr_filtered_arr_group_by2 is empty before using implode()
+            if (!empty($arr_filtered_arr_group_by2)) {
+                array_push($arr_group_by1, $arr_filtered_arr_group_by2);
+                array_push($arr_group_by1, "inspector");
+            }
+            $arr_merge_group = array_merge(...array_map(function($item) {
+                return (array) $item;
+            }, $arr_group_by1));
+
+            $validColumns = ['id','partcode', 'partname', 'supplier', 'lot_no', 'total_lot_qty', 'inspector', 'submission', 'judgement', 'lot_inspected', 'accepted', 'sampling_size', 'defects', 'remarks', 'classification','family'];
+            foreach ($arr_merge_group as $column) {
+                if (!in_array($column, $validColumns)) {
+                    throw new \Exception("Unknown column '$column'");
+                }
+            }
+            $export = new IqcInspectionReportExport(
+                $request->from_date,
+                $request->to_date,
+                $request->material_category,
+                $arr_merge_group
+            );
+            return $export->collection();
 
 
             return Excel::download(new IqcInspectionReportExport(
                 $request->from_date,
                 $request->to_date,
-                $request->category,
-                $request->arr_group_by1,
-                $request->arr_group_by2,
+                $request->material_category,
+                $arr_merge_group
             ),
             'report.xlsx');
 
