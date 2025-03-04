@@ -2201,7 +2201,7 @@ class CommonController extends Controller
             //Check if $arr_filtered_arr_group_by2 is empty before using implode()
             if (!empty($arr_filtered_arr_group_by2)) {
                 array_push($arr_group_by1, $arr_filtered_arr_group_by2);
-                array_push($arr_group_by1, "inspector");
+                array_push($arr_group_by1);
             }
             $arr_merge_group = array_merge(...array_map(function($item) {
                 return (array) $item;
