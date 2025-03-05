@@ -2,41 +2,40 @@
 
 namespace App\Exports\Sheets;
 
+use Carbon\Carbon;
 use App\Models\IqcInspection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithMappedCells;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 
 class IqcInspectionByDateMaterialGroupBySheet implements
+    WithMappedCells,
+    // WithMapping,
     FromCollection,
     WithTitle,
-    WithMapping,
     WithStyles,
     WithCustomStartCell,
     ShouldAutoSize,
     WithStrictNullComparison
 {
-    protected $from_date;
-    protected $to_date;
-    protected $material_category;
-    protected $arr_merge_group;
-    public function __construct($from_date, $to_date, $material_category, $arr_merge_group)
+    protected $iqcInspectionCollection;
+    public function __construct($iqcInspectionCollection )
     {
-        $this->from_date = $from_date;
-        $this->to_date = $to_date;
-        $this->material_category = $material_category;
-        $this->arr_merge_group = $arr_merge_group;
+        $this->iqcInspectionCollection  = $iqcInspectionCollection ;
     }
 
 
@@ -53,12 +52,7 @@ class IqcInspectionByDateMaterialGroupBySheet implements
     */
     public function collection()
     {
-        $getIqcInspectionByMaterialCategoryDate = IqcInspection::
-        with('user_iqc')
-        ->where("iqc_category_material_id", "=", 38)
-        ->whereBetween('date_inspected', ['2025-02-01', '2025-02-27'])
-        ->get();
-        return $getIqcInspectionByMaterialCategoryDate;
+        return $this->iqcInspectionCollection ;
     }
     /**
      * Start Cell
@@ -73,25 +67,42 @@ class IqcInspectionByDateMaterialGroupBySheet implements
      * @param mixed $data from the collection
      * @return array
      */
-    public function map($data): array
+    public function mapping(): array
     {
-        return [
-            $data->partcode,
-            $data->partname,
-            $data->supplier,
-            $data->lot_no,
-            $data->total_lot_qty,
-            $data->user_iqc->name, //Get Name by Id from User Database
-            $data->submission,
-            $data->judgement,
-            $data->lot_inspected,
-            $data->accepted,
-            $data->sampling_size,
-            $data->no_of_defects,
-            $data->remarks,
-            $data->classification,
-        ];
+        $mapping = [];
+        $startRow = 7; // Start inserting data from row 7
+        foreach ([0,1,2,3,4] as $weekIndex) {
+            if (!isset($this->iqcInspectionCollection[$weekIndex])) {
+                continue; // Skip if no data
+            }
+
+            foreach ($this->iqcInspectionCollection[$weekIndex] as $index => $data) {
+                $row = $startRow + $index; // Adjust row dynamically
+                if ($weekIndex == 0 ) {
+                    $mapping["A{$row}"] = $data->supplier;
+                    $mapping["D{$row}"] = $data->week_range;
+                }
+                elseif ($weekIndex == 1) {
+                    $mapping["E{$row}"] = $data->supplier;
+                    $mapping["F{$row}"] = $data->week_range;
+                }
+                elseif ($weekIndex == 2) {
+                    $mapping["K{$row}"] = $data->supplier;
+                    $mapping["L{$row}"] = $data->week_range;
+                } elseif ($weekIndex == 3) {
+                    $mapping["O{$row}"] = $data->supplier;
+                    $mapping["P{$row}"] = $data->week_range;
+                }
+                 elseif ($weekIndex == 4) {
+                    $mapping["S{$row}"] = $data->supplier;
+                    $mapping["T{$row}"] = $data->week_range;
+                }
+            }
+            $startRow = 7;
+        }
+        return $mapping;
     }
+
     /**
      * Excel design styles
      * @param Worksheet $sheet
@@ -103,20 +114,20 @@ class IqcInspectionByDateMaterialGroupBySheet implements
         $sheet->setCellValue('G1', 'Pricon Microelectronics, Inc.');
         $sheet->setCellValue('G2', '#14 Ampere St., Light Industry and Science Park 1, Cabuyao, Laguna');
         $sheet->setCellValue('G4', 'IQC INSPECTION SUMMARY');
-        $sheet->setCellValue('A6', 'Part Code');
-        $sheet->setCellValue('B6', 'Part Name');
-        $sheet->setCellValue('C6', 'Supplier');
-        $sheet->setCellValue('D6', 'Lot No.');
-        $sheet->setCellValue('E6', 'Lot Qty');
-        $sheet->setCellValue('F6', 'Inspector');
-        $sheet->setCellValue('G6', 'Submission');
-        $sheet->setCellValue('H6', 'Judgment');
-        $sheet->setCellValue('I6', 'Lot Inspected');
-        $sheet->setCellValue('J6', 'Lot Accepted');
-        $sheet->setCellValue('K6', 'Sample Size');
-        $sheet->setCellValue('L6', 'No. of Defects');
-        $sheet->setCellValue('M6', 'Remarks');
-        $sheet->setCellValue('N6', 'Classification');
+        // $sheet->setCellValue('A6', 'Part Code');
+        // $sheet->setCellValue('B6', 'Part Name');
+        // $sheet->setCellValue('C6', 'Supplier');
+        // $sheet->setCellValue('D6', 'Lot No.');
+        // $sheet->setCellValue('E6', 'Lot Qty');
+        // $sheet->setCellValue('F6', 'Inspector');
+        // $sheet->setCellValue('G6', 'Submission');
+        // $sheet->setCellValue('H6', 'Judgment');
+        // $sheet->setCellValue('I6', 'Lot Inspected');
+        // $sheet->setCellValue('J6', 'Lot Accepted');
+        // $sheet->setCellValue('K6', 'Sample Size');
+        // $sheet->setCellValue('L6', 'No. of Defects');
+        // $sheet->setCellValue('M6', 'Remarks');
+        // $sheet->setCellValue('N6', 'Classification');
 
         return [
             1 => ['font' => ['bold' => true]],

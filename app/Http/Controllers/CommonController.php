@@ -2219,7 +2219,7 @@ class CommonController extends Controller
                 $request->material_category,
                 $arr_merge_group
             );
-            return $export->collection();
+            // return $export->collection();
 
 
             return Excel::download(new IqcInspectionReportExport(

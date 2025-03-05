@@ -32,8 +32,7 @@ class IqcInspectionReportExport implements WithMultipleSheets
     public function sheets(): array{
         $sheets = [];
         $sheets[] = new IqcInspectionRawSheet($this->from_date, $this->to_date, $this->material_category, $this->arr_merge_group);
-        // $sheets[] = new IqcInspectionByDateMaterialGroupBySheet($this->from_date, $this->to_date, $this->material_category, $this->arr_merge_group);
-        $sheets[] = new IqcInspectionByDateMaterialGroupBySheet($this->collection());
+        $sheets[] = new IqcInspectionByDateMaterialGroupBySheet($this->from_date, $this->to_date, $this->material_category, $this->arr_merge_group);
         return $sheets;
     }
 
@@ -122,103 +121,47 @@ class IqcInspectionReportExport implements WithMultipleSheets
             ->groupBy($this->arr_merge_group)
             ->get();
         })->filter(); // Remove empty records
+        // return $iqcInspectionCollection =  collect($iqcInspectionCollection)->map(function ($value) {
+        //     return $value;
+        // });
+        return $iqcInspectionCollection =  collect($iqcInspectionCollection)->map(function ($row)  {
+            return [
+                // 'work_range' => $row->pluck('week_range')->unique()->toArray(), //display one array only
+                'week2' => $row ?? [], // Fetch all objects for week2,
+            ] ;
 
-        $mapping = [];
-        $startRow = 7; // Start inserting data from row 7
-        foreach ([0,1,2,3,4] as $weekIndex) {
-            if (!isset($iqcInspectionCollection[$weekIndex])) {
-                continue; // Skip if no data
-            }
+        });
+        return $groupedData = collect($weekRanges)->map(function ($week) use ($iqcInspectionCollection) {
+            return $iqcInspectionCollection->filter(function ($row) use ($week) {
+                return $week;
+                // return Carbon::parse($row->date_inspected)->between($week['start'], $week['end']);
+            });
+            // ->map(function ($row) use ($week) {
+            //     return [
+            //         'supplier' => $row->supplier ?? '',
+            //         'lot_inspected' => 1, // Adjust based on logic
+            //         'accepted' => $row->accepted_count ?? 0,
+            //         'week_range' => Carbon::parse($week['start'])->format('M j') . " - " . Carbon::parse($week['end'])->format('j'),
+            //         'accepted_count' => $row->accepted_count ?? 0,
+            //         'rejected_count' => $row->rejected_count ?? 0,
+            //         'sampling_size_sum' => $row->sampling_size_sum ?? 0,
+            //         'no_of_defects_sum' => $row->no_of_defects_sum ?? 0,
+            //     ];
+            // });
+        })->flatten(1);
 
-            foreach ($iqcInspectionCollection[$weekIndex] as $index => $data) {
-                $row = $startRow + $index; // Adjust row dynamically
-                if ($weekIndex == 0 ) {
-                    $mapping["A{$row}"] = $data->supplier;
-                    $mapping["D{$row}"] = $data->week_range;
-                }
-                elseif ($weekIndex == 1) {
-                    $mapping["E{$row}"] = $data->supplier;
-                    $mapping["F{$row}"] = $data->week_range;
-                }
-                elseif ($weekIndex == 2) {
-                    $mapping["K{$row}"] = $data->supplier;
-                    $mapping["L{$row}"] = $data->week_range;
-                } elseif ($weekIndex == 3) {
-                    $mapping["O{$row}"] = $data->supplier;
-                    $mapping["P{$row}"] = $data->week_range;
-                }
-                 elseif ($weekIndex == 4) {
-                    $mapping["S{$row}"] = $data->supplier;
-                    $mapping["T{$row}"] = $data->week_range;
-                }
-            }
-            $startRow = 7;
-        }
-        return $mapping;
-
-
-        // return $return =$iqcInspectionCollection[2];
-        foreach ($iqcInspectionCollection[2] as $weekIndex => $weekData) {
-            $row = $startRow;
-            // return $weekData;
-            // foreach ($weekData as $index => $data) {
-                // return $weekData;
-                // Mapping each column dynamically
-                $mapping["A{$row}"] = $weekData->supplier;
-                // $mapping["B{$row}"] = $data->lot_inspected;
-                // $mapping["C{$row}"] = $data->accepted;
-                $mapping["D{$row}"] = $weekData->week_range;
-                // $mapping["E{$row}"] = $data->accepted_count;
-                // $mapping["F{$row}"] = $data->rejected_count;
-                // $mapping["G{$row}"] = $data->sampling_size_sum;
-                // $mapping["H{$row}"] = $data->no_of_defects_sum;
-                $row++; // Move to next row
-            // }
-
-            $startRow = $row; // Add space before the next week's data
-        }
-
-
-        return $mapping;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        $mapping = [];
-        $weekData = [];
-        $startRow = 7; // Start inserting data from row 2
-        foreach ($iqcInspectionCollection[2] as $weekIndex => $weekData) {
-            $row = $startRow;
-
-            foreach ($weekData as $index => $data) {
-                $mapping["A{$row}"] = $weekData->supplier;
-                $mapping["D{$row}"] = $weekData->week_range;
-                $row++; // Move to next row
-            }
-            $startRow = $row; // Add space before the next week's data
-        }
-        foreach ($iqcInspectionCollection[3] as $weekIndex => $weekData) {
-            $row = $startRow;
-
-            foreach ($weekData as $index => $data) {
-                $mapping["E{$row}"] = $weekData->supplier;
-                $mapping["F{$row}"] = $weekData->week_range;
-                $row++; // Move to next row
-            }
-            $startRow = $row; // Add space before the next week's data
-        }
-
-        return $mapping;
+        $iqcInspectionFlatten = $iqcInspectionCollection->flatten();
+        return new Collection([
+            'work_range' => $iqcInspectionFlatten->pluck('week_range')->unique()->toArray(), //display one array only
+            'week2' => $iqcInspectionCollection[2] ?? [], // Fetch all objects for week2,
+            // 'week1_accepted_count' => $iqcInspectionCollection[2][0]->accepted_count,
+            // 'week1_rejected_count' => $iqcInspectionCollection[2][0]->rejected_count,
+            // 'week1_sampling_size_sum' => $iqcInspectionCollection[2][0]->sampling_size_sum,
+            // 'week1_no_of_defects_sum' => $iqcInspectionCollection[2][0]->no_of_defects_sum,
+            // 'week2' => $iqcInspectionCollection[1],
+            // 'week3' => $iqcInspectionCollection[2],
+            // 'week4' => $iqcInspectionCollection[3],
+            // 'week5' => $iqcInspectionCollection[4],
+        ]);
     }
 }
