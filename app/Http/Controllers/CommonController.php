@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\IqcInspection;
 use App\Models\CnIqcInspection;
@@ -2213,25 +2214,178 @@ class CommonController extends Controller
                     throw new \Exception("Unknown column '$column'");
                 }
             }
-            $export = new IqcInspectionReportExport(
+
+            $iqcInspectionByDateMaterialGroupBySheet =  CommonService::iqcInspectionByDateMaterialGroupBySheet(
                 $request->from_date,
                 $request->to_date,
                 $request->material_category,
                 $arr_merge_group
             );
-            // return $export->collection();
-
-
-            return Excel::download(new IqcInspectionReportExport(
+            $iqcInspectionRawSheet =  CommonService::iqcInspectionRawSheet(
                 $request->from_date,
                 $request->to_date,
                 $request->material_category,
                 $arr_merge_group
-            ),
+            );
+            $export = new IqcInspectionReportExport(
+                $iqcInspectionByDateMaterialGroupBySheet,
+                $iqcInspectionRawSheet
+            );
+            // return $export->mapping();
+            // return $export->collection();
+
+
+            return Excel::download(new IqcInspectionReportExport,
             'report.xlsx');
+
+            // return Excel::download(new IqcInspectionReportExport(
+            //     $iqcInspectionByDateMaterialGroupBySheet,
+            //     $iqcInspectionRawSheet
+            // ),
+            // 'report.xlsx');
 
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+}
+class CommonService{
+    public function iqcInspectionRawSheet(
+        $from_date,
+        $to_date,
+        $material_category
+    ){
+
+        $getIqcInspectionByMaterialCategoryDate = IqcInspection::
+        with('user_iqc')
+        ->where("iqc_category_material_id", "=", $material_category)
+        // ->whereBetween('date_inspected', ["".$from_date."", "".$to_date.""])
+        ->whereBetween('date_inspected', [$from_date, $to_date])
+        ->get();
+        return $getIqcInspectionByMaterialCategoryDate;
+    }
+    public function iqcInspectionByDateMaterialGroupBySheet(
+        $from_date,
+        $to_date,
+        $material_category,
+        $arr_merge_group
+    ){
+
+        // Get the start and end of the month
+        $startOfMonth = Carbon::parse($from_date)->startOfMonth();
+        $endOfMonth = Carbon::parse($to_date)->endOfMonth();
+
+        // Determine the first Thursday of the month
+        $firstThursday = $startOfMonth->copy()->next(Carbon::THURSDAY);
+
+        $weekRanges = [];
+        $startDate = $startOfMonth;
+
+        // Generate week ranges ending on Thursday
+        while ($startDate <= $endOfMonth) {
+            // If first week, set end date to first Thursday
+            $endDate = ($startDate->equalTo($firstThursday))
+                ? $firstThursday
+                : $startDate->copy()->next(Carbon::THURSDAY);
+
+            // Ensure end date does not exceed end of month
+            if ($endDate > $endOfMonth) {
+                $endDate = $endOfMonth;
+            }
+
+            // Store week range
+            $weekRanges[] = [
+                'start' => $startDate->format('Y-m-d'),
+                'end' => $endDate->format('Y-m-d')
+            ];
+
+            // Move to next week's start date
+            $startDate = $endDate->copy()->addDay();
+        }
+        // Fetch inspection data per week
+        return $iqcInspectionCollection = collect($weekRanges)->map(function ($week)use($material_category,$arr_merge_group) {
+            return IqcInspection::
+            select($arr_merge_group)
+            ->addSelect(
+                DB::raw("'".Carbon::parse($week['start'])->format('M j')." - ".Carbon::parse($week['end'])->format('j')."' as week_range"), // Display week range
+                DB::raw("DATE_FORMAT(DATE_ADD(date_inspected, INTERVAL (7 - WEEKDAY(date_inspected)) DAY), '%e') AS week_end"),
+                DB::raw("COUNT(CASE WHEN judgement = 1 THEN 1 END) as accepted_count"),
+                DB::raw("COUNT(CASE WHEN judgement = 2 THEN 1 END) as rejected_count"),
+                DB::raw("SUM(sampling_size) as 'sampling_size_sum'"),
+                DB::raw("SUM(no_of_defects) as 'no_of_defects_sum'"),
+            )
+            ->where("iqc_category_material_id", "=", "$material_category")
+            ->whereBetween('date_inspected', [$week['start'], $week['end']])
+            // ->groupBy('supplier')
+            ->groupBy($arr_merge_group)
+            ->get();
+        })->filter(); // Remove empty records
+
+        $data = [];
+        $startRow = 7; // Start inserting data from row 7
+
+        foreach ([0, 1, 2, 3, 4] as $weekIndex) {
+            if (!isset($this->iqcInspectionCollection[$weekIndex])) {
+                continue; // Skip if no data
+            }
+
+            foreach ($this->iqcInspectionCollection[$weekIndex] as $index => $item) {
+                $row = $startRow + $index; // Adjust row dynamically
+                $rowData = array_fill(0, 20, ''); // Initialize an array with 20 empty elements
+
+                if ($weekIndex == 0) {
+                    $rowData[0] = $item->supplier;
+                    $rowData[1] = $item->week_range;
+                } elseif ($weekIndex == 1) {
+                    $rowData[4] = $item->supplier;
+                    $rowData[5] = $item->week_range;
+                } elseif ($weekIndex == 2) {
+                    $rowData[10] = $item->supplier;
+                    $rowData[11] = $item->week_range;
+                } elseif ($weekIndex == 3) {
+                    $rowData[14] = $item->supplier;
+                    $rowData[15] = $item->week_range;
+                } elseif ($weekIndex == 4) {
+                    $rowData[18] = $item->supplier;
+                    $rowData[19] = $item->week_range;
+                }
+
+                $data[] = $rowData;
+                $startRow = 7; // Start inserting data from row 7
+            }
+        }
+        return collect($rowData);
+        // $mapping = [];
+        // $startRow = 7; // Start inserting data from row 7
+        // foreach ([0,1,2,3,4] as $weekIndex) {
+        //     if (!isset($iqcInspectionCollection[$weekIndex])) {
+        //         continue; // Skip if no data
+        //     }
+
+        //     foreach ($iqcInspectionCollection[$weekIndex] as $index => $data) {
+        //         $row = $startRow + $index; // Adjust row dynamically
+        //         if ($weekIndex == 0 ) {
+        //             $mapping["A{$row}"] = $data->supplier;
+        //             $mapping["D{$row}"] = $data->week_range;
+        //         }
+        //         elseif ($weekIndex == 1) {
+        //             $mapping["E{$row}"] = $data->supplier;
+        //             $mapping["F{$row}"] = $data->week_range;
+        //         }
+        //         elseif ($weekIndex == 2) {
+        //             $mapping["K{$row}"] = $data->supplier;
+        //             $mapping["L{$row}"] = $data->week_range;
+        //         } elseif ($weekIndex == 3) {
+        //             $mapping["O{$row}"] = $data->supplier;
+        //             $mapping["P{$row}"] = $data->week_range;
+        //         }
+        //          elseif ($weekIndex == 4) {
+        //             $mapping["S{$row}"] = $data->supplier;
+        //             $mapping["T{$row}"] = $data->week_range;
+        //         }
+        //     }
+        //     $startRow = 7;
+        // }
+        // return $mapping;
     }
 }

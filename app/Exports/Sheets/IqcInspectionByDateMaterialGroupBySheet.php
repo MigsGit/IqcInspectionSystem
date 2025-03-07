@@ -25,17 +25,18 @@ use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 class IqcInspectionByDateMaterialGroupBySheet implements
     WithMappedCells,
     // WithMapping,
-    FromCollection,
+    // FromCollection,
     WithTitle,
     WithStyles,
     WithCustomStartCell,
     ShouldAutoSize,
     WithStrictNullComparison
 {
-    protected $iqcInspectionCollection;
-    public function __construct($iqcInspectionCollection )
+    protected $iqcInspectionByDateMaterialGroupBySheet;
+    // public function __construct($iqcInspectionByDateMaterialGroupBySheet)
+    public function __construct($iqcInspectionByDateMaterialGroupBySheet)
     {
-        $this->iqcInspectionCollection  = $iqcInspectionCollection ;
+        $this->iqcInspectionByDateMaterialGroupBySheet = $iqcInspectionByDateMaterialGroupBySheet;
     }
 
 
@@ -50,18 +51,65 @@ class IqcInspectionByDateMaterialGroupBySheet implements
     /**
      * Collection of IqcInspection Data By Material Category and Date
     */
-    public function collection()
-    {
-        return $this->iqcInspectionCollection ;
-    }
+    // public function collection()
+    // {
+    //     // return $this->iqcInspectionByDateMaterialGroupBySheet ;
+    //     $data = [];
+
+    //     // Add Week Headers
+    //     $data[] = ["WEEK 1 : Feb 1 - 6", "", "", "", "", "", "", "", "", "", "WEEK 2 : Feb 7 - 13", "", "", "", "", "", "", "", ""];
+
+    //     // Add Column Headers
+    //     $data[] = [
+    //         "Lot Inspected", "Lot OK", "Samples", "NG Qty",
+    //         "Target LAR", "Actual LAR", "Target Dppm", "Actual Dppm",
+    //         "", // Empty column for spacing
+    //         "Lot Inspected", "Lot OK", "Samples", "NG Qty",
+    //         "Target LAR", "Actual LAR", "Target Dppm", "Actual Dppm",
+    //     ];
+
+    //     $startRow = 7; // Start inserting data from row 7
+
+    //     foreach ([0, 1, 2, 3, 4] as $weekIndex) {
+    //         if (!isset($this->iqcInspectionByDateMaterialGroupBySheet[$weekIndex])) {
+    //             continue; // Skip if no data
+    //         }
+
+    //         foreach ($this->iqcInspectionByDateMaterialGroupBySheet[$weekIndex] as $index => $item) {
+    //             $row = $startRow + $index; // Adjust row dynamically
+    //             $rowData = array_fill(0, 20, ''); // Initialize an array with 20 empty elements
+
+    //             if ($weekIndex == 0) {
+    //                 $rowData[0] = $item->supplier;
+    //                 $rowData[1] = $item->week_range;
+    //             } elseif ($weekIndex == 1) {
+    //                 $rowData[4] = $item->supplier;
+    //                 $rowData[5] = $item->week_range;
+    //             } elseif ($weekIndex == 2) {
+    //                 $rowData[10] = $item->supplier;
+    //                 $rowData[11] = $item->week_range;
+    //             } elseif ($weekIndex == 3) {
+    //                 $rowData[14] = $item->supplier;
+    //                 $rowData[15] = $item->week_range;
+    //             } elseif ($weekIndex == 4) {
+    //                 $rowData[18] = $item->supplier;
+    //                 $rowData[19] = $item->week_range;
+    //             }
+
+    //             $data[] = $rowData;
+    //             $startRow = 7; // Start inserting data from row 7
+    //         }
+    //     }
+    //     return collect($data);
+    // }
     /**
      * Start Cell
      * @return string
      */
-    public function startCell(): string
-    {
-        return 'A7';  // This ensures headings start from A1
-    }
+    // public function startCell(): string
+    // {
+    //     return 'A7';  // This ensures headings start from A1
+    // }
     /**
      * Summary of map
      * @param mixed $data from the collection
@@ -69,38 +117,69 @@ class IqcInspectionByDateMaterialGroupBySheet implements
      */
     public function mapping(): array
     {
-        $mapping = [];
         $startRow = 7; // Start inserting data from row 7
-        foreach ([0,1,2,3,4] as $weekIndex) {
-            if (!isset($this->iqcInspectionCollection[$weekIndex])) {
+
+        foreach ($this->iqcInspectionByDateMaterialGroupBySheet as $weekIndex => $weekData) {
+            if (!isset($weekData)) {
                 continue; // Skip if no data
             }
 
-            foreach ($this->iqcInspectionCollection[$weekIndex] as $index => $data) {
-                $row = $startRow + $index; // Adjust row dynamically
-                if ($weekIndex == 0 ) {
-                    $mapping["A{$row}"] = $data->supplier;
-                    $mapping["D{$row}"] = $data->week_range;
-                }
-                elseif ($weekIndex == 1) {
-                    $mapping["E{$row}"] = $data->supplier;
-                    $mapping["F{$row}"] = $data->week_range;
-                }
-                elseif ($weekIndex == 2) {
-                    $mapping["K{$row}"] = $data->supplier;
-                    $mapping["L{$row}"] = $data->week_range;
+            $row = $startRow;
+            foreach ($weekData as $index => $item) {
+                if ($weekIndex == 0) {
+                    $mapping["A{$row}"] = $item->supplier;
+                    $mapping["B{$row}"] = $item->week_range;
+                } elseif ($weekIndex == 1) {
+                    $mapping["E{$row}"] = $item->supplier;
+                    $mapping["F{$row}"] = $item->week_range;
+                } elseif ($weekIndex == 2) {
+                    $mapping["K{$row}"] = $item->supplier;
+                    $mapping["L{$row}"] = $item->week_range;
                 } elseif ($weekIndex == 3) {
-                    $mapping["O{$row}"] = $data->supplier;
-                    $mapping["P{$row}"] = $data->week_range;
+                    $mapping["O{$row}"] = $item->supplier;
+                    $mapping["P{$row}"] = $item->week_range;
+                } elseif ($weekIndex == 4) {
+                    $mapping["S{$row}"] = $item->supplier;
+                    $mapping["T{$row}"] = $item->week_range;
                 }
-                 elseif ($weekIndex == 4) {
-                    $mapping["S{$row}"] = $data->supplier;
-                    $mapping["T{$row}"] = $data->week_range;
-                }
+
+                $row++; // Move to next row
             }
-            $startRow = 7;
         }
+
         return $mapping;
+        // $mapping = [];
+        // $startRow = 7; // Start inserting data from row 7
+        // foreach ([0,1,2,3,4] as $weekIndex) {
+        //     if (!isset($this->iqcInspectionCollection[$weekIndex])) {
+        //         continue; // Skip if no data
+        //     }
+
+        //     foreach ($this->iqcInspectionCollection[$weekIndex] as $index => $data) {
+        //         $row = $startRow + $index; // Adjust row dynamically
+        //         if ($weekIndex == 0 ) {
+        //             $mapping["A{$row}"] = $data->supplier;
+        //             $mapping["D{$row}"] = $data->week_range;
+        //         }
+        //         elseif ($weekIndex == 1) {
+        //             $mapping["E{$row}"] = $data->supplier;
+        //             $mapping["F{$row}"] = $data->week_range;
+        //         }
+        //         elseif ($weekIndex == 2) {
+        //             $mapping["K{$row}"] = $data->supplier;
+        //             $mapping["L{$row}"] = $data->week_range;
+        //         } elseif ($weekIndex == 3) {
+        //             $mapping["O{$row}"] = $data->supplier;
+        //             $mapping["P{$row}"] = $data->week_range;
+        //         }
+        //          elseif ($weekIndex == 4) {
+        //             $mapping["S{$row}"] = $data->supplier;
+        //             $mapping["T{$row}"] = $data->week_range;
+        //         }
+        //     }
+        //     $startRow = 7;
+        // }
+        // return $mapping;
     }
 
     /**

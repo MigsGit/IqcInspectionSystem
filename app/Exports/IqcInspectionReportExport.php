@@ -17,208 +17,97 @@ class IqcInspectionReportExport implements WithMultipleSheets
 // FromCollection,
 {
     // use Exportable;
-    protected $from_date;
-    protected $to_date;
-    protected $material_category;
-    protected $arr_merge_group;
-    public function __construct($from_date, $to_date, $material_category, $arr_merge_group)
+    protected $iqcInspectionByDateMaterialGroupBySheet;
+    protected $iqcInspectionRawSheet;
+    public function __construct($iqcInspectionByDateMaterialGroupBySheet, $iqcInspectionRawSheet)
     {
-        $this->from_date = $from_date;
-        $this->to_date = $to_date;
-        $this->material_category = $material_category;
-        $this->arr_merge_group = $arr_merge_group;
+        $this->iqcInspectionByDateMaterialGroupBySheet = $iqcInspectionByDateMaterialGroupBySheet;
+        $this->iqcInspectionRawSheet = $iqcInspectionRawSheet;
     }
-
     public function sheets(): array{
         $sheets = [];
-        $sheets[] = new IqcInspectionRawSheet($this->from_date, $this->to_date, $this->material_category, $this->arr_merge_group);
-        // $sheets[] = new IqcInspectionByDateMaterialGroupBySheet($this->from_date, $this->to_date, $this->material_category, $this->arr_merge_group);
-        $sheets[] = new IqcInspectionByDateMaterialGroupBySheet($this->collection());
+        $sheets[] = new IqcInspectionByDateMaterialGroupBySheet($this->iqcInspectionByDateMaterialGroupBySheet);
+        $sheets[] = new IqcInspectionRawSheet($this->iqcInspectionRawSheet);
         return $sheets;
     }
 
-    /**
-        * Collection of IqcInspection Data By Material Category and Date
-        * Query to validate data group by supplier and specific date
 
-        // public function collection()
-        // {
-        //     //Select columns from the array and With Relationship needed to include the inspector foreign key
-        //     return $getIqcInspectionByMaterialCategoryDate = IqcInspection::
-        //     select($this->arr_merge_group)
-        //     ->addSelect([
-        //         // DB::raw("DATE_FORMAT(DATE_ADD(date_inspected, INTERVAL (7 - WEEKDAY(date_inspected)) DAY), '%e') AS week_end"),
-        //         DB::raw("COUNT(CASE WHEN judgement = 1 THEN 1 END) as accepted_count"),
-        //         DB::raw("COUNT(CASE WHEN judgement = 2 THEN 1 END) as rejected_count"),
-        //         DB::raw("SUM(sampling_size) as 'sampling_size_sum'"),
-        //         DB::raw("SUM(no_of_defects) as 'no_of_defects_sum'"),
-        //         DB::raw("date_inspected"),
-        //         DB::raw("iqc_category_material_id"),
-        //     ])
-        //     ->where("iqc_category_material_id", "=", "$this->material_category")
-        //     ->whereBetween('date_inspected', ["$this->from_date", "$this->to_date"])
-        //     ->groupBy('supplier')
-        //     ->get();
-
-        //     // ->whereBetween('date_inspected', [
-        //     //     Carbon::parse($this->from_date)->startOfMonth(),
-        //     //     Carbon::parse($this->to_date)->endOfMonth()
-        //     // ])
-        //     // ->groupBy([
-        //     //     DB::raw("WEEK(date_inspected)"),
-        //     // ])
-        // }
-    */
     //Query to validate data group by supplier and specific date
     public function collection()
     {
 
-        // Get the start and end of the month
-        $startOfMonth = Carbon::parse($this->from_date)->startOfMonth();
-        $endOfMonth = Carbon::parse($this->to_date)->endOfMonth();
+        // foreach ($headers as $index => $header) {
+        //     $columnLetter = chr(65 + $index); // Convert index to column letter (A, B, C, ...)
+        //     $mapping["{$columnLetter}2"] = $header;
+        //     $mapping["{$columnLetter}2"] = $header;
+        //     $mapping[chr(75 + $index) . "2"] = $header; // Shift for Week 2 (starts at column K)
+        // }
 
-        // Determine the first Thursday of the month
-        $firstThursday = $startOfMonth->copy()->next(Carbon::THURSDAY);
-
-        $weekRanges = [];
-        $startDate = $startOfMonth;
-
-        // Generate week ranges ending on Thursday
-        while ($startDate <= $endOfMonth) {
-            // If first week, set end date to first Thursday
-            $endDate = ($startDate->equalTo($firstThursday))
-                ? $firstThursday
-                : $startDate->copy()->next(Carbon::THURSDAY);
-
-            // Ensure end date does not exceed end of month
-            if ($endDate > $endOfMonth) {
-                $endDate = $endOfMonth;
-            }
-
-            // Store week range
-            $weekRanges[] = [
-                'start' => $startDate->format('Y-m-d'),
-                'end' => $endDate->format('Y-m-d')
-            ];
-
-            // Move to next week's start date
-            $startDate = $endDate->copy()->addDay();
-        }
-        // Fetch inspection data per week
-        $iqcInspectionCollection = collect($weekRanges)->map(function ($week) {
-            return IqcInspection::
-            select($this->arr_merge_group)
-            ->addSelect(
-                DB::raw("'".Carbon::parse($week['start'])->format('M j')." - ".Carbon::parse($week['end'])->format('j')."' as week_range"), // Display week range
-                DB::raw("DATE_FORMAT(DATE_ADD(date_inspected, INTERVAL (7 - WEEKDAY(date_inspected)) DAY), '%e') AS week_end"),
-                DB::raw("COUNT(CASE WHEN judgement = 1 THEN 1 END) as accepted_count"),
-                DB::raw("COUNT(CASE WHEN judgement = 2 THEN 1 END) as rejected_count"),
-                DB::raw("SUM(sampling_size) as 'sampling_size_sum'"),
-                DB::raw("SUM(no_of_defects) as 'no_of_defects_sum'"),
-            )
-            ->where("iqc_category_material_id", "=", "$this->material_category")
-            ->whereBetween('date_inspected', [$week['start'], $week['end']])
-            // ->groupBy('supplier')
-            ->groupBy($this->arr_merge_group)
-            ->get();
-        })->filter(); // Remove empty records
-
-        $mapping = [];
         $startRow = 7; // Start inserting data from row 7
-        foreach ([0,1,2,3,4] as $weekIndex) {
-            if (!isset($iqcInspectionCollection[$weekIndex])) {
+
+        foreach ($this->iqcInspectionByDateMaterialGroupBySheet as $weekIndex => $weekData) {
+            if (!isset($weekData)) {
                 continue; // Skip if no data
             }
 
-            foreach ($iqcInspectionCollection[$weekIndex] as $index => $data) {
-                $row = $startRow + $index; // Adjust row dynamically
-                if ($weekIndex == 0 ) {
-                    $mapping["A{$row}"] = $data->supplier;
-                    $mapping["D{$row}"] = $data->week_range;
-                }
-                elseif ($weekIndex == 1) {
-                    $mapping["E{$row}"] = $data->supplier;
-                    $mapping["F{$row}"] = $data->week_range;
-                }
-                elseif ($weekIndex == 2) {
-                    $mapping["K{$row}"] = $data->supplier;
-                    $mapping["L{$row}"] = $data->week_range;
+            $row = $startRow;
+            foreach ($weekData as $index => $item) {
+                if ($weekIndex == 0) {
+                    $mapping["A{$row}"] = $item->supplier;
+                    $mapping["B{$row}"] = $item->week_range;
+                } elseif ($weekIndex == 1) {
+                    $mapping["E{$row}"] = $item->supplier;
+                    $mapping["F{$row}"] = $item->week_range;
+                } elseif ($weekIndex == 2) {
+                    $mapping["K{$row}"] = $item->supplier;
+                    $mapping["L{$row}"] = $item->week_range;
                 } elseif ($weekIndex == 3) {
-                    $mapping["O{$row}"] = $data->supplier;
-                    $mapping["P{$row}"] = $data->week_range;
+                    $mapping["O{$row}"] = $item->supplier;
+                    $mapping["P{$row}"] = $item->week_range;
+                } elseif ($weekIndex == 4) {
+                    $mapping["S{$row}"] = $item->supplier;
+                    $mapping["T{$row}"] = $item->week_range;
                 }
-                 elseif ($weekIndex == 4) {
-                    $mapping["S{$row}"] = $data->supplier;
-                    $mapping["T{$row}"] = $data->week_range;
+
+                $row++; // Move to next row
+            }
+        }
+
+        return $mapping;
+        // return $this->iqcInspectionByDateMaterialGroupBySheet;
+        // return $this->iqcInspectionRawSheet;
+        $startRow = 7; // Start inserting data from row 7
+
+        foreach ([0, 1, 2, 3, 4] as $weekIndex) {
+            if (!isset($this->iqcInspectionByDateMaterialGroupBySheet[$weekIndex])) {
+                continue; // Skip if no data
+            }
+
+            foreach ($this->iqcInspectionByDateMaterialGroupBySheet[$weekIndex] as $index => $item) {
+                $row = $startRow + $index; // Adjust row dynamically
+                $rowData = array_fill(0, 20, ''); // Initialize an array with 20 empty elements
+
+                if ($weekIndex == 0) {
+                    $rowData[0] = $item->supplier;
+                    $rowData[1] = $item->week_range;
+                } elseif ($weekIndex == 1) {
+                    $rowData[4] = $item->supplier;
+                    $rowData[5] = $item->week_range;
+                } elseif ($weekIndex == 2) {
+                    $rowData[10] = $item->supplier;
+                    $rowData[11] = $item->week_range;
+                } elseif ($weekIndex == 3) {
+                    $rowData[14] = $item->supplier;
+                    $rowData[15] = $item->week_range;
+                } elseif ($weekIndex == 4) {
+                    $rowData[18] = $item->supplier;
+                    $rowData[19] = $item->week_range;
                 }
+
+                $data[] = $rowData;
+                $startRow = 7; // Start inserting data from row 7
             }
-            $startRow = 7;
         }
-        return $mapping;
-
-
-        // return $return =$iqcInspectionCollection[2];
-        foreach ($iqcInspectionCollection[2] as $weekIndex => $weekData) {
-            $row = $startRow;
-            // return $weekData;
-            // foreach ($weekData as $index => $data) {
-                // return $weekData;
-                // Mapping each column dynamically
-                $mapping["A{$row}"] = $weekData->supplier;
-                // $mapping["B{$row}"] = $data->lot_inspected;
-                // $mapping["C{$row}"] = $data->accepted;
-                $mapping["D{$row}"] = $weekData->week_range;
-                // $mapping["E{$row}"] = $data->accepted_count;
-                // $mapping["F{$row}"] = $data->rejected_count;
-                // $mapping["G{$row}"] = $data->sampling_size_sum;
-                // $mapping["H{$row}"] = $data->no_of_defects_sum;
-                $row++; // Move to next row
-            // }
-
-            $startRow = $row; // Add space before the next week's data
-        }
-
-
-        return $mapping;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        $mapping = [];
-        $weekData = [];
-        $startRow = 7; // Start inserting data from row 2
-        foreach ($iqcInspectionCollection[2] as $weekIndex => $weekData) {
-            $row = $startRow;
-
-            foreach ($weekData as $index => $data) {
-                $mapping["A{$row}"] = $weekData->supplier;
-                $mapping["D{$row}"] = $weekData->week_range;
-                $row++; // Move to next row
-            }
-            $startRow = $row; // Add space before the next week's data
-        }
-        foreach ($iqcInspectionCollection[3] as $weekIndex => $weekData) {
-            $row = $startRow;
-
-            foreach ($weekData as $index => $data) {
-                $mapping["E{$row}"] = $weekData->supplier;
-                $mapping["F{$row}"] = $weekData->week_range;
-                $row++; // Move to next row
-            }
-            $startRow = $row; // Add space before the next week's data
-        }
-
-        return $mapping;
+        return collect($data);
     }
 }

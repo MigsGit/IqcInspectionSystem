@@ -27,16 +27,10 @@ class IqcInspectionRawSheet implements
     ShouldAutoSize,
     WithStrictNullComparison
 {
-    protected $from_date;
-    protected $to_date;
-    protected $material_category;
-    protected $arr_merge_group;
-    public function __construct($from_date, $to_date, $material_category, $arr_merge_group)
+    protected $iqcInspectionRawSheet;
+    public function __construct($iqcInspectionRawSheet)
     {
-        $this->from_date = $from_date;
-        $this->to_date = $to_date;
-        $this->material_category = $material_category;
-        $this->arr_merge_group = $arr_merge_group;
+        $this->iqcInspectionRawSheet = $iqcInspectionRawSheet;
     }
 
 
@@ -53,13 +47,7 @@ class IqcInspectionRawSheet implements
     */
     public function collection()
     {
-        $getIqcInspectionByMaterialCategoryDate = IqcInspection::
-        with('user_iqc')
-        ->where("iqc_category_material_id", "=", $this->material_category)
-        // ->whereBetween('date_inspected', ["".$this->from_date."", "".$this->to_date.""])
-        ->whereBetween('date_inspected', [$this->from_date, $this->to_date])
-        ->get();
-        return $getIqcInspectionByMaterialCategoryDate;
+        return $this->iqcInspectionRawSheet;
     }
     /**
      * Start Cell
