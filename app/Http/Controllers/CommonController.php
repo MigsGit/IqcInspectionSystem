@@ -2231,18 +2231,15 @@ class CommonController extends Controller
                 $iqcInspectionByDateMaterialGroupBySheet,
                 $iqcInspectionRawSheet
             );
-            // return $export->mapping();
             // return $export->collection();
 
 
-            return Excel::download(new IqcInspectionReportExport,
-            'report.xlsx');
 
-            // return Excel::download(new IqcInspectionReportExport(
-            //     $iqcInspectionByDateMaterialGroupBySheet,
-            //     $iqcInspectionRawSheet
-            // ),
-            // 'report.xlsx');
+            return Excel::download(new IqcInspectionReportExport(
+                $iqcInspectionByDateMaterialGroupBySheet,
+                $iqcInspectionRawSheet
+            ),
+            'report.xlsx');
 
         } catch (\Throwable $th) {
             throw $th;

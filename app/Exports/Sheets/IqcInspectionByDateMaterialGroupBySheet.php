@@ -25,7 +25,7 @@ use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 class IqcInspectionByDateMaterialGroupBySheet implements
     WithMappedCells,
     // WithMapping,
-    // FromCollection,
+    FromCollection,
     WithTitle,
     WithStyles,
     WithCustomStartCell,
@@ -51,65 +51,70 @@ class IqcInspectionByDateMaterialGroupBySheet implements
     /**
      * Collection of IqcInspection Data By Material Category and Date
     */
-    // public function collection()
-    // {
-    //     // return $this->iqcInspectionByDateMaterialGroupBySheet ;
-    //     $data = [];
+    public function collection()
+    {
+        // return $this->iqcInspectionByDateMaterialGroupBySheet ;
+        $data = collect();
 
-    //     // Add Week Headers
-    //     $data[] = ["WEEK 1 : Feb 1 - 6", "", "", "", "", "", "", "", "", "", "WEEK 2 : Feb 7 - 13", "", "", "", "", "", "", "", ""];
+        // Add headers
+        // $data->push([
+        //     "WEEK 1 : Feb 1 - 6", "", "", "", "", "", "", "", "",
+        //     "WEEK 2 : Feb 7 - 13", "", "", "", "", "", "", "", "",
+        // ]);
 
-    //     // Add Column Headers
-    //     $data[] = [
-    //         "Lot Inspected", "Lot OK", "Samples", "NG Qty",
-    //         "Target LAR", "Actual LAR", "Target Dppm", "Actual Dppm",
-    //         "", // Empty column for spacing
-    //         "Lot Inspected", "Lot OK", "Samples", "NG Qty",
-    //         "Target LAR", "Actual LAR", "Target Dppm", "Actual Dppm",
-    //     ];
+        // $data->push([
+        //     "Supplier", "Lot Inspected", "Lot OK", "Samples", "NG Qty",
+        //     "Target LAR", "Actual LAR", "Target Dppm", "Actual Dppm",
+        //     "Supplier", "Lot Inspected", "Lot OK", "Samples", "NG Qty",
+        //     "Target LAR", "Actual LAR", "Target Dppm", "Actual Dppm",
+        // ]);
 
-    //     $startRow = 7; // Start inserting data from row 7
+        $startRow = 7; // Start inserting data from row 7
 
-    //     foreach ([0, 1, 2, 3, 4] as $weekIndex) {
-    //         if (!isset($this->iqcInspectionByDateMaterialGroupBySheet[$weekIndex])) {
-    //             continue; // Skip if no data
-    //         }
+        foreach ([0, 1, 2, 3, 4] as $weekIndex) {
+            if (!isset($this->iqcInspectionByDateMaterialGroupBySheet[$weekIndex])) {
+                continue; // Skip if no data
+            }
+            // $startRow = 7; // Start inserting data from row 7
+            foreach ($this->iqcInspectionByDateMaterialGroupBySheet[$weekIndex] as $index => $item) {
+                //  $row = $startRow + $index; // Adjust row dynamically
+                //  var_dump($row);
+                $rowData = array_fill(0, 20, ''); // Initialize an array with 20 empty elements
 
-    //         foreach ($this->iqcInspectionByDateMaterialGroupBySheet[$weekIndex] as $index => $item) {
-    //             $row = $startRow + $index; // Adjust row dynamically
-    //             $rowData = array_fill(0, 20, ''); // Initialize an array with 20 empty elements
+                if ($weekIndex == 0) {
+                    $rowData[0] = $item->supplier;
+                    $rowData[1] = $item->week_range;
+                } elseif ($weekIndex == 1) {
+                    $rowData[5] = $item->supplier;
+                    $rowData[6] = $item->week_range;
+                } elseif ($weekIndex == 2) {
+                    $rowData[10] = $item->supplier;
+                    $rowData[11] = $item->week_range;
+                } elseif ($weekIndex == 3) {
+                    $rowData[14] = $item->supplier;
+                    $rowData[15] = $item->week_range;
+                } elseif ($weekIndex == 4) {
+                    $rowData[18] = $item->supplier;
+                    $rowData[19] = $item->week_range;
+                }
 
-    //             if ($weekIndex == 0) {
-    //                 $rowData[0] = $item->supplier;
-    //                 $rowData[1] = $item->week_range;
-    //             } elseif ($weekIndex == 1) {
-    //                 $rowData[4] = $item->supplier;
-    //                 $rowData[5] = $item->week_range;
-    //             } elseif ($weekIndex == 2) {
-    //                 $rowData[10] = $item->supplier;
-    //                 $rowData[11] = $item->week_range;
-    //             } elseif ($weekIndex == 3) {
-    //                 $rowData[14] = $item->supplier;
-    //                 $rowData[15] = $item->week_range;
-    //             } elseif ($weekIndex == 4) {
-    //                 $rowData[18] = $item->supplier;
-    //                 $rowData[19] = $item->week_range;
-    //             }
+                $data[] = $rowData;
+                //  var_dump($row);
 
-    //             $data[] = $rowData;
-    //             $startRow = 7; // Start inserting data from row 7
-    //         }
-    //     }
-    //     return collect($data);
-    // }
+            }
+        }
+        // return;
+        return $data;
+
+    }
     /**
      * Start Cell
      * @return string
      */
-    // public function startCell(): string
-    // {
-    //     return 'A7';  // This ensures headings start from A1
-    // }
+    public function startCell(): string
+    {
+        return 'A7';  // This ensures headings start from A1
+    }
     /**
      * Summary of map
      * @param mixed $data from the collection
