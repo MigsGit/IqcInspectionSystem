@@ -13,8 +13,7 @@ use App\Exports\Sheets\IqcInspectionByDateMaterialGroupBySheet;
 
 
 
-class IqcInspectionReportExport implements
-WithMultipleSheets
+class IqcInspectionReportExport implements WithMultipleSheets
 // FromCollection,
 {
     // use Exportable;

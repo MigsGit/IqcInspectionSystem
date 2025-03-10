@@ -2227,13 +2227,11 @@ class CommonController extends Controller
                 $request->material_category,
                 $arr_merge_group
             );
+
             $export = new IqcInspectionReportExport(
                 $iqcInspectionByDateMaterialGroupBySheet,
                 $iqcInspectionRawSheet
-            );
-            // return $export->collection();
-
-
+            ); //Debug Function $export->coillection();
 
             return Excel::download(new IqcInspectionReportExport(
                 $iqcInspectionByDateMaterialGroupBySheet,
@@ -2318,71 +2316,38 @@ class CommonService{
             ->get();
         })->filter(); // Remove empty records
 
-        $data = [];
-        $startRow = 7; // Start inserting data from row 7
 
-        foreach ([0, 1, 2, 3, 4] as $weekIndex) {
-            if (!isset($this->iqcInspectionCollection[$weekIndex])) {
+        $mapping = [];
+        $startRow = 7; // Start inserting data from row 7
+        foreach ([0,1,2,3,4] as $weekIndex) {
+            if (!isset($iqcInspectionCollection[$weekIndex])) {
                 continue; // Skip if no data
             }
 
-            foreach ($this->iqcInspectionCollection[$weekIndex] as $index => $item) {
+            foreach ($iqcInspectionCollection[$weekIndex] as $index => $data) {
                 $row = $startRow + $index; // Adjust row dynamically
-                $rowData = array_fill(0, 20, ''); // Initialize an array with 20 empty elements
-
-                if ($weekIndex == 0) {
-                    $rowData[0] = $item->supplier;
-                    $rowData[1] = $item->week_range;
-                } elseif ($weekIndex == 1) {
-                    $rowData[4] = $item->supplier;
-                    $rowData[5] = $item->week_range;
-                } elseif ($weekIndex == 2) {
-                    $rowData[10] = $item->supplier;
-                    $rowData[11] = $item->week_range;
-                } elseif ($weekIndex == 3) {
-                    $rowData[14] = $item->supplier;
-                    $rowData[15] = $item->week_range;
-                } elseif ($weekIndex == 4) {
-                    $rowData[18] = $item->supplier;
-                    $rowData[19] = $item->week_range;
+                if ($weekIndex == 0 ) {
+                    $mapping["A{$row}"] = $data->supplier;
+                    $mapping["D{$row}"] = $data->week_range;
                 }
-
-                $data[] = $rowData;
-                $startRow = 7; // Start inserting data from row 7
+                elseif ($weekIndex == 1) {
+                    $mapping["E{$row}"] = $data->supplier;
+                    $mapping["F{$row}"] = $data->week_range;
+                }
+                elseif ($weekIndex == 2) {
+                    $mapping["K{$row}"] = $data->supplier;
+                    $mapping["L{$row}"] = $data->week_range;
+                } elseif ($weekIndex == 3) {
+                    $mapping["O{$row}"] = $data->supplier;
+                    $mapping["P{$row}"] = $data->week_range;
+                }
+                 elseif ($weekIndex == 4) {
+                    $mapping["S{$row}"] = $data->supplier;
+                    $mapping["T{$row}"] = $data->week_range;
+                }
             }
+            $startRow = 7;
         }
-        return collect($rowData);
-        // $mapping = [];
-        // $startRow = 7; // Start inserting data from row 7
-        // foreach ([0,1,2,3,4] as $weekIndex) {
-        //     if (!isset($iqcInspectionCollection[$weekIndex])) {
-        //         continue; // Skip if no data
-        //     }
-
-        //     foreach ($iqcInspectionCollection[$weekIndex] as $index => $data) {
-        //         $row = $startRow + $index; // Adjust row dynamically
-        //         if ($weekIndex == 0 ) {
-        //             $mapping["A{$row}"] = $data->supplier;
-        //             $mapping["D{$row}"] = $data->week_range;
-        //         }
-        //         elseif ($weekIndex == 1) {
-        //             $mapping["E{$row}"] = $data->supplier;
-        //             $mapping["F{$row}"] = $data->week_range;
-        //         }
-        //         elseif ($weekIndex == 2) {
-        //             $mapping["K{$row}"] = $data->supplier;
-        //             $mapping["L{$row}"] = $data->week_range;
-        //         } elseif ($weekIndex == 3) {
-        //             $mapping["O{$row}"] = $data->supplier;
-        //             $mapping["P{$row}"] = $data->week_range;
-        //         }
-        //          elseif ($weekIndex == 4) {
-        //             $mapping["S{$row}"] = $data->supplier;
-        //             $mapping["T{$row}"] = $data->week_range;
-        //         }
-        //     }
-        //     $startRow = 7;
-        // }
-        // return $mapping;
+        return $mapping;
     }
 }
