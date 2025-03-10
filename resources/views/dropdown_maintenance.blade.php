@@ -1,17 +1,4 @@
 @php $layout = 'layouts.admin_layout'; @endphp
-{{-- @auth
-  @php
-    if(Auth::user()->user_level_id == 1){
-      $layout = 'layouts.super_user_layout';
-    }
-    else if(Auth::user()->user_level_id == 2){
-      $layout = 'layouts.admin_layout';
-    }
-    else if(Auth::user()->user_level_id == 3){
-      $layout = 'layouts.user_layout';
-    }
-  @endphp
-@endauth --}}
 @extends($layout)
 
 @section('title', 'Matrix')

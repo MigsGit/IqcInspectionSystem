@@ -29,7 +29,13 @@
 <!-- smartWizard -->
 <script src="{{ asset('public/js/jquery.smartWizard.min.js') }}"></script>
 
+<!-- moment js -->
 <script src="{{ asset('public/template/moment/moment.min.js') }}"></script>
+
+<script src="{{ asset('/public/template/echarts/dist/echarts.js') }}"></script>
+
+
+{{-- <script src="{{ asset('/resources/js/bootstrap.js') }}"></script> --}}
 
 
 <script src="{{ asset('public/template/jquerymask/js/jquery.mask.min.js') }}"></script> <!-- Only use for Second Molding -->
@@ -96,8 +102,6 @@
            toastr.error(`Error: ${data.status}`);
         }
     });
-
-
 </script>
 
 <script src="{{ asset('public/js/main/Common.js') }}?<?=time()?>"></script>

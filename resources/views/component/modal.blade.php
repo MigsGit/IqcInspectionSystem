@@ -458,3 +458,51 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modalExportIqcInspectionRecord" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="fa fa-edit"></i> Test Socket (TS)</h4>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend w-50">
+                        <span class="input-group-text w-100">Material Category:</span>
+                    </div>
+                    <select class="form-control select2bs5 searcMaterialName" name="material_category" id="txtSearchMaterialName"></select>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend w-50">
+                                <span class="input-group-text w-100">From:</span>
+                            </div>
+                            <input type="date" class="form-control" name="from_date" id="txtSearchFrom" max="<?= date('Y-m-d'); ?>">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend w-50">
+                                <span class="input-group-text w-100">To:</span>
+                            </div>
+                            <input type="date" class="form-control" name="to_date" id="txtSearchTo" max="<?= date('Y-m-d'); ?>">
+                        </div>
+                    </div>
+                </div>
+                <div class="row rowGroupBy">
+                </div>
+            </div>
+            <div class="modal-footer  justify-content-end">
+                <button class="btn btn-dark float-right" id="btnExportIqcInspectionRecord"><i class="fas fa-file-excel"></i> Export Report</button>
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

@@ -76,40 +76,10 @@
                                                     <h3 class="card-title">Test Socket (TS)</h3>
                                                 </div>
                                                 <div class="card-body">
-                                                    @if(session()->has('message'))
-                                                        <div class="alert alert-danger">
-                                                            <strong>{{ session()->get('message') }}</strong>
-                                                        </div>
-                                                    @endif
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend w-50">
-                                                            <span class="input-group-text w-100">Material Category:</span>
-                                                        </div>
-                                                        <select class="form-control select2bs5 searcMaterialName" name="material_category" id="txtSearchMaterialName"></select>
+                                                    {{-- TS GRAPH --}}
+                                                    <div class="row overflow-auto">
+                                                        <div id="echart" style="width: 1000px; height: 800px;"></div>
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="col-sm-6">
-                                                            <div class="input-group mb-3">
-                                                                <div class="input-group-prepend w-50">
-                                                                    <span class="input-group-text w-100">From:</span>
-                                                                </div>
-                                                                <input type="date" class="form-control" name="from_date" id="txtSearchFrom" max="<?= date('Y-m-d'); ?>">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-6">
-                                                            <div class="input-group mb-3">
-                                                                <div class="input-group-prepend w-50">
-                                                                    <span class="input-group-text w-100">To:</span>
-                                                                </div>
-                                                                <input type="date" class="form-control" name="to_date" id="txtSearchTo" max="<?= date('Y-m-d'); ?>">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row rowGroupBy">
-                                                    </div>
-                                                </div>
-                                                <div class="card-footer">
-                                                    <button class="btn btn-dark float-right" id="btnExportIqcInspectionRecord"><i class="fas fa-file-excel"></i> Export Report</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -158,7 +128,6 @@
 
     @section('js_content')
         <script type="text/javascript">
-
             const getSearchGroupBy = function (){
                 let columns = [
                     // { id:`iqc_category_material_id`, label:"Iqc Category Material"},
@@ -199,7 +168,56 @@
                 $('.searchGroupBy').append(optionsHtml);
             }
             getDropdownDetailsByOptValue('TS',$('#txtSearchMaterialName'),'iqc_category_material_id');
+
+
             $(document).ready(function () {
+
+                var chart = echarts.init(document.getElementById('echart'));
+                options = {
+                    legend: {},
+                    xAxis: {
+                        type: 'category',
+                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [
+                        {
+                        name: 'Step Start',
+                        type: 'bar',
+                        label: {
+                            show: true,
+                            position: 'top',
+                            valueAnimation: true
+                        },
+                        data: [120, 132, 101, 134, 90, 230, 210]
+                        },
+                        {
+                        name: 'Step Middle',
+                        type: 'line',
+                        label: {
+                            show: true,
+                            position: 'top',
+                            valueAnimation: true
+                        },
+                        data: [220, 282, 201, 234, 290, 430, 410]
+                        },
+                        {
+                        name: 'Step End',
+                        type: 'line',
+                        label: {
+                            show: true,
+                            position: 'top',
+                            valueAnimation: true
+                        },
+                        data: [450, 432, 401, 454, 590, 530, 510]
+                        }
+                    ]
+                };
+                chart.setOption(options);
+                // $('#modalExportIqcInspectionRecord').modal('show');
+
                 let search_group_html = ``;
                 for (let index = 1; index <= 3; index++) {
                         search_group_html += `
