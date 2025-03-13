@@ -3,23 +3,24 @@
 namespace App\Http\Controllers;
 
 use DataTables;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\IqcInspectionRequest;
-
 use App\Models\User;
 use App\Models\YeuReceive;
+use Illuminate\Support\Arr;
+use Illuminate\Http\Request;
+
 use App\Models\IqcInspection;
 use App\Models\DropdownIqcAql;
 use App\Models\VwListOfReceived;
+use App\Interfaces\FileInterface;
 use App\Models\IqcDropdownDetail;
 use App\Models\IqcInspectionsMod;
-use App\Models\IqcDropdownCategory;
-use App\Models\DropdownIqcModeOfDefect;
-use App\Interfaces\FileInterface;
+use Illuminate\Support\Facades\DB;
 use App\Interfaces\CommonInterface;
+use App\Models\IqcDropdownCategory;
 use App\Interfaces\ResourceInterface;
+use App\Models\DropdownIqcModeOfDefect;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\IqcInspectionRequest;
 
 
 
@@ -96,6 +97,80 @@ class IqcInspectionController extends Controller
                 return $result;
             })
             ->rawColumns(['rawAction','rawStatus'])
+            ->make(true);
+        } catch (Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
+    public function loadWhsPackagingBulk(Request $request)
+    {
+        try {
+            // Read IqcInspection (Material already Inspected) then do not
+            // display it to the ON-GOING status
+            $categoryMaterial = $request->categoryMaterial;
+            $whereWhsTransactionId =   $this->commonInterface->readIqcInspectionByMaterialCategory(IqcInspection::class,$categoryMaterial);
+
+            if( isset( $request->lotNum ) ){
+                $tbl_whs_trasanction = DB::connection('mysql_rapid_ts_whs_packaging')
+                ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_received.partcode as "PartNumber",
+                    tbl_received.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo",
+                    receivedate as "ReceivedDate",rcvqty as "TotalLotQty"
+
+                    FROM  tbl_received tbl_received
+                    LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
+                    WHERE 1=1
+                    AND tbl_itemList.is_iqc_inspection = 1
+                    AND tbl_received.lot_no = "'.$request->lotNum.'"
+                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
+                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+
+                    '.$whereWhsTransactionId.'
+                ');
+                //TODO : Lot Number
+            }else{
+                $tbl_whs_trasanction = DB::connection('mysql_rapid_ts_whs_packaging')
+                ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
+                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo",
+                    receivedate as "ReceivedDate",rcvqty as "TotalLotQty"
+                    FROM  tbl_received tbl_received
+                    LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
+                    WHERE 1=1
+                    AND tbl_itemList.is_iqc_inspection = 1
+                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
+                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+                    '.$whereWhsTransactionId.'
+                ');
+            } //TODO : Lot Number 	133707
+            return DataTables::of($tbl_whs_trasanction)
+            ->addColumn('rawBulkCheckBox', function($row){
+                $result = '';
+                $result .= '<center>';
+                $result .= "<input type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkIqcInspection'>";
+                $result .= '</center>';
+                return $result;
+            })
+            ->addColumn('rawAction', function($row){
+                $result = '';
+                $result .= '<center>';
+                $result .= "<button class='btn btn-outline-info btn-sm mr-1' pkid-received='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+                $result .= '</center>';
+                return $result;
+            })
+            ->addColumn('rawAction', function($row){
+                $result = '';
+                $result .= '<center>';
+                $result .= "<button class='btn btn-outline-info btn-sm mr-1' pkid-received='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+                $result .= '</center>';
+                return $result;
+            })
+            ->addColumn('rawStatus', function($row){
+                $result = '';
+                $result .= '<center>';
+                $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
+                $result .= '</center>';
+                return $result;
+            })
+            ->rawColumns(['rawBulkCheckBox','rawAction','rawStatus'])
             ->make(true);
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
@@ -373,8 +448,8 @@ class IqcInspectionController extends Controller
     {
 
         date_default_timezone_set('Asia/Manila');
-        DB::beginTransaction();
         try {
+            DB::beginTransaction();
             $iqcInspectionShift = $this->commonInterface->getIqcInspectionShift();
             $mod_lot_no = explode(',',$request->lotNo);
             $mod_defects = explode(',',$request->modeOfDefects);
@@ -382,14 +457,52 @@ class IqcInspectionController extends Controller
             $arr_sum_mod_lot_qty = array_sum($mod_lot_qty);
             $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class,$request->iqc_category_material_id);
             $appNoExtension = $generateControlNumber['app_no_extension'];
+            $requestValidated = $request->validated();
+            if($request->pkidReceived != null){
+                $filteredData = Arr::except($requestValidated, [
+                    'whs_transaction_id',
+                    'invoice_no' ,
+                    'partcode',
+                    'partname',
+                    'supplier',
+                    'total_lot_qty',
+                    'lot_no',
+                ]);
+                $vwListOfReceived = VwListOfReceived::whereIn('pkid_received', explode(',',$request->pkidReceived))->get();
+                $vwListOfReceivedCollection = collect($vwListOfReceived)->map(function($row) use($filteredData,$request,$arr_sum_mod_lot_qty,$iqcInspectionShift){
+                    return array_merge([
+                        'whs_transaction_id' => $row->pkid_received,
+                        'invoice_no' => $row->invoiceno,
+                        'partcode' => $row->partcode,
+                        'partname' => $row->partname,
+                        'supplier' => $row->supplier,
+                        'total_lot_qty' => $row->rcvqty,
+                        'lot_no' => $row->lot_no,
+                        'no_of_defects' => $arr_sum_mod_lot_qty,
+                        'remarks' => $request->remarks,
+                        'inspector' => session('rapidx_user_id'),
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'shift' => $iqcInspectionShift,
+                    ], $filteredData); // Merge $filteredData into the array
+
+                })->toArray();
+                IqcInspection::insert($vwListOfReceivedCollection);
+                DB::commit();
+                return response()->json( [ 'result' => 1 ] );
+            }
+            //TODO: Validation to table
+            //empty value
+            //Attachment
+            //MOD
+            //TESTING
             if(isset($request->iqc_inspection_id)){ //Edit
 
-                IqcInspection::where('id', $request->iqc_inspection_id)->update($request->validated()); //PO and packinglist number
+                IqcInspection::where('id', $request->iqc_inspection_id)->update($requestValidated); //PO and packinglist number
 
                 IqcInspection::where('id', $request->iqc_inspection_id)
                 ->update([
                     // 'app_no_extension' => $appNoExtension,
-                    'invoice_no' => $request->invoice_no,
+                    // 'invoice_no' => $request->invoice_no,
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
                     'inspector' => session('rapidx_user_id'),
@@ -401,14 +514,14 @@ class IqcInspectionController extends Controller
                 /* All required fields is the $request validated, check the column is IqcInspectionRequest
                     NOTE: the name of fields must be match in column name
                 */
-                $create_iqc_inspection_id = IqcInspection::insertGetId($request->validated());
+                $create_iqc_inspection_id = IqcInspection::insertGetId($requestValidated);
                 /*  All not required fields should to be inside the update method below
                     NOTE: the name of fields must be match in column name
                 */
                 IqcInspection::where('id', $create_iqc_inspection_id)
                 ->update([
                     // 'app_no_extension' => $appNoExtension,
-                    'invoice_no' => $request->invoice_no,
+                    // 'invoice_no' => $request->invoice_no,
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
                     'inspector' => session('rapidx_user_id'),
@@ -463,7 +576,7 @@ class IqcInspectionController extends Controller
                     ]);
                 }
             }
-            DB::commit();
+            // DB::commit();
             return response()->json( [ 'result' => 1 ] );
         } catch (\Throwable $th) {
             DB::rollback();

@@ -147,7 +147,7 @@
             let iqcCocFile = tsWhsReceivedPackaging['iqc_coc_file'];
             // let pkidReceived = (tsWhsReceivedPackaging['whs_transaction_id'] != undefined ||tsWhsReceivedPackaging['whs_transaction_id'] != null) ?tsWhsReceivedPackaging['whs_transaction_id'] : 0;
             let lotAccepted =tsWhsReceivedPackaging['accepted'];
-            let invoiceNo = tsWhsReceivedPackaging['invoiceno'];
+            let invoiceNo = tsWhsReceivedPackaging['invoice_no'];
             let generateControlNumber = response['generateControlNumber'];
             //whs_transaction_id
 
@@ -375,10 +375,15 @@
     }
     const saveIqcInspection = function (categoryMaterialId)
     { //amodify
+        // console.log('saveIqcInspection',globalVar.arrPkidReceived);
+        // return;
         let serialized_data = new FormData(form.iqcInspection[0]);
             serialized_data.append('lotNo',arrTableMod.lotNo);
             serialized_data.append('modeOfDefects',arrTableMod.modeOfDefects);
             serialized_data.append('lotQty',arrTableMod.lotQty);
+            serialized_data.append('pkidReceived',globalVar.arrPkidReceived);
+            // console.log('serialized_data',serialized_data);
+            // return;
         $.ajax({
             type: "POST",
             url: "save_iqc_inspection",

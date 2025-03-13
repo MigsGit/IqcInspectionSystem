@@ -40,6 +40,8 @@ Route::middleware('CheckSessionExist')->group(function(){
     // * ADMIN VIEW
     Route::view('/user','user')->name('user');
     Route::view('/ts_iqc_inspection','ts_iqc_inspection')->name('ts_iqc_inspection');
+    Route::view('/bulk_ts_iqc_inspection','bulk_ts_iqc_inspection')->name('bulk_ts_iqc_inspection');
+    Route::view('/ts_iqc_inspection','ts_iqc_inspection')->name('ts_iqc_inspection');
     Route::view('/ppd_iqc_inspection','ppd_iqc_inspection')->name('ppd_iqc_inspection');
     Route::view('/cn_iqc_inspection','cn_iqc_inspection')->name('cn_iqc_inspection');
     Route::view('/yf_iqc_inspection','yf_iqc_inspection')->name('yf_iqc_inspection');
@@ -77,6 +79,7 @@ Route::get('check_department', function (Request $request) {
 Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/load_iqc_inspection', 'loadIqcInspection')->name('load_iqc_inspection');
     Route::get('/load_whs_packaging', 'loadWhsPackaging')->name('load_whs_packaging');
+    Route::get('/load_whs_packaging_bulk', 'loadWhsPackagingBulk')->name('load_whs_packaging_bulk');
     Route::get('/load_whs_details', 'loadWhsDetails')->name('load_whs_details');
     Route::get('/load_yeu_details', 'loadYeuDetails')->name('load_yeu_details');
 
