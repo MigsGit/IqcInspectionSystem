@@ -58,7 +58,7 @@
                     </li>
                 @if ( in_array($_SESSION["rapidx_user_level_id"], [1]))
 
-                    <li class="nav-item">
+                    <li class="nav-item d-none">
                         <a href="{{ route('export_group_by') }}" class="nav-link">
                             <i class="far fa-circle nav-icon ml-2"> </i>
                             <p>Export Group By</p>

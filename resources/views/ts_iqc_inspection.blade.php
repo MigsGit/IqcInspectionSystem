@@ -115,6 +115,7 @@
                                                                             <th>Part Code</th>
                                                                             <th>Part Name</th>
                                                                             <th>Lot No.</th>
+                                                                            <th>WHS Received Date</th>
                                                                             {{-- <th>Lot Qty.</th> --}}
                                                                             {{-- <th>Total Lot Size</th> --}}
                                                                             {{-- <th>AQL</th> --}}
@@ -321,6 +322,7 @@
                         { "data" : "PartNumber" },
                         { "data" : "MaterialType" },
                         { "data" : "Lot_number" },
+                        { "data" : "ReceivedDate" },
                     ],
                 });
 

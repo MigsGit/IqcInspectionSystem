@@ -55,7 +55,7 @@ class IqcInspectionController extends Controller
             if( isset( $request->lotNum ) ){
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_ts_whs_packaging')
                 ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_received.partcode as "PartNumber",
-                    tbl_received.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
+                    tbl_received.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo",receivedate as "ReceivedDate"
                     FROM  tbl_received tbl_received
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
@@ -70,7 +70,7 @@ class IqcInspectionController extends Controller
             }else{
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_ts_whs_packaging')
                 ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
-                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
+                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo",receivedate as "ReceivedDate"
                     FROM  tbl_received tbl_received
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
