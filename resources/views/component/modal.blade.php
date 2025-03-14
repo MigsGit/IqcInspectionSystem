@@ -460,7 +460,7 @@
 </div>
 
 <div class="modal fade" id="modalExportIqcInspectionRecord" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title"><i class="fa fa-edit"></i> Test Socket (TS)</h4>
@@ -497,7 +497,8 @@
                 </div>
             </div>
             <div class="modal-footer  justify-content-end">
-                <button class="btn btn-dark float-right" id="btnExportIqcInspectionRecord"><i class="fas fa-file-excel"></i> Export Report</button>
+                <button class="btn btn-outline-secondary float-right" id="btnChartIqcInspectionRecord"><i class="fas fa-eye"></i> Show </button>
+                <button class="btn btn-dark float-right d-non" id="btnExportIqcInspectionRecord"><i class="fas fa-file-excel"></i> Export Report</button>
                 <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
             </div>
         </div>

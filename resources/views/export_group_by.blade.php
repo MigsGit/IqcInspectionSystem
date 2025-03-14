@@ -77,9 +77,22 @@
                                                 </div>
                                                 <div class="card-body">
                                                     {{-- TS GRAPH --}}
-                                                    <div class="row overflow-auto">
-                                                        <div id="echart" style="width: 1000px; height: 800px;"></div>
-                                                    </div>
+                                                    <div class="card">
+                                                        <div class="card-header" id="headingFour">
+                                                          <h5 class="mb-0">
+                                                            <button id="" class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                                                              SAMPLE
+                                                            </button>
+                                                          </h5>
+                                                        </div>
+                                                        <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-bs-parent="#accordionMain">
+                                                          <div class="card-body">
+                                                            <div class="row overflow-auto">
+                                                                <div id="echart" style="width: 1000px; height: 800px;"></div>
+                                                            </div>
+                                                          </div> <!--end card-body-->
+                                                        </div> <!--end collapseOne-->
+                                                      </div> <!--end card-->
                                                 </div>
                                             </div>
                                         </div>
@@ -167,9 +180,9 @@
                 });
                 $('.searchGroupBy').append(optionsHtml);
             }
+
+
             getDropdownDetailsByOptValue('TS',$('#txtSearchMaterialName'),'iqc_category_material_id');
-
-
             $(document).ready(function () {
 
                 var chart = echarts.init(document.getElementById('echart'));
@@ -216,7 +229,7 @@
                     ]
                 };
                 chart.setOption(options);
-                // $('#modalExportIqcInspectionRecord').modal('show');
+                $('#modalExportIqcInspectionRecord').modal('show');
 
                 let search_group_html = ``;
                 for (let index = 1; index <= 3; index++) {
@@ -278,26 +291,50 @@
                     { id:`no_of_defects`, label:"no_of_defects"},
                     { id:`judgement`, label:"judgement"},
                 ];
-                $('#btnExportIqcInspectionRecord').click(function () {
-                    let arr_group_by1 =[];
-                    let arr_group_by2 =[];
-                    for (let index = 1; index <= 3; index++) {
-                        let groupBy1 = $(`select[name="group_by_1_${index}"]`).val();
-                        let groupBy2 = $(`select[name="group_by_2_${index}"]`).val();
-                        arr_group_by1.push(groupBy1);
-                        arr_group_by2.push(groupBy2);
-                    }
-                    let params = {
-                        from_date: $('input[name="from_date"]').val(),
-                        to_date: $('input[name="to_date"]').val(),
-                        material_category: $('select[name="material_category"]').val(),
-                        arr_group_by1: arr_group_by1,
-                        arr_group_by2: arr_group_by2,
-                    };
+            $('#btnExportIqcInspectionRecord').click(function () {
+                let arr_group_by1 =[];
+                let arr_group_by2 =[];
+                for (let index = 1; index <= 3; index++) {
+                    let groupBy1 = $(`select[name="group_by_1_${index}"]`).val();
+                    let groupBy2 = $(`select[name="group_by_2_${index}"]`).val();
+                    arr_group_by1.push(groupBy1);
+                    arr_group_by2.push(groupBy2);
+                }
+                let params = {
+                    from_date: $('input[name="from_date"]').val(),
+                    to_date: $('input[name="to_date"]').val(),
+                    material_category: $('select[name="material_category"]').val(),
+                    arr_group_by1: arr_group_by1,
+                    arr_group_by2: arr_group_by2,
+                };
+                var queryString = $.param(params);
+                window.location.href = "{{ route('download.export_iqc_inspection_report') }}?" + queryString;
+            });
+            $('#btnChartIqcInspectionRecord').click(function () {
+                alert('test')
+                let arr_group_by1 =[];
+                let arr_group_by2 =[];
+                for (let index = 1; index <= 3; index++) {
+                    let groupBy1 = $(`select[name="group_by_1_${index}"]`).val();
+                    let groupBy2 = $(`select[name="group_by_2_${index}"]`).val();
+                    arr_group_by1.push(groupBy1);
+                    arr_group_by2.push(groupBy2);
+                }
+                let params = {
+                    from_date: $('input[name="from_date"]').val(),
+                    to_date: $('input[name="to_date"]').val(),
+                    material_category: $('select[name="material_category"]').val(),
+                    arr_group_by1: arr_group_by1,
+                    arr_group_by2: arr_group_by2,
+                    generate_type: 'chart',
+                };
+                // var queryString = $.param(params);
+                console.log('params',params);
+                call_ajax(params,'export_iqc_inspection_report',function(response){
 
-                    var queryString = $.param(params);
-                    window.location.href = "{{ route('download.export_iqc_inspection_report') }}?" + queryString;
-                });
+                })
+                // window.location.href = "{{ route('download.export_iqc_inspection_report') }}?" + queryString;
+            });
         </script>
     @endsection
 {{-- @endauth --}}

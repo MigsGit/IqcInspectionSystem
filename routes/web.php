@@ -82,13 +82,11 @@ Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/load_whs_packaging_bulk', 'loadWhsPackagingBulk')->name('load_whs_packaging_bulk');
     Route::get('/load_whs_details', 'loadWhsDetails')->name('load_whs_details');
     Route::get('/load_yeu_details', 'loadYeuDetails')->name('load_yeu_details');
-
     Route::get('/get_ts_whs_packaging_by_id', 'getTsWhsPackagingById')->name('get_ts_whs_packaging_by_id');
     Route::get('/get_iqc_inspection_by_judgement', 'getIqcInspectionByJudgement')->name('get_iqc_inspection_by_judgement');
     Route::get('/get_iqc_inspection_by_id', 'getIqcInspectionById')->name('get_iqc_inspection_by_id');
     Route::get('/get_dropdown_details_by_opt_value', 'getDropdownDetailsByOptValue')->name('get_dropdown_details_by_opt_value');
     Route::get('/get_yeu_receiving_by_id', 'getYeuReceivingById')->name('get_yeu_receiving_by_id');
-
     Route::get('/get_mode_of_defects_by_id', 'getModeOfDefectsById')->name('get_mode_of_defects_by_id');
 
     Route::post('/save_iqc_inspection', 'saveIqcInspection')->name('save_iqc_inspection');
@@ -168,8 +166,8 @@ Route::controller(CommonController::class)->group(function () {
     //TODO : PPD
     // Route::get('/get_sampling_size_by_sampling_plan_ppd', 'getSamplingSizeBySamplingPlanPpd')->name('get_sampling_size_by_sampling_plan_ppd');
     Route::get('/view_coc_file_attachment/{section}/{iqc_inspection_id}', 'viewCocFileAttachment')->name('view_coc_file_attachment');
-
     Route::get('/export_iqc_inspection_report', 'exportIqcInspectionReport')->name('download.export_iqc_inspection_report');
+    Route::get('/get_chart_iqc_inspection_record', 'getChartIqcInspectionRecord')->name('get_chart_iqc_inspection_record');
 });
 
 //readDropdownDetailsByCategory
