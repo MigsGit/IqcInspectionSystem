@@ -446,7 +446,107 @@ class IqcInspectionController extends Controller
     public function saveIqcInspection(IqcInspectionRequest $request)
     // public function saveIqcInspection(Request $request)
     {
+        date_default_timezone_set('Asia/Manila');
+        try {
+            DB::beginTransaction();
+            $iqcInspectionShift = $this->commonInterface->getIqcInspectionShift();
+            $mod_lot_no = explode(',',$request->lotNo);
+            $mod_defects = explode(',',$request->modeOfDefects);
+            $mod_lot_qty = explode(',',$request->lotQty);
+            $arr_sum_mod_lot_qty = array_sum($mod_lot_qty);
+            $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class,$request->iqc_category_material_id);
+            $appNoExtension = $generateControlNumber['app_no_extension'];
+            $requestValidated = $request->validated();
+            if(isset($request->iqc_inspection_id)){ //Edit
+                IqcInspection::where('id', $request->iqc_inspection_id)->update($requestValidated); //PO and packinglist number
 
+                IqcInspection::where('id', $request->iqc_inspection_id)
+                ->update([
+                    // 'app_no_extension' => $appNoExtension,
+                    // 'invoice_no' => $request->invoice_no,
+                    'no_of_defects' => $arr_sum_mod_lot_qty,
+                    'remarks' => $request->remarks,
+                    'inspector' => session('rapidx_user_id'),
+                    'shift' => $iqcInspectionShift
+                ]);
+
+                $iqc_inspections_id = $request->iqc_inspection_id;
+            }else{ //Add
+                /* All required fields is the $request validated, check the column is IqcInspectionRequest
+                    NOTE: the name of fields must be match in column name
+                */
+                $create_iqc_inspection_id = IqcInspection::insertGetId($requestValidated);
+                /*  All not required fields should to be inside the update method below
+                    NOTE: the name of fields must be match in column name
+                */
+                IqcInspection::where('id', $create_iqc_inspection_id)
+                ->update([
+                    // 'app_no_extension' => $appNoExtension,
+                    // 'invoice_no' => $request->invoice_no,
+                    'no_of_defects' => $arr_sum_mod_lot_qty,
+                    'remarks' => $request->remarks,
+                    'inspector' => session('rapidx_user_id'),
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'shift' => $iqcInspectionShift,
+                ]);
+
+                $iqc_inspections_id = $create_iqc_inspection_id;
+            }
+            /* Uploading of file if checked & iqc_coc_file is exist*/
+            if(isset($request->iqc_coc_file) ){
+                $original_filename = $request->file('iqc_coc_file')->getClientOriginalName(); //'/etc#hosts/@Álix Ãxel likes - beer?!.pdf';
+                $filtered_filename = $this->fileInterface->Slug($original_filename, '_', '.');
+                Storage::putFileAs('public/ts_iqc_inspection_coc', $request->iqc_coc_file,  $iqc_inspections_id .'_'. $filtered_filename);
+
+
+                IqcInspection::where('id', $iqc_inspections_id)
+                ->update([
+                    'iqc_coc_file' => $filtered_filename,
+                    'iqc_coc_file_name' => $original_filename
+                ]);
+            }
+
+            /* Get iqc_inspections_id, delete the previous MOD then  save new MOD*/
+            if($request->accepted == 1){
+                // return 'true';
+                IqcInspectionsMod::where('iqc_inspection_id', $iqc_inspections_id)->update([
+                    'deleted_at' => date('Y-m-d H:i:s')
+                ]);
+                IqcInspection::where('id', $iqc_inspections_id)
+                ->update([
+                    'no_of_defects' => 0,
+                ]);
+            }
+            if(isset($request->modeOfDefects)  && $request->accepted == 0){
+                IqcInspectionsMod::where('iqc_inspection_id', $iqc_inspections_id)->update([
+                    'deleted_at' => date('Y-m-d H:i:s')
+                ]);
+                foreach ( $mod_lot_no as $key => $value) {
+                    IqcInspectionsMod::insert([
+                        'iqc_inspection_id'    => $iqc_inspections_id,
+                        'lot_no'                => $mod_lot_no[$key],
+                        'mode_of_defects'       => $mod_defects[$key],
+                        'quantity'              => $mod_lot_qty[$key],
+                        'created_at'            => date('Y-m-d H:i:s')
+                    ]);
+                }
+            }else{
+                if(IqcInspectionsMod::where('iqc_inspection_id', $iqc_inspections_id)->exists()){
+                    IqcInspectionsMod::where('iqc_inspection_id', $iqc_inspections_id)->update([
+                        'deleted_at' => date('Y-m-d H:i:s')
+                    ]);
+                }
+            }
+            DB::commit();
+            return response()->json( [ 'result' => 1 ] );
+        } catch (\Throwable $th) {
+            DB::rollback();
+            throw $th;
+        }
+    }
+    public function saveIqcInspectionBulk(IqcInspectionRequest $request)
+    // public function saveIqcInspection(Request $request)
+    {
         date_default_timezone_set('Asia/Manila');
         try {
             DB::beginTransaction();
@@ -459,6 +559,7 @@ class IqcInspectionController extends Controller
             $appNoExtension = $generateControlNumber['app_no_extension'];
             $requestValidated = $request->validated();
             if($request->pkidReceived != null){
+                return 'today';
                 $filteredData = Arr::except($requestValidated, [
                     'whs_transaction_id',
                     'invoice_no' ,
@@ -496,6 +597,7 @@ class IqcInspectionController extends Controller
             //MOD
             //TESTING
             if(isset($request->iqc_inspection_id)){ //Edit
+                return 'true';
 
                 IqcInspection::where('id', $request->iqc_inspection_id)->update($requestValidated); //PO and packinglist number
 
@@ -511,6 +613,7 @@ class IqcInspectionController extends Controller
 
                 $iqc_inspections_id = $request->iqc_inspection_id;
             }else{ //Add
+                return 'false';
                 /* All required fields is the $request validated, check the column is IqcInspectionRequest
                     NOTE: the name of fields must be match in column name
                 */

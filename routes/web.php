@@ -92,6 +92,7 @@ Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/get_mode_of_defects_by_id', 'getModeOfDefectsById')->name('get_mode_of_defects_by_id');
 
     Route::post('/save_iqc_inspection', 'saveIqcInspection')->name('save_iqc_inspection');
+    Route::post('/save_iqc_inspection_bulk', 'saveIqcInspectionBulk')->name('save_iqc_inspection_bulk');
 });
 Route::controller(CnIqcInspectionController::class)->group(function () {
     Route::get('/load_cn_whs_packaging', 'loadCnWhsPackaging')->name('load_cn_whs_packaging');
