@@ -70,6 +70,13 @@
                                                 </div>
                                             </div>
                                             <div class="col-sm-2">
+                                                <label class="form-label">Batch Count</label>
+                                                <div class="input-group-prepend w-50">
+                                                    {{-- nmodify --}}
+                                                    <span class="input-group-text w-100" id="countBulkIqcInspection">0</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2">
                                                 <label class="form-label">Material Category</label>
                                                 <div class="input-group mb-3">
                                                     <select class="form-control" id="txtCategoryMaterial" disabled>
@@ -102,7 +109,9 @@
                                                                     style="width: 100%;">
                                                                     <thead>
                                                                         <tr>
+                                                                            <th><center></center></th>
                                                                             <th><center><i  class="fa fa-cog"></i></center></th>
+                                                                            <th>ID</th>
                                                                             <th>Status</th>
                                                                             <th>Invoice</th>
                                                                             {{-- <th>Date Inspected</th> --}}
@@ -115,8 +124,8 @@
                                                                             <th>Part Code</th>
                                                                             <th>Part Name</th>
                                                                             <th>Lot No.</th>
+                                                                            <th>Lot Qty.</th>
                                                                             <th>WHS Received Date</th>
-                                                                            {{-- <th>Lot Qty.</th> --}}
                                                                             {{-- <th>Total Lot Size</th> --}}
                                                                             {{-- <th>AQL</th> --}}
                                                                         </tr>
@@ -244,15 +253,13 @@
 
     @section('js_content')
         <script type="text/javascript">
-
-            //form.iqcInspection.find('#iqc_coc_file').prop('required',true);
-            //form.iqcInspection.find('#isUploadCoc').prop('required',true);
             $(document).ready(function () {
                 globalVar = {
                     modeOfDefectsById: "",
                     section: "TS",
                     categoryMaterialPackaging: "37", //Rapid TS Whs Packaging V3
                     categoryMaterialYeu: "38", //YEU Receiving
+                    arrPkidReceived: [], //Batch IQC Inspection
 
                 }
 
@@ -315,13 +322,16 @@
                     },
                     fixedHeader: true,
                     "columns":[
+                        { "data" : "rawBulkCheckBox", orderable:false, searchable:false },
                         { "data" : "rawAction", orderable:false, searchable:false },
+                        { "data" : "receiving_detail_id", orderable:false, searchable:false },
                         { "data" : "rawStatus", orderable:false, searchable:false },
                         { "data" : "InvoiceNo" },
                         { "data" : "Supplier" },
                         { "data" : "PartNumber" },
                         { "data" : "MaterialType" },
                         { "data" : "Lot_number" },
+                        { "data" : "TotalLotQty" },
                         { "data" : "ReceivedDate" },
                     ],
                 });
@@ -410,10 +420,46 @@
                     ],
                 });
 
+                $('#modalSaveIqcInspection').on('hidden.bs.modal', function (e) { //nmodify
+                    globalVar.arrPkidReceived = [];
+                    dataTable.iqcTsWhsPackaging.draw();
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
+                });
+
                 $(tbl.iqcWhsReceivingPackaging).on('click','#btnEditIqcInspection', getTsWhsPackagingById);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspected);
                 $(tbl.iqcYeuDetails).on('click','#btnEditIqcInspection', editYeuIqcDetails);
                 $(tbl.iqcYeuInspected).on('click','#btnEditIqcInspection', editIqcInspected);
+                // $(tbl.iqcYeuInspected).on('click','#btnEditIqcInspection', editIqcInspected);
+                // $(tbl.iqcWhsReceivingPackaging).on('click', 'tr', function () {
+                //     $(this).attr('style', 'background:green; color:white;');
+                //     let row = {
+                //         invoice: $(this).find("td:eq(4)").html(),
+                //         partcode: $(this).find("td:eq(6)").html(),
+                //     }
+                //     console.log(row);
+                // });
+                //nmodify
+                $(tbl.iqcWhsReceivingPackaging).on('click','#checkBulkIqcInspection','tr', function () {
+                    let row = $(this).closest('tr'); // Get the parent row of the checkbox
+                    let pkidReceived = $(this).attr('pkid-received');
+                    if ($(this).prop('checked')) {
+                        row.attr('style', 'background:#90EE90;');
+                        $(this).each(function () {
+                            globalVar.arrPkidReceived.push(pkidReceived);
+                            console.log('arrPkidReceived',globalVar.arrPkidReceived);
+                        });
+                    }else{
+                        row.attr('style', 'background:white;');
+                        $(this).each(function () {
+                            let indexPkidReceived = globalVar.arrPkidReceived.indexOf(pkidReceived);
+                            globalVar.arrPkidReceived.splice(indexPkidReceived, 1);
+                            console.log('arrSplice_fkid_document',globalVar.arrPkidReceived);
+                        });
+                    }
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`); //nmodify
+                });
+
 
                 $('#btnLotNo').click(function (e) {
                     e.preventDefault();
@@ -424,7 +470,6 @@
                     e.preventDefault();
                     $('#modalModeOfDefect').modal('show');
                 });
-
 
                 $('#btnAddModLotNumber').click(function (e) {
                     e.preventDefault();
@@ -579,7 +624,6 @@
                     }
                 });
 
-
                 dataTable.iqcTsWhsPackaging.on('draw', function () {
                     if($('#txtSearchLotNum').val() != ""){
                         $('#tblIqcWhsReceivingPackaging tbody #btnEditIqcInspection').each(function(index, tr){
@@ -595,7 +639,6 @@
                         })
                     }
                 });
-
 
                 form.iqcInspection.find('#accepted').keyup(function() {
                     divDisplayNoneClass(form.iqcInspection,$(this).val());
@@ -677,8 +720,7 @@
                     let categoryMaterialId = $('#txtCategoryMaterial').val();
                     form.iqcInspection.find('#shift').attr('disabled',false);
                     form.iqcInspection.find('#judgement').attr('disabled',false);
-                    saveIqcInspection(categoryMaterialId);
-                    // $('#modalScanQRSave').modal('show');
+                    saveIqcInspectionBulk(categoryMaterialId);
                 });
             });
 
