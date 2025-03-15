@@ -107,24 +107,23 @@ class IqcInspectionController extends Controller
             // Read IqcInspection (Material already Inspected) then do not
             // display it to the ON-GOING status
             $categoryMaterial = $request->categoryMaterial;
-            $whereWhsTransactionId =   $this->commonInterface->readIqcInspectionByMaterialCategory(IqcInspection::class,$categoryMaterial);
 
-            if( isset( $request->lotNum ) ){
+            $whereWhsTransactionId =   $this->commonInterface->readIqcInspectionByMaterialCategory(IqcInspection::class,$categoryMaterial);
+            // AND tbl_received.lot_no = "'.$request->lotNum.'"
+                //TODO: Select All if checkbox click
+                if( isset( $request->invoiceNo ) && isset($request->partCode) ){
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_ts_whs_packaging')
-                ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_received.partcode as "PartNumber",
-                    tbl_received.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo",
+                ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
+                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo",
                     receivedate as "ReceivedDate",rcvqty as "TotalLotQty"
                     FROM  tbl_received tbl_received
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
-                    AND tbl_received.lot_no = "'.$request->lotNum.'"
-                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
+                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A" AND tbl_received.invoiceno = "'.$request->invoiceNo.'" AND tbl_itemList.partcode = "'.$request->partCode.'")
                     AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
-
                     '.$whereWhsTransactionId.'
                 ');
-                //TODO : Lot Number
             }else{
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_ts_whs_packaging')
                 ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
@@ -143,7 +142,7 @@ class IqcInspectionController extends Controller
             ->addColumn('rawBulkCheckBox', function($row){
                 $result = '';
                 $result .= '<center>';
-                $result .= "<input class='' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkIqcInspection'>";
+                $result .= "<input class='d-none' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkIqcInspection'>";
                 $result .= '</center>';
                 return $result;
             })

@@ -506,4 +506,42 @@
 </div>
 
 
+{{-- Modal Scan Lot Number --}}
+<div class="modal fade" id="modalBatchSearch" el-modal-attr="" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-top" role="document">
+        <div class="modal-content">
+            <form ></form>
+            <div class="modal-header border-bottom-0 pb-0">
+                {{-- <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> --}}
+            </div>
+            <div class="modal-body pt-2">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend w-50">
+                                <span class="input-group-text w-100">InvoiceNo</span>
+                            </div>
+                            <input type="text" class="form-control" id="txtInvoiceNo"  name="txtInvoiceNo">
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend w-50">
+                                <span class="input-group-text w-100">PartCode</span>
+                            </div>
+                            <input type="text" class="form-control" id="txtPartCode"  name="txtPartCode">
+                        </div>
+                    </div>
+                </div>
+                {{-- hidden_scanner_input --}}
+                {{-- <input type="text" class="scanner w-100" id="txtScanPO"  autocomplete="off"> --}}
+                {{-- <input type="text" class="scanner w-100" id="txtScanQrCode" name="scan_qr_code" autocomplete="off"> --}}
+            </div>
+            <div class="modal-footer  justify-content-end">
+                <button type="button" class="btn btn-outline-secondary float-right" id="btnClickBatchSearch"><i class="fas fa-eye"></i> Show </button>
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
