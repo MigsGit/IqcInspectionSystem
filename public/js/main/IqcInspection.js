@@ -134,6 +134,7 @@
         let data = {
             "pkid_received"        : pkidReceived,
             "iqc_category_material_id"        : iqcCategoryMaterialId,
+            "arr_pkid_received"        : globalVar.arrPkidReceived,
         }
 
         call_ajax(data, 'get_ts_whs_packaging_by_id', function(response){

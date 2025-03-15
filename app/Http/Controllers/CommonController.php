@@ -2204,6 +2204,7 @@ class CommonController extends Controller
                 array_push($arr_group_by1, $arr_filtered_arr_group_by2);
                 array_push($arr_group_by1);
             }
+            //Array merge array group by 1 and array group by 2
             $arr_merge_group = array_merge(...array_map(function($item) {
                 return (array) $item;
             }, $arr_group_by1));
@@ -2221,7 +2222,6 @@ class CommonController extends Controller
                     $request->material_category,
                     $arr_merge_group
                 );
-                return 'true';
             }
 
             $iqcInspectionByDateMaterialGroupBySheet =  CommonService::iqcInspectionByDateMaterialGroupBySheet(
@@ -2411,7 +2411,8 @@ class CommonService{
             ->addSelect(
                 DB::raw("'".Carbon::parse($week['start'])->format('M j')." - ".Carbon::parse($week['end'])->format('j')."' as week_range"), // Display week range
                 DB::raw("DATE_FORMAT(DATE_ADD(date_inspected, INTERVAL (7 - WEEKDAY(date_inspected)) DAY), '%e') AS week_end"),
-                DB::raw("COUNT(CASE WHEN judgement = 1 THEN 1 END) as accepted_count"),
+                DB::raw("COUNT(CASE WHEN lot_inspected = 1 THEN 1 END) as inspected_count"),
+                // DB::raw("COUNT(CASE WHEN judgement = 1 THEN 1 END) as accepted_count"),
                 DB::raw("COUNT(CASE WHEN judgement = 2 THEN 1 END) as rejected_count"),
                 DB::raw("SUM(sampling_size) as 'sampling_size_sum'"),
                 DB::raw("SUM(no_of_defects) as 'no_of_defects_sum'"),
@@ -2422,9 +2423,10 @@ class CommonService{
             ->groupBy('supplier')
             ->get();
         })->filter(); // Remove empty records
-
-        $mapping = [];
     }
-
+    //Chart Series
+    // lot_ok = lot_inspected - lot_rejected
+    // Actual LAR = (lot inspected/lot_ok)
+    // Actual DPPM = (total sampling/ng_qty) *1000000
 
 }

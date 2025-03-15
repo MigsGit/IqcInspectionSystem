@@ -262,7 +262,6 @@
                     arrPkidReceived: [], //Batch IQC Inspection
 
                 }
-
                 tbl = {
                     iqcInspection:'#tblIqcInspection',
                     iqcWhsReceivingPackaging:'#tblIqcWhsReceivingPackaging',
@@ -270,7 +269,6 @@
                     iqcInspected:'#tblIqcInspected',
                     iqcYeuDetails:'#tblIqcYeuDetails',
                     iqcYeuInspected:'#tblIqcYeuInspected',
-
                 };
 
                 dataTable = {

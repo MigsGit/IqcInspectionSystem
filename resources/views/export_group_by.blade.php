@@ -311,7 +311,6 @@
                 window.location.href = "{{ route('download.export_iqc_inspection_report') }}?" + queryString;
             });
             $('#btnChartIqcInspectionRecord').click(function () {
-                alert('test')
                 let arr_group_by1 =[];
                 let arr_group_by2 =[];
                 for (let index = 1; index <= 3; index++) {
@@ -331,7 +330,7 @@
                 // var queryString = $.param(params);
                 console.log('params',params);
                 call_ajax(params,'export_iqc_inspection_report',function(response){
-
+                    
                 })
                 // window.location.href = "{{ route('download.export_iqc_inspection_report') }}?" + queryString;
             });

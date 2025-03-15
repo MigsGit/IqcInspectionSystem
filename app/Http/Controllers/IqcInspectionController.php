@@ -143,7 +143,7 @@ class IqcInspectionController extends Controller
             ->addColumn('rawBulkCheckBox', function($row){
                 $result = '';
                 $result .= '<center>';
-                $result .= "<input class='d-none' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkIqcInspection'>";
+                $result .= "<input class='' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkIqcInspection'>";
                 $result .= '</center>';
                 return $result;
             })
@@ -409,22 +409,64 @@ class IqcInspectionController extends Controller
     {
         try {
 
-            $query = $this->resourceInterface->readCustomEloquent( VwListOfReceived::class);
-            $tsWhsReceivedPackaging = $query->where('pkid_received',$request->pkid_received)->get([
-                'pkid_received as whs_transaction_id',
-                'invoiceno as invoice_no',
-                'lot_no as lot_no',
-                'partcode as partcode',
-                'partname as partname',
-                'supplier as supplier',
-                'rcvqty as total_lot_qty',
-            ]);
             $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class,$request->iqc_category_material_id);
+            if( isset($request->arr_pkid_received)  ){
+                // $arr_pkid_received =  implode(',',$request->arr_pkid_received);
+                $vwListOfReceived =  VwListOfReceived::select(
+                    [
+                        'pkid_received as whs_transaction_id',
+                        'invoiceno as invoice_no',
+                        'lot_no as lot_no',
+                        'partcode as partcode',
+                        'partname as partname',
+                        'supplier as supplier',
+                        'rcvqty as total_lot_qty',
+                    ]
+                )
+                ->whereIn('pkid_received',$request->arr_pkid_received)
+                ->get();
+                $sumTotalLotQty = $vwListOfReceived->sum('total_lot_qty');
+                $lotNo = $vwListOfReceived->pluck('lot_no')->implode(', ');
+                $whsTransactionId = $vwListOfReceived->pluck('whs_transaction_id')->implode(', ');
+                $tsWhsReceivedPackaging = $vwListOfReceived->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId){
+                    // return implode(',',$row->lot_no);
+                    return [
+                        'whs_transaction_id'    => $whsTransactionId,
+                        'invoice_no' => $row->invoice_no,
+                        'partcode' => $row->partcode,
+                        'partname'  => $row->partname,
+                        'supplier'  => $row->supplier,
+                        'lot_no'    => $lotNo,
+                        'total_lot_qty'    => $sumTotalLotQty,
+                    ];
 
-            return response()->json(['is_success' => 'true',
-                'tsWhsReceivedPackaging' => $tsWhsReceivedPackaging[0],
-                'generateControlNumber' => $generateControlNumber
-            ]);
+                })->toArray();
+                // $lotNos = VwListOfReceived::whereIn('pkid_received', $request->arr_pkid_received)
+
+
+                return response()->json([
+                    'is_success' => 'true',
+                    'tsWhsReceivedPackaging' => $tsWhsReceivedPackaging[0],
+                    'generateControlNumber' => $generateControlNumber
+                ]);
+            }else{
+                $query = $this->resourceInterface->readCustomEloquent( VwListOfReceived::class);
+                $tsWhsReceivedPackaging = $query->where('pkid_received',$request->pkid_received)->get([
+                    'pkid_received as whs_transaction_id',
+                    'invoiceno as invoice_no',
+                    'lot_no as lot_no',
+                    'partcode as partcode',
+                    'partname as partname',
+                    'supplier as supplier',
+                    'rcvqty as total_lot_qty',
+                ]);
+                return response()->json([
+                    'is_success' => 'true',
+                    'tsWhsReceivedPackaging' => $tsWhsReceivedPackaging[0],
+                    'generateControlNumber' => $generateControlNumber
+                ]);
+            }
+
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
@@ -556,39 +598,6 @@ class IqcInspectionController extends Controller
             $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class,$request->iqc_category_material_id);
             $appNoExtension = $generateControlNumber['app_no_extension'];
             $requestValidated = $request->validated();
-            if($request->pkidReceived != null){
-                $filteredData = Arr::except($requestValidated, [
-                    'whs_transaction_id',
-                    'invoice_no' ,
-                    'partcode',
-                    'partname',
-                    'supplier',
-                    'total_lot_qty',
-                    'lot_no',
-                ]);
-                $vwListOfReceived = VwListOfReceived::whereIn('pkid_received', explode(',',$request->pkidReceived))->get();
-                $vwListOfReceivedCollection = collect($vwListOfReceived)->map(function($row) use($filteredData,$request,$arr_sum_mod_lot_qty,$iqcInspectionShift,$appNoExtension){
-                    return array_merge([
-                        'app_no_extension' => $appNoExtension,
-                        'whs_transaction_id' => $row->pkid_received,
-                        'invoice_no' => $row->invoiceno,
-                        'partcode' => $row->partcode,
-                        'partname' => $row->partname,
-                        'supplier' => $row->supplier,
-                        'total_lot_qty' => $row->rcvqty,
-                        'lot_no' => $row->lot_no,
-                        'no_of_defects' => $arr_sum_mod_lot_qty,
-                        'remarks' => $request->remarks,
-                        'inspector' => session('rapidx_user_id'),
-                        'created_at' => date('Y-m-d H:i:s'),
-                        'shift' => $iqcInspectionShift,
-                    ], $filteredData); // Merge $filteredData into the array
-
-                })->toArray();
-                IqcInspection::insert($vwListOfReceivedCollection);
-                DB::commit();
-                return response()->json( [ 'result' => 1 ] );
-            }
             //TODO:
             //Attachment
             //MOD
@@ -608,6 +617,7 @@ class IqcInspectionController extends Controller
 
                 $iqc_inspections_id = $request->iqc_inspection_id;
             }else{ //Add
+                // return 'dsadsd';
                 /* All required fields is the $request validated, check the column is IqcInspectionRequest
                     NOTE: the name of fields must be match in column name
                 */
