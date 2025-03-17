@@ -2371,8 +2371,8 @@ class CommonService{
         $to_date,
         $material_category,
         $arr_merge_group
-    ){
-
+    )
+    {
         // Get the start and end of the month
         $startOfMonth = Carbon::parse($from_date)->startOfMonth();
         $endOfMonth = Carbon::parse($to_date)->endOfMonth();
@@ -2404,12 +2404,99 @@ class CommonService{
             // Move to next week's start date
             $startDate = $endDate->copy()->addDay();
         }
+        $iqcInspectionSupplier = IqcInspection::
+        select('supplier')
+        ->where("iqc_category_material_id", "=", "$material_category")
+        ->whereBetween('date_inspected', [$startOfMonth, $endOfMonth])
+        ->groupBy('supplier')
+        ->get();
+
+        // $targetLarDppm = ;
+
         // Fetch inspection data per week
-        return $iqcInspectionCollection = collect($weekRanges)->map(function ($week)use($material_category,$arr_merge_group) {
-            return IqcInspection::
+        $iqcInspectionCollection = collect($weekRanges)->map(function ($week)use($material_category) {
+            return $iqcInspectionPerSupplierCollection = IqcInspection::
+                select(['supplier'])
+                ->addSelect(
+                    DB::raw("'".Carbon::parse($week['start'])->format('M j')." - ".Carbon::parse($week['end'])->format('j')."' as week_range"), // Display week range
+                    // DB::raw("DATE_FORMAT(DATE_ADD(date_inspected, INTERVAL (7 - WEEKDAY(date_inspected)) DAY), '%e') AS week_end"),
+                    // DB::raw("COUNT(CASE WHEN judgement = 1 THEN 1 END) as accepted_count"),
+                    // DB::raw("COUNT(CASE WHEN judgement = 2 THEN 1 END) as rejected_count"),
+                    // DB::raw("SUM(sampling_size) as 'sampling_size_sum'"),
+                    // DB::raw("SUM(no_of_defects) as 'no_of_defects_sum'"),
+                    DB::raw("ROUND( COUNT( CASE WHEN judgement = 1 THEN 1 END ) / ( SUM(lot_inspected) ) * 100,2) as 'actual_lar' "),
+                    DB::raw("ROUND( SUM(no_of_defects)  / SUM(sampling_size) * 1000000,0) as 'actual_dppm' "),
+                    // DB::raw("(SUM(lot_inspected)) / (SUM(lot_inspected) - COUNT(CASE WHEN judgement = 2 THEN 1 END)) as 'actual_lar' "),
+                )
+                ->where("iqc_category_material_id", "=", "$material_category")
+                ->whereBetween('date_inspected', [$week['start'], $week['end']])
+                // ->groupBy('supplier')
+                ->groupBy('supplier')
+                ->get();
+
+        })
+        ->flatten(1) //Flata as 1 array
+        ->groupBy('supplier') //Array group by specific object
+        ->toArray();
+
+            // lot_ok = lot_inspected - lot_rejected
+            // Actual LAR = (lot inspected/lot_ok)
+            // Actual DPPM = (total sampling/ng_qty) *1000000
+        return response()->json(['iqcInspectionCollection' => $iqcInspectionCollection, 'iqcInspectionSupplier' => $iqcInspectionSupplier]);
+
+        // ->filter(); // Remove empty records
+        // return $iqcInspectionCollection->map(function ($rowIqcInspectionCollection){
+        //     return $rowIqcInspectionCollection;
+        // });
+        // if(){
+
+        // }
+
+        // return $iqcInspectionCollection;
+        foreach ($iqcInspectionSupplier as $key => $value) {
+            if($value->supplier == $iqcInspectionCollection[$value->supplier]){
+                return $iqcInspectionCollection[$value->supplier];
+            }
+
+            // return $iqcInspectionSupplier[0]->supplier;
+            // return $key;
+            // return $iqcInspectionCollection[$key]['sampling_size_sum'];
+            // return $iqcInspectionCollection[$key]['week_end'];
+            return $iqcInspectionCollection[$key];
+        }
+    }
+    public function iqcInspectionByDateMaterialGroupBySupplier(
+        $from_date,
+        $to_date,
+        $material_category
+    ){
+        // Get the start and end of the month
+        // $startOfMonth = Carbon::parse($from_date);
+        // $endOfMonth = Carbon::parse($to_date);
+
+        $startOfDate = Carbon::parse($from_date);
+        $endOfDate = Carbon::parse($to_date);
+        return IqcInspection::
+        select('supplier')
+        ->addSelect(
+            DB::raw("'".Carbon::parse($startOfDate)->format('M j')." - ".Carbon::parse($endOfDate)->format('j')."' as week_range"), // Display week range
+            DB::raw("DATE_FORMAT(DATE_ADD(date_inspected, INTERVAL (7 - WEEKDAY(date_inspected)) DAY), '%e') AS week_end"),
+            DB::raw("COUNT(CASE WHEN judgement = 1 THEN 1 END) as accepted_count"),
+            DB::raw("COUNT(CASE WHEN judgement = 2 THEN 1 END) as rejected_count"),
+            DB::raw("SUM(sampling_size) as 'sampling_size_sum'"),
+            DB::raw("SUM(no_of_defects) as 'no_of_defects_sum'"),
+        )
+        ->where("iqc_category_material_id", "=", "$material_category")
+        ->whereBetween('date_inspected', [$startOfDate, $endOfDate])
+        ->groupBy('supplier')
+        ->get()->filter();
+
+    }
+    /*
+        $iqcInspectionByDateMaterialGroupBySupplier =  IqcInspection::
             select('supplier')
             ->addSelect(
-                DB::raw("'".Carbon::parse($week['start'])->format('M j')." - ".Carbon::parse($week['end'])->format('j')."' as week_range"), // Display week range
+                DB::raw("'".Carbon::parse($startOfMonth)->format('M j')." - ".Carbon::parse($endOfMonth)->format('j')."' as week_range"), // Display week range
                 DB::raw("DATE_FORMAT(DATE_ADD(date_inspected, INTERVAL (7 - WEEKDAY(date_inspected)) DAY), '%e') AS week_end"),
                 DB::raw("COUNT(CASE WHEN lot_inspected = 1 THEN 1 END) as inspected_count"),
                 // DB::raw("COUNT(CASE WHEN judgement = 1 THEN 1 END) as accepted_count"),
@@ -2418,15 +2505,14 @@ class CommonService{
                 DB::raw("SUM(no_of_defects) as 'no_of_defects_sum'"),
             )
             ->where("iqc_category_material_id", "=", "$material_category")
-            ->whereBetween('date_inspected', [$week['start'], $week['end']])
+            ->whereBetween('date_inspected', [$startOfMonth, $endOfMonth ])
             // ->groupBy('supplier')
             ->groupBy('supplier')
-            ->get();
-        })->filter(); // Remove empty records
-    }
+            ->get()->filter(); // Remove empty records
+
+
+    */
     //Chart Series
-    // lot_ok = lot_inspected - lot_rejected
-    // Actual LAR = (lot inspected/lot_ok)
-    // Actual DPPM = (total sampling/ng_qty) *1000000
+
 
 }
