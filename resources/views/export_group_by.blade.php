@@ -77,22 +77,8 @@
                                                 </div>
                                                 <div class="card-body">
                                                     {{-- TS GRAPH --}}
-                                                    <div class="card">
-                                                        <div class="card-header" id="headingFour">
-                                                          <h5 class="mb-0">
-                                                            <button id="" class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
-                                                              SAMPLE
-                                                            </button>
-                                                          </h5>
-                                                        </div>
-                                                        <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-bs-parent="#accordionMain">
-                                                          <div class="card-body">
-                                                            <div class="row overflow-auto">
-                                                                <div id="echart" style="width: 1000px; height: 800px;"></div>
-                                                            </div>
-                                                          </div> <!--end card-body-->
-                                                        </div> <!--end collapseOne-->
-                                                      </div> <!--end card-->
+                                                    <div class="card" id="collapseIqcInspectionLarDppmCalculation">
+                                                    </div> <!--end card-->
                                                 </div>
                                             </div>
                                         </div>
@@ -185,50 +171,8 @@
             getDropdownDetailsByOptValue('TS',$('#txtSearchMaterialName'),'iqc_category_material_id');
             $(document).ready(function () {
 
-                var chart = echarts.init(document.getElementById('echart'));
-                options = {
-                    legend: {},
-                    xAxis: {
-                        type: 'category',
-                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-                    },
-                    yAxis: {
-                        type: 'value'
-                    },
-                    series: [
-                        {
-                        name: 'Step Start',
-                        type: 'bar',
-                        label: {
-                            show: true,
-                            position: 'top',
-                            valueAnimation: true
-                        },
-                        data: [120, 132, 101, 134, 90, 230, 210]
-                        },
-                        {
-                        name: 'Step Middle',
-                        type: 'line',
-                        label: {
-                            show: true,
-                            position: 'top',
-                            valueAnimation: true
-                        },
-                        data: [220, 282, 201, 234, 290, 430, 410]
-                        },
-                        {
-                        name: 'Step End',
-                        type: 'line',
-                        label: {
-                            show: true,
-                            position: 'top',
-                            valueAnimation: true
-                        },
-                        data: [450, 432, 401, 454, 590, 530, 510]
-                        }
-                    ]
-                };
-                chart.setOption(options);
+
+
                 $('#modalExportIqcInspectionRecord').modal('show');
 
                 let search_group_html = ``;
@@ -310,6 +254,7 @@
                 var queryString = $.param(params);
                 window.location.href = "{{ route('download.export_iqc_inspection_report') }}?" + queryString;
             });
+
             $('#btnChartIqcInspectionRecord').click(function () {
                 let arr_group_by1 =[];
                 let arr_group_by2 =[];
@@ -330,9 +275,52 @@
                 // var queryString = $.param(params);
                 console.log('params',params);
                 call_ajax(params,'export_iqc_inspection_report',function(response){
-                    
+                    let supplier = response.iqcInspectionSupplier;
+                    let iqcInspectionCollection = response.iqcInspectionCollection;
+                    // Flatten and Extract per Supplier
+                    let ctr = 0
+                    supplier.forEach(elSupplier => {
+                        const arrSupplierFlatMap = iqcInspectionCollection[elSupplier.supplier].flatMap(( obj => obj.supplier));
+                        const arrActualDppmFlatMap = iqcInspectionCollection[elSupplier.supplier].flatMap(( obj => obj.actual_dppm));
+                        const arrActualLarFlatMap = iqcInspectionCollection[elSupplier.supplier].flatMap(( obj => obj.actual_lar));
+                        const arrWeekRangeFlatMap = iqcInspectionCollection[elSupplier.supplier].flatMap(( obj => obj.week_range));
+                        ctr++;
+                        let elCollapse='';
+                            elCollapse += `<div class="card-header" id="heading${ctr}">`;
+                            elCollapse += ` <h5 class="mb-0">`;
+                            elCollapse += `     <button id="" class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${ctr}" aria-expanded="true" aria-controls="collapse${ctr}">`;
+                            elCollapse += `         SAMPLE`;
+                            elCollapse += `     </button>`;
+                            elCollapse += ` </h5>`;
+                            elCollapse += `</div>`;
+                            elCollapse += `<div id="collapse${ctr}" class="collapse" data-bs-parent="#accordionMain">`;
+                            elCollapse += `     <div class="card-body">`;
+                            elCollapse += `         <div class="row overflow-auto">`;
+                            elCollapse += `             <div id="echartIqcInspectionRecord${ctr}" style="width: 1000px; height: 800px;"></div>`;
+                            elCollapse += `         </div>`;
+                            elCollapse += `     </div>`;
+                            elCollapse += `</div>`;
+
+                            //Manually initialize the collapse component:
+                            $('#collapseIqcInspectionLarDppmCalculation').append(elCollapse);
+                            new bootstrap.Collapse(document.getElementById(`collapse${ctr}`), { toggle: false });
+
+                            //Call the echarts
+                            callEcharts (document.getElementById(`echartIqcInspectionRecord${ctr}`),options)
+                        });
                 })
-                // window.location.href = "{{ route('download.export_iqc_inspection_report') }}?" + queryString;
+
+
+
+                function callEcharts (echartIqcInspectionRecord,options)
+                {
+                    console.log(options);
+
+                    // return ;
+                    var chart = echarts.init(echartIqcInspectionRecord);
+
+                    chart.setOption(options);
+                }
             });
         </script>
     @endsection
