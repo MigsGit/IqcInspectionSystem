@@ -66,10 +66,10 @@
             form.iqcInspection.find('#isUploadCoc').prop('required',true);
             if( iqcCocFile === undefined || iqcCocFile === null ){
                 form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
-                form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
+                // form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
             }else{
                 form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
-                form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
+                // form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
             }
             /* Display the Mode of Defects Button */
             divDisplayNoneClass(form.iqcInspection,lotAccepted);
@@ -156,10 +156,10 @@
             form.iqcInspection.find('#isUploadCoc').prop('required',true);
             if( iqcCocFile === undefined || iqcCocFile === null ){
                 form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
-                form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
+                // form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
             }else{
                 form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
-                form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
+                // form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
             }
             /* Display the Mode of Defects Button */
             divDisplayNoneClass(form.iqcInspection,lotAccepted);
@@ -252,10 +252,10 @@
 
             if( iqcCocFile === undefined || iqcCocFile === null ){
                 form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
-                form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
+                // form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
             }else{
                 form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
-                form.iqcInspection.find('#iqc_coc_file_download').removeClass('disabled',true);
+                // form.iqcInspection.find('#iqc_coc_file_download').removeClass('disabled',true);
             }
             /* Display the Mode of Defects Button */
             divDisplayNoneClass(form.iqcInspection,lotAccepted);
