@@ -142,7 +142,7 @@ class IqcInspectionController extends Controller
             ->addColumn('rawBulkCheckBox', function($row){
                 $result = '';
                 $result .= '<center>';
-                $result .= "<input class='d-none' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkIqcInspection'>";
+                $result .= "<input class='checkBulkIqcInspection d-none' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkIqcInspection'>";
                 $result .= '</center>';
                 return $result;
             })

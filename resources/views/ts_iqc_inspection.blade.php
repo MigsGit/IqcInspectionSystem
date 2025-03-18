@@ -115,7 +115,7 @@
                                                                     style="width: 100%;">
                                                                     <thead>
                                                                         <tr>
-                                                                            <th><center></center></th>
+                                                                            <th><center> </center></th>
                                                                             <th><center><i  class="fa fa-cog"></i></center></th>
                                                                             <th>ID</th>
                                                                             <th>Status</th>

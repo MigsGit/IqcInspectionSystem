@@ -521,7 +521,7 @@
                             <div class="input-group-prepend w-50">
                                 <span class="input-group-text w-100">InvoiceNo</span>
                             </div>
-                            <input type="text" class="form-control" id="txtInvoiceNo"  name="txtInvoiceNo">
+                            <input type="text" class="form-control" id="txtInvoiceNo"  name="txtInvoiceNo" required>
                         </div>
                     </div>
                     <div class="col-sm-12">
@@ -529,7 +529,7 @@
                             <div class="input-group-prepend w-50">
                                 <span class="input-group-text w-100">PartCode</span>
                             </div>
-                            <input type="text" class="form-control" id="txtPartCode"  name="txtPartCode">
+                            <input type="text" class="form-control" id="txtPartCode"  name="txtPartCode" required>
                         </div>
                     </div>
                 </div>
