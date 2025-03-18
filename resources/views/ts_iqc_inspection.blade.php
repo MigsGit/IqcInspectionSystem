@@ -69,7 +69,7 @@
                                                     <input type="search" class="form-control" placeholder="Lot Number" id="txtSearchLotNum" readonly>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-2 d-none">
                                                 <label class="form-label">Batch Search</label>
                                                 <div class="input-group mb-3">
                                                     <button class="btn btn-primary" id="btnBatchSearch"  el-btn-attr="whseTransaction"><i class="fa-solid fa-qrcode"></i></button>

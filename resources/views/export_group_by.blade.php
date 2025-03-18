@@ -168,14 +168,9 @@
             }
             const callEcharts = function (echartIqcInspectionRecord,options)
             {
-                console.log(options);
-
-                // return ;
                 var chart = echarts.init(echartIqcInspectionRecord);
-
                 chart.setOption(options);
             }
-
 
             getDropdownDetailsByOptValue('TS',$('#txtSearchMaterialName'),'iqc_category_material_id');
             $(document).ready(function () {
@@ -293,20 +288,30 @@
                         const arrActualDppmFlatMap = iqcInspectionCollection[elSupplier.supplier].flatMap(( obj => obj.actual_dppm));
                         const arrActualLarFlatMap = iqcInspectionCollection[elSupplier.supplier].flatMap(( obj => obj.actual_lar));
                         const arrWeekRangeFlatMap = iqcInspectionCollection[elSupplier.supplier].flatMap(( obj => obj.week_range));
-                        console.log(totalIqcInspectionByDateMaterialGroupBySupplier[ctr].);
 
-                        let elCollapse='';
+                        let elCollapse='<br>';
                             elCollapse += `<div class="card-header" id="heading${ctr}">`;
                             elCollapse += ` <h5 class="mb-0">`;
                             elCollapse += `     <button id="" class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${ctr}" aria-expanded="true" aria-controls="collapse${ctr}">`;
-                            elCollapse += `        Supplier: ${elSupplier.supplier} | LAR`;
+                            elCollapse += `        Supplier: ${elSupplier.supplier} | LAR = ${totalIqcInspectionByDateMaterialGroupBySupplier[ctr].actual_lar}% | DPPM = ${totalIqcInspectionByDateMaterialGroupBySupplier[ctr].actual_dppm}`;
                             elCollapse += `     </button>`;
                             elCollapse += ` </h5>`;
                             elCollapse += `</div>`;
                             elCollapse += `<div id="collapse${ctr}" class="collapse" data-bs-parent="#accordionMain">`;
-                            elCollapse += `     <div class="card-body">`;
-                            elCollapse += `         <div class="row overflow-auto">`;
-                            elCollapse += `             <div id="echartIqcInspectionRecord${ctr}" style="width: 1000px; height: 800px;"></div>`;
+                            elCollapse += `     <div class="card-body shadow">`;
+                            elCollapse += `         <div class="card-header" id="heading${ctr}_${ctr}">`;
+                            elCollapse += `          <h5 class="mb-0">`;
+                            elCollapse += `              <button id="" class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${ctr}_${ctr}" aria-expanded="true" aria-controls="collapse${ctr}_${ctr}">`;
+                            elCollapse += `                 Lot Inspected = ${totalIqcInspectionByDateMaterialGroupBySupplier[ctr].lot_inspected_sum} | Lot Rejected = ${totalIqcInspectionByDateMaterialGroupBySupplier[ctr].rejected_count} | Lot Accepted = ${totalIqcInspectionByDateMaterialGroupBySupplier[ctr].accepted_count} `;
+                            elCollapse += `             </button>`;
+                            elCollapse += `          </h5>`;
+                            elCollapse += `         </div>`;
+                            elCollapse += `         <div id="collapse${ctr}_${ctr}" class="collapse" data-bs-parent="#accordionMain">`;
+                            elCollapse += `              <div class="card-body shadow">`;
+                            elCollapse += `                  <div class="row overflow-auto">`;
+                            elCollapse += `                      <div id="echartIqcInspectionRecord${ctr}" style="width: 1000px; height: 800px;"></div>`;
+                            elCollapse += `                  </div>`;
+                            elCollapse += `              </div>`;
                             elCollapse += `         </div>`;
                             elCollapse += `     </div>`;
                             elCollapse += `</div>`;
@@ -314,6 +319,7 @@
                             //Manually initialize the collapse component:
                             $('#collapseIqcInspectionLarDppmCalculation').append(elCollapse);
                             new bootstrap.Collapse(document.getElementById(`collapse${ctr}`), { toggle: false });
+                            new bootstrap.Collapse(document.getElementById(`collapse${ctr}_${ctr}`), { toggle: false });
 
                             //Call the echarts
                             options = {
@@ -327,7 +333,7 @@
                                 },
                                 series: [
                                     {
-                                    name: 'Step Start',
+                                    name: 'Actual DPPM',
                                     type: 'bar',
                                     label: {
                                         show: true,
@@ -337,7 +343,7 @@
                                     data: arrActualDppmFlatMap
                                     },
                                     {
-                                    name: 'Step Middle',
+                                    name: 'Actual LAR',
                                     type: 'line',
                                     label: {
                                         show: true,
@@ -359,7 +365,6 @@
                                 ]
                             };
                             callEcharts (document.getElementById(`echartIqcInspectionRecord${ctr}`),options)
-                            console.log(ctr);
                             ctr++;
                         });
                 })
