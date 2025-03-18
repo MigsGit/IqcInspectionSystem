@@ -166,6 +166,15 @@
                 });
                 $('.searchGroupBy').append(optionsHtml);
             }
+            const callEcharts = function (echartIqcInspectionRecord,options)
+            {
+                console.log(options);
+
+                // return ;
+                var chart = echarts.init(echartIqcInspectionRecord);
+
+                chart.setOption(options);
+            }
 
 
             getDropdownDetailsByOptValue('TS',$('#txtSearchMaterialName'),'iqc_category_material_id');
@@ -273,23 +282,24 @@
                     generate_type: 'chart',
                 };
                 // var queryString = $.param(params);
-                console.log('params',params);
+                $('#collapseIqcInspectionLarDppmCalculation').empty();
                 call_ajax(params,'export_iqc_inspection_report',function(response){
-                    let supplier = response.iqcInspectionSupplier;
-                    let iqcInspectionCollection = response.iqcInspectionCollection;
-                    // Flatten and Extract per Supplier
+                    let supplier = response.iqcInspectionSupplier; //Arr supplier by date range
+                    let iqcInspectionCollection = response.iqcInspectionCollection; // Flatten and Extract per Supplier
+                    let totalIqcInspectionByDateMaterialGroupBySupplier = response.totalIqcInspectionByDateMaterialGroupBySupplier; // Flatten and Extract per Supplier
                     let ctr = 0
                     supplier.forEach(elSupplier => {
                         const arrSupplierFlatMap = iqcInspectionCollection[elSupplier.supplier].flatMap(( obj => obj.supplier));
                         const arrActualDppmFlatMap = iqcInspectionCollection[elSupplier.supplier].flatMap(( obj => obj.actual_dppm));
                         const arrActualLarFlatMap = iqcInspectionCollection[elSupplier.supplier].flatMap(( obj => obj.actual_lar));
                         const arrWeekRangeFlatMap = iqcInspectionCollection[elSupplier.supplier].flatMap(( obj => obj.week_range));
-                        ctr++;
+                        console.log(totalIqcInspectionByDateMaterialGroupBySupplier[ctr].);
+
                         let elCollapse='';
                             elCollapse += `<div class="card-header" id="heading${ctr}">`;
                             elCollapse += ` <h5 class="mb-0">`;
                             elCollapse += `     <button id="" class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${ctr}" aria-expanded="true" aria-controls="collapse${ctr}">`;
-                            elCollapse += `         SAMPLE`;
+                            elCollapse += `        Supplier: ${elSupplier.supplier} | LAR`;
                             elCollapse += `     </button>`;
                             elCollapse += ` </h5>`;
                             elCollapse += `</div>`;
@@ -306,21 +316,57 @@
                             new bootstrap.Collapse(document.getElementById(`collapse${ctr}`), { toggle: false });
 
                             //Call the echarts
+                            options = {
+                                legend: {},
+                                xAxis: {
+                                    type: 'category',
+                                    data: arrWeekRangeFlatMap
+                                },
+                                yAxis: {
+                                    type: 'value'
+                                },
+                                series: [
+                                    {
+                                    name: 'Step Start',
+                                    type: 'bar',
+                                    label: {
+                                        show: true,
+                                        position: 'top',
+                                        valueAnimation: true
+                                    },
+                                    data: arrActualDppmFlatMap
+                                    },
+                                    {
+                                    name: 'Step Middle',
+                                    type: 'line',
+                                    label: {
+                                        show: true,
+                                        position: 'top',
+                                        valueAnimation: true
+                                    },
+                                    data: arrActualLarFlatMap
+                                    },
+                                    // {
+                                    //     name: 'Step End',
+                                    //     type: 'line',
+                                    //     label: {
+                                    //         show: true,
+                                    //         position: 'top',
+                                    //         valueAnimation: true
+                                    //     },
+                                    //     data: [450, 432, 401, 454, 590, 530, 510]
+                                    // }
+                                ]
+                            };
                             callEcharts (document.getElementById(`echartIqcInspectionRecord${ctr}`),options)
+                            console.log(ctr);
+                            ctr++;
                         });
                 })
 
 
 
-                function callEcharts (echartIqcInspectionRecord,options)
-                {
-                    console.log(options);
 
-                    // return ;
-                    var chart = echarts.init(echartIqcInspectionRecord);
-
-                    chart.setOption(options);
-                }
             });
         </script>
     @endsection

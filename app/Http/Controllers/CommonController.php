@@ -9,18 +9,22 @@ use App\Models\CnIqcInspection;
 use App\Models\YfIqcInspection;
 use App\Models\PpdIqcInspection;
 use App\Models\IqcDropdownDetail;
-use Illuminate\Support\Facades\DB;
 use App\Models\IqcDropdownCategory;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Interfaces\ResourceInterface;
+use App\Interfaces\CommonInterface;
+
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use App\Exports\IqcInspectionReportExport;
 
 class CommonController extends Controller
 {
     protected $resourceInterface;
-    public function __construct(ResourceInterface $resourceInterface) {
+    protected $commonInterface;
+    public function __construct(ResourceInterface $resourceInterface,CommonInterface $commonInterface) {
         $this->resourceInterface = $resourceInterface;
+        $this->commonInterface = $commonInterface;
     }
     public function getSamplingSizeBySamplingPlan(Request $request)
     { //TS
@@ -2187,6 +2191,9 @@ class CommonController extends Controller
             $arr_filtered_arr_group_by2 = [];
             $arr_group_by1 = $request->arr_group_by1;
             $arr_group_by2 = $request->arr_group_by2;
+            $from_date = $request->from_date;
+            $to_date = $request->to_date;
+            $material_category = $request->material_category;
 
             foreach ($arr_group_by1 as $key => $value) {
                 if($arr_group_by1[$key] != null){
@@ -2215,26 +2222,26 @@ class CommonController extends Controller
                     throw new \Exception("Unknown column '$column'");
                 }
             }
+
             if($request->generate_type == "chart"){
-                return $iqcInspectionByDateMaterialGroupBySheet =  CommonService::iqcInspectionByDateMaterialGroupBySupplierChart(
-                    $request->from_date,
-                    $request->to_date,
-                    $request->material_category,
-                    $arr_merge_group
+                $iqcInspectionByDateMaterialGroupBySheet =  $this->commonInterface->iqcInspectionByDateMaterialGroupBySupplierChart(
+                    $from_date,
+                    $to_date,
+                    $material_category,
                 );
+                return response()->json($iqcInspectionByDateMaterialGroupBySheet);
             }
 
             $iqcInspectionByDateMaterialGroupBySheet =  CommonService::iqcInspectionByDateMaterialGroupBySheet(
-                $request->from_date,
-                $request->to_date,
-                $request->material_category,
+                $from_date,
+                $to_date,
+                $material_category,
                 $arr_merge_group
             );
             $iqcInspectionRawSheet =  CommonService::iqcInspectionRawSheet(
-                $request->from_date,
-                $request->to_date,
-                $request->material_category,
-                $arr_merge_group
+                $from_date,
+                $to_date,
+                $material_category,
             );
 
             $export = new IqcInspectionReportExport(
@@ -2252,15 +2259,9 @@ class CommonController extends Controller
             throw $th;
         }
     }
-    // public function getChartIqcInspectionRecord(Request $request){
-    //     try {
-    //         return response()->json(['is_success' => 'true']);
-    //     } catch (Exception $e) {
-    //         return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
-    //     }
-    // }
 }
 class CommonService{
+
     public function iqcInspectionRawSheet(
         $from_date,
         $to_date,
@@ -2366,153 +2367,4 @@ class CommonService{
         }
         return $mapping;
     }
-    public function iqcInspectionByDateMaterialGroupBySupplierChart(
-        $from_date,
-        $to_date,
-        $material_category,
-        $arr_merge_group
-    )
-    {
-        // Get the start and end of the month
-        $startOfMonth = Carbon::parse($from_date)->startOfMonth();
-        $endOfMonth = Carbon::parse($to_date)->endOfMonth();
-
-        // Determine the first Thursday of the month
-        $firstThursday = $startOfMonth->copy()->next(Carbon::THURSDAY);
-
-        $weekRanges = [];
-        $startDate = $startOfMonth;
-
-        // Generate week ranges ending on Thursday
-        while ($startDate <= $endOfMonth) {
-            // If first week, set end date to first Thursday
-            $endDate = ($startDate->equalTo($firstThursday))
-                ? $firstThursday
-                : $startDate->copy()->next(Carbon::THURSDAY);
-
-            // Ensure end date does not exceed end of month
-            if ($endDate > $endOfMonth) {
-                $endDate = $endOfMonth;
-            }
-
-            // Store week range
-            $weekRanges[] = [
-                'start' => $startDate->format('Y-m-d'),
-                'end' => $endDate->format('Y-m-d')
-            ];
-
-            // Move to next week's start date
-            $startDate = $endDate->copy()->addDay();
-        }
-        $iqcInspectionSupplier = IqcInspection::
-        select('supplier')
-        ->where("iqc_category_material_id", "=", "$material_category")
-        ->whereBetween('date_inspected', [$startOfMonth, $endOfMonth])
-        ->groupBy('supplier')
-        ->get();
-
-        // $targetLarDppm = ;
-
-        // Fetch inspection data per week
-        $iqcInspectionCollection = collect($weekRanges)->map(function ($week)use($material_category) {
-            return $iqcInspectionPerSupplierCollection = IqcInspection::
-                select(['supplier'])
-                ->addSelect(
-                    DB::raw("'".Carbon::parse($week['start'])->format('M j')." - ".Carbon::parse($week['end'])->format('j')."' as week_range"), // Display week range
-                    // DB::raw("DATE_FORMAT(DATE_ADD(date_inspected, INTERVAL (7 - WEEKDAY(date_inspected)) DAY), '%e') AS week_end"),
-                    // DB::raw("COUNT(CASE WHEN judgement = 1 THEN 1 END) as accepted_count"),
-                    // DB::raw("COUNT(CASE WHEN judgement = 2 THEN 1 END) as rejected_count"),
-                    // DB::raw("SUM(sampling_size) as 'sampling_size_sum'"),
-                    // DB::raw("SUM(no_of_defects) as 'no_of_defects_sum'"),
-                    DB::raw("ROUND( COUNT( CASE WHEN judgement = 1 THEN 1 END ) / ( SUM(lot_inspected) ) * 100,2) as 'actual_lar' "),
-                    DB::raw("ROUND( SUM(no_of_defects)  / SUM(sampling_size) * 1000000,0) as 'actual_dppm' "),
-                    // DB::raw("(SUM(lot_inspected)) / (SUM(lot_inspected) - COUNT(CASE WHEN judgement = 2 THEN 1 END)) as 'actual_lar' "),
-                )
-                ->where("iqc_category_material_id", "=", "$material_category")
-                ->whereBetween('date_inspected', [$week['start'], $week['end']])
-                // ->groupBy('supplier')
-                ->groupBy('supplier')
-                ->get();
-
-        })
-        ->flatten(1) //Flata as 1 array
-        ->groupBy('supplier') //Array group by specific object
-        ->toArray();
-
-            // lot_ok = lot_inspected - lot_rejected
-            // Actual LAR = (lot inspected/lot_ok)
-            // Actual DPPM = (total sampling/ng_qty) *1000000
-        return response()->json(['iqcInspectionCollection' => $iqcInspectionCollection, 'iqcInspectionSupplier' => $iqcInspectionSupplier]);
-
-        // ->filter(); // Remove empty records
-        // return $iqcInspectionCollection->map(function ($rowIqcInspectionCollection){
-        //     return $rowIqcInspectionCollection;
-        // });
-        // if(){
-
-        // }
-
-        // return $iqcInspectionCollection;
-        foreach ($iqcInspectionSupplier as $key => $value) {
-            if($value->supplier == $iqcInspectionCollection[$value->supplier]){
-                return $iqcInspectionCollection[$value->supplier];
-            }
-
-            // return $iqcInspectionSupplier[0]->supplier;
-            // return $key;
-            // return $iqcInspectionCollection[$key]['sampling_size_sum'];
-            // return $iqcInspectionCollection[$key]['week_end'];
-            return $iqcInspectionCollection[$key];
-        }
-    }
-    public function iqcInspectionByDateMaterialGroupBySupplier(
-        $from_date,
-        $to_date,
-        $material_category
-    ){
-        // Get the start and end of the month
-        // $startOfMonth = Carbon::parse($from_date);
-        // $endOfMonth = Carbon::parse($to_date);
-
-        $startOfDate = Carbon::parse($from_date);
-        $endOfDate = Carbon::parse($to_date);
-        return IqcInspection::
-        select('supplier')
-        ->addSelect(
-            DB::raw("'".Carbon::parse($startOfDate)->format('M j')." - ".Carbon::parse($endOfDate)->format('j')."' as week_range"), // Display week range
-            DB::raw("DATE_FORMAT(DATE_ADD(date_inspected, INTERVAL (7 - WEEKDAY(date_inspected)) DAY), '%e') AS week_end"),
-            DB::raw("COUNT(CASE WHEN judgement = 1 THEN 1 END) as accepted_count"),
-            DB::raw("COUNT(CASE WHEN judgement = 2 THEN 1 END) as rejected_count"),
-            DB::raw("SUM(sampling_size) as 'sampling_size_sum'"),
-            DB::raw("SUM(no_of_defects) as 'no_of_defects_sum'"),
-        )
-        ->where("iqc_category_material_id", "=", "$material_category")
-        ->whereBetween('date_inspected', [$startOfDate, $endOfDate])
-        ->groupBy('supplier')
-        ->get()->filter();
-
-    }
-    /*
-        $iqcInspectionByDateMaterialGroupBySupplier =  IqcInspection::
-            select('supplier')
-            ->addSelect(
-                DB::raw("'".Carbon::parse($startOfMonth)->format('M j')." - ".Carbon::parse($endOfMonth)->format('j')."' as week_range"), // Display week range
-                DB::raw("DATE_FORMAT(DATE_ADD(date_inspected, INTERVAL (7 - WEEKDAY(date_inspected)) DAY), '%e') AS week_end"),
-                DB::raw("COUNT(CASE WHEN lot_inspected = 1 THEN 1 END) as inspected_count"),
-                // DB::raw("COUNT(CASE WHEN judgement = 1 THEN 1 END) as accepted_count"),
-                DB::raw("COUNT(CASE WHEN judgement = 2 THEN 1 END) as rejected_count"),
-                DB::raw("SUM(sampling_size) as 'sampling_size_sum'"),
-                DB::raw("SUM(no_of_defects) as 'no_of_defects_sum'"),
-            )
-            ->where("iqc_category_material_id", "=", "$material_category")
-            ->whereBetween('date_inspected', [$startOfMonth, $endOfMonth ])
-            // ->groupBy('supplier')
-            ->groupBy('supplier')
-            ->get()->filter(); // Remove empty records
-
-
-    */
-    //Chart Series
-
-
 }

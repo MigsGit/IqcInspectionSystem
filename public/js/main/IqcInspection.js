@@ -191,9 +191,6 @@
             }
             /* Display the Mode of Defects Button */
             divDisplayNoneClass(form.iqcInspection,lotAccepted);
-
-
-
             $('#tblModeOfDefect tbody').empty();
             arrTableMod.lotNo = [];
             arrTableMod.modeOfDefects = [];
