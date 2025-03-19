@@ -11,8 +11,7 @@ use App\Exports\Sheets\IqcInspectionByDateMaterialGroupBySheet;
 
 
 
-class IqcInspectionReportExport implements
-WithMultipleSheets
+class IqcInspectionReportExport implements WithMultipleSheets
 // FromCollection,
 {
     // use Exportable;
@@ -25,8 +24,8 @@ WithMultipleSheets
     }
     public function sheets(): array{
         $sheets = [];
-        $sheets['Weekly'] = new IqcInspectionByDateMaterialGroupBySheet($this->iqcInspectionByDateMaterialGroupBySheet);
         $sheets['Daily'] = new IqcInspectionRawSheet($this->iqcInspectionRawSheet);
+        $sheets['Weekly'] = new IqcInspectionByDateMaterialGroupBySheet($this->iqcInspectionByDateMaterialGroupBySheet);
         return $sheets;
     }
 
@@ -35,6 +34,7 @@ WithMultipleSheets
     public function collection()
     {
         $iqc_inspection_by_date_material_group_by_sheet = new IqcInspectionByDateMaterialGroupBySheet($this->iqcInspectionByDateMaterialGroupBySheet);
-        return $iqc_inspection_by_date_material_group_by_sheet->collection();
+        $iqc_inspection_raw_sheet = new IqcInspectionRawSheet($this->iqcInspectionRawSheet);
+        return $iqc_inspection_raw_sheet->collection();
     }
 }

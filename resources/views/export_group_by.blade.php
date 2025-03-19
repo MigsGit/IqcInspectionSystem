@@ -77,6 +77,14 @@
                                                 </div>
                                                 <div class="card-body">
                                                     {{-- TS GRAPH --}}
+                                                    <div class="row justify-content-between">
+                                                        <div class="col-sm-2">
+                                                            <label class="form-label">Batch Search</label>
+                                                            <div class="input-group mb-3">
+                                                                <button class="btn btn-primary" id="btnSearchIqcInspectionRecord" data-bs-target="#modalSearchIqcInspectionRecord" data-bs-toggle="modal"> <i class="fa-solid fa-search"></i> Group By</button>
+                                                            </div>
+
+                                                        </div>
                                                     <div class="card" id="collapseIqcInspectionLarDppmCalculation">
                                                     </div> <!--end card-->
                                                 </div>
@@ -176,8 +184,7 @@
             $(document).ready(function () {
 
 
-
-                $('#modalExportIqcInspectionRecord').modal('show');
+                $('#modalSearchIqcInspectionRecord').modal('show');
 
                 let search_group_html = ``;
                 for (let index = 1; index <= 3; index++) {

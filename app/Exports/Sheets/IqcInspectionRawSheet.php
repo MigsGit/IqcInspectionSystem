@@ -1,19 +1,12 @@
 <?php
 
 namespace App\Exports\Sheets;
-
-use App\Models\IqcInspection;
-use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Log;
-use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
@@ -92,20 +85,35 @@ class IqcInspectionRawSheet implements
         $sheet->setCellValue('G1', 'Pricon Microelectronics, Inc.');
         $sheet->setCellValue('G2', '#14 Ampere St., Light Industry and Science Park 1, Cabuyao, Laguna');
         $sheet->setCellValue('G4', 'IQC INSPECTION SUMMARY');
-        $sheet->setCellValue('A6', 'Part Code');
-        $sheet->setCellValue('B6', 'Part Name');
-        $sheet->setCellValue('C6', 'Supplier');
-        $sheet->setCellValue('D6', 'Lot No.');
-        $sheet->setCellValue('E6', 'Lot Qty');
-        $sheet->setCellValue('F6', 'Inspector');
-        $sheet->setCellValue('G6', 'Submission');
-        $sheet->setCellValue('H6', 'Judgment');
-        $sheet->setCellValue('I6', 'Lot Inspected');
-        $sheet->setCellValue('J6', 'Lot Accepted');
-        $sheet->setCellValue('K6', 'Sample Size');
-        $sheet->setCellValue('L6', 'No. of Defects');
-        $sheet->setCellValue('M6', 'Remarks');
-        $sheet->setCellValue('N6', 'Classification');
+        $sheet->setCellValue('A6', 'Invoice No'); //A
+
+        $sheet->setCellValue('B6', 'Part Code');
+        $sheet->setCellValue('C6', 'Part Name');
+        $sheet->setCellValue('D6', 'Supplier');
+
+        $sheet->setCellValue('E6', 'WHS Received Date'); //
+
+        $sheet->setCellValue('F6', 'Lot No.');
+        $sheet->setCellValue('G6', 'Lot Qty');
+
+        $sheet->setCellValue('H6', 'Type of Inspection'); //
+        $sheet->setCellValue('I6', 'Severity of Inspection'); //
+        $sheet->setCellValue('J6', 'Inspection Level'); //
+        $sheet->setCellValue('K6', 'AQL'); //
+        $sheet->setCellValue('L6', 'Accept'); //
+        $sheet->setCellValue('M6', 'Reject'); //
+        $sheet->setCellValue('N6', 'Date Inspected'); //
+        $sheet->setCellValue('O6', 'Shift'); //
+
+        $sheet->setCellValue('P6', 'Inspector');
+        $sheet->setCellValue('Q6', 'Submission');
+        $sheet->setCellValue('R6', 'Judgment');
+        $sheet->setCellValue('S6', 'Lot Inspected');
+        $sheet->setCellValue('T6', 'Lot Accepted');
+        $sheet->setCellValue('U6', 'Sample Size');
+        $sheet->setCellValue('V6', 'No. of Defects');
+        $sheet->setCellValue('W6', 'Remarks');
+        $sheet->setCellValue('X6', 'Classification');
 
         return [
             1 => ['font' => ['bold' => true]],

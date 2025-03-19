@@ -2247,7 +2247,9 @@ class CommonController extends Controller
             $export = new IqcInspectionReportExport(
                 $iqcInspectionByDateMaterialGroupBySheet,
                 $iqcInspectionRawSheet
-            ); //Debug Function $export->coillection();
+            );
+            // Debug Function
+            return $export->collection();
 
             return Excel::download(new IqcInspectionReportExport(
                 $iqcInspectionByDateMaterialGroupBySheet,
