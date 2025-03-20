@@ -85,7 +85,9 @@
                                                             </div>
 
                                                         </div>
-                                                    <div class="card" id="collapseIqcInspectionLarDppmCalculation">
+                                                    <div id="collapseIqcInspectionLarDppmCalculation">
+                                                    {{-- <div id="collapseIqcInspectionLarDppmCalculation"> --}}
+
                                                     </div> <!--end card-->
                                                 </div>
                                             </div>
@@ -179,6 +181,80 @@
                 var chart = echarts.init(echartIqcInspectionRecord);
                 chart.setOption(options);
             }
+            const customOption = function (arrWeekRangeFlatMap,arrActualLarFlatMap,arrActualDppmFlatMap){
+                // console.log('customOption');
+
+                // return ;
+                return options = {
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: { type: 'cross' }
+                    },
+                    legend: {},
+                    xAxis: [
+                        {
+                            type: 'category',
+                            axisTick: {
+                                alignWithLabel: true
+                            },
+                            axisLabel: {
+                                rotate: 30
+                            },
+                            data: arrWeekRangeFlatMap
+                        }
+                    ],
+                    yAxis: [
+                            {
+                            type: 'value',
+                            name: 'LAR',
+                            min: 0,
+                            max: 100,
+                            position: 'right',
+                            axisLabel: {
+                                formatter: '{value} %'
+                            }
+                        },
+                        {
+                            type: 'value',
+                            name: 'DPPM',
+                            min: 0,
+                            max: 100000,
+                            position: 'left',
+                            axisLabel: {
+                                formatter: '{value}'
+                            }
+                        }
+                    ],
+                    series: [
+                        {
+                            name: 'LAR',
+                            type: 'line',
+                            yAxisIndex: 0,
+                            label: {
+                                show: true,
+                                position: 'top',
+                                valueAnimation: true
+                            },
+                            data: arrActualLarFlatMap
+                        },
+                        {
+                            name: 'DPPM',
+                            type: 'bar',
+                            smooth: true,
+                            yAxisIndex: 1,
+                            label: {
+                                show: true,
+                                position: 'top',
+                                valueAnimation: true
+                            },
+                            data: arrActualDppmFlatMap
+                        }
+                    ]
+                };
+            }
+
+
+
 
             getDropdownDetailsByOptValue('TS',$('#txtSearchMaterialName'),'iqc_category_material_id');
             $(document).ready(function () {
@@ -297,7 +373,7 @@
                         const arrWeekRangeFlatMap = iqcInspectionCollection[elSupplier.supplier].flatMap(( obj => obj.week_range));
 
                         let elCollapse='<br>';
-                            elCollapse += `<div class="card-header" id="heading${ctr}">`;
+                            elCollapse += ` <div class="card">`;
                             elCollapse += ` <h5 class="mb-0">`;
                             elCollapse += `     <button id="" class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${ctr}" aria-expanded="true" aria-controls="collapse${ctr}">`;
                             elCollapse += `        Supplier: ${elSupplier.supplier} | LAR = ${totalIqcInspectionByDateMaterialGroupBySupplier[ctr].actual_lar}% | DPPM = ${totalIqcInspectionByDateMaterialGroupBySupplier[ctr].actual_dppm}`;
@@ -321,6 +397,7 @@
                             elCollapse += `              </div>`;
                             elCollapse += `         </div>`;
                             elCollapse += `     </div>`;
+                            elCollapse += ` </div>`;
                             elCollapse += `</div>`;
 
                             //Manually initialize the collapse component:
@@ -329,49 +406,8 @@
                             new bootstrap.Collapse(document.getElementById(`collapse${ctr}_${ctr}`), { toggle: false });
 
                             //Call the echarts
-                            options = {
-                                legend: {},
-                                xAxis: {
-                                    type: 'category',
-                                    data: arrWeekRangeFlatMap
-                                },
-                                yAxis: {
-                                    type: 'value'
-                                },
-                                series: [
-                                    {
-                                    name: 'Actual DPPM',
-                                    type: 'bar',
-                                    label: {
-                                        show: true,
-                                        position: 'top',
-                                        valueAnimation: true
-                                    },
-                                    data: arrActualDppmFlatMap
-                                    },
-                                    {
-                                    name: 'Actual LAR',
-                                    type: 'line',
-                                    label: {
-                                        show: true,
-                                        position: 'top',
-                                        valueAnimation: true
-                                    },
-                                    data: arrActualLarFlatMap
-                                    },
-                                    // {
-                                    //     name: 'Step End',
-                                    //     type: 'line',
-                                    //     label: {
-                                    //         show: true,
-                                    //         position: 'top',
-                                    //         valueAnimation: true
-                                    //     },
-                                    //     data: [450, 432, 401, 454, 590, 530, 510]
-                                    // }
-                                ]
-                            };
-                            callEcharts (document.getElementById(`echartIqcInspectionRecord${ctr}`),options)
+
+                            callEcharts (document.getElementById(`echartIqcInspectionRecord${ctr}`),customOption(arrWeekRangeFlatMap,arrActualLarFlatMap,arrActualDppmFlatMap))
                             ctr++;
                         });
                 })

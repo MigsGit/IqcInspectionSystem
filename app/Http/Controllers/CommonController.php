@@ -2262,7 +2262,8 @@ class CommonController extends Controller
         }
     }
 }
-class CommonService{
+class CommonService
+{
 
     public function iqcInspectionRawSheet(
         $from_date,
@@ -2337,7 +2338,6 @@ class CommonService{
             )
             ->where("iqc_category_material_id", "=", "$material_category")
             ->whereBetween('date_inspected', [$week['start'], $week['end']])
-            // ->groupBy('supplier')
             ->groupBy('supplier')
             ->get();
         })->filter(); // Remove empty records

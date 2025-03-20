@@ -106,10 +106,8 @@ class IqcInspectionRawSheet implements
         $sheet->setCellValue('C6', 'Part Name');
         $sheet->setCellValue('D6', 'Supplier');
         $sheet->setCellValue('E6', 'WHS Received Date'); //
-
         $sheet->setCellValue('F6', 'Lot No.');
         $sheet->setCellValue('G6', 'Lot Qty');
-
         $sheet->setCellValue('H6', 'Type of Inspection'); //
         $sheet->setCellValue('I6', 'Severity of Inspection'); //
         $sheet->setCellValue('J6', 'Inspection Level'); //
@@ -118,7 +116,6 @@ class IqcInspectionRawSheet implements
         $sheet->setCellValue('M6', 'Reject'); //
         $sheet->setCellValue('N6', 'Date Inspected'); //
         $sheet->setCellValue('O6', 'Shift'); //
-
         $sheet->setCellValue('P6', 'Inspector');
         $sheet->setCellValue('Q6', 'Submission');
         $sheet->setCellValue('R6', 'Judgment');
