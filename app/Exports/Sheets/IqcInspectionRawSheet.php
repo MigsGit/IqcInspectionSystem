@@ -40,7 +40,13 @@ class IqcInspectionRawSheet implements
     */
     public function collection()
     {
-        return $this->iqcInspectionRawSheet;
+        $this->iqcInspectionRawSheet->chunk(40, function ($inspections) use(&$results) {
+            foreach ($inspections as $inspection) {
+                $results[] =  $inspection->toArray();;
+
+            }
+        });
+        return collect($results); // Convert array to collection
     }
     /**
      * Start Cell
@@ -58,20 +64,30 @@ class IqcInspectionRawSheet implements
     public function map($data): array
     {
         return [
-            $data->partcode,
-            $data->partname,
-            $data->supplier,
-            $data->lot_no,
-            $data->total_lot_qty,
-            $data->user_iqc->name, //Get Name by Id from User Database
-            $data->submission,
-            $data->judgement,
-            $data->lot_inspected,
-            $data->accepted,
-            $data->sampling_size,
-            $data->no_of_defects,
-            $data->remarks,
-            $data->classification,
+            $data['invoice_no'],
+            $data['partcode'],
+            $data['partname'],
+            $data['supplier'],
+            $data['vw_list_of_received']['date'], //
+            $data['lot_no'],
+            $data['total_lot_qty'],
+            $data['type_of_inspection'], //Single Double Level Check
+            $data['iqc_dropdown_detail_severity_of_inspection']['dropdown_details'],
+            $data['iqc_dropdown_detail_inspection_lvl']['dropdown_details'],
+            $data['aql'],
+            $data['accept'],
+            $data['reject'],
+            $data['date_inspected'],
+            $data['shift'], //1-A 2-B
+            $data['user_iqc']['name'], //Get Name by Id from User Database
+            $data['submission'],
+            $data['judgement'],
+            $data['lot_inspected'],
+            $data['accepted'],
+            $data['sampling_size'],
+            $data['no_of_defects'],
+            $data['remarks'],
+            $data['classification'],
         ];
     }
     /**
@@ -86,11 +102,9 @@ class IqcInspectionRawSheet implements
         $sheet->setCellValue('G2', '#14 Ampere St., Light Industry and Science Park 1, Cabuyao, Laguna');
         $sheet->setCellValue('G4', 'IQC INSPECTION SUMMARY');
         $sheet->setCellValue('A6', 'Invoice No'); //A
-
         $sheet->setCellValue('B6', 'Part Code');
         $sheet->setCellValue('C6', 'Part Name');
         $sheet->setCellValue('D6', 'Supplier');
-
         $sheet->setCellValue('E6', 'WHS Received Date'); //
 
         $sheet->setCellValue('F6', 'Lot No.');

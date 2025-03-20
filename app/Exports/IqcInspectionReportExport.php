@@ -14,7 +14,6 @@ use App\Exports\Sheets\IqcInspectionByDateMaterialGroupBySheet;
 class IqcInspectionReportExport implements WithMultipleSheets
 // FromCollection,
 {
-    // use Exportable;
     protected $iqcInspectionByDateMaterialGroupBySheet;
     protected $iqcInspectionRawSheet;
     public function __construct($iqcInspectionByDateMaterialGroupBySheet, $iqcInspectionRawSheet)

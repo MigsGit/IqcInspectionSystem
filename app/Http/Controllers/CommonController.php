@@ -2249,7 +2249,7 @@ class CommonController extends Controller
                 $iqcInspectionRawSheet
             );
             // Debug Function
-            return $export->collection();
+            // return $export->collection();
 
             return Excel::download(new IqcInspectionReportExport(
                 $iqcInspectionByDateMaterialGroupBySheet,
@@ -2270,13 +2270,20 @@ class CommonService{
         $material_category
     ){
 
-        $getIqcInspectionByMaterialCategoryDate = IqcInspection::
-        with('user_iqc')
-        ->where("iqc_category_material_id", "=", $material_category)
-        // ->whereBetween('date_inspected', ["".$from_date."", "".$to_date.""])
-        ->whereBetween('date_inspected', [$from_date, $to_date])
-        ->get();
-        return $getIqcInspectionByMaterialCategoryDate;
+        /*
+            dropdown_details
+
+        */
+        return IqcInspection::with([
+            'user_iqc',
+            'iqc_dropdown_detail_family',
+            // 'iqc_dropdown_detail_type_of_inspection',
+            'iqc_dropdown_detail_severity_of_inspection',
+            'iqc_dropdown_detail_inspection_lvl',
+            'iqc_dropdown_detail_aql',
+            'vw_list_of_received'
+        ])->where("iqc_category_material_id", "=", $material_category)
+        ->whereBetween('date_inspected', [$from_date, $to_date]);
     }
     public function iqcInspectionByDateMaterialGroupBySheet(
         $from_date,
