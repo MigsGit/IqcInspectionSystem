@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class IqcDropdownCategory extends Model
 {
     public function iqc_dropdown_details(){
-        return $this->hasMany(IqcDropdownDetail::class, 'iqc_dropdown_categories_id','id')->whereNull('deleted_at')->orderBy('id', 'DESC');
+        return $this->hasMany(IqcDropdownDetail::class, 'iqc_dropdown_categories_id','id')
+            ->whereNull('deleted_at')->orderBy('id', 'DESC');
     }
 }

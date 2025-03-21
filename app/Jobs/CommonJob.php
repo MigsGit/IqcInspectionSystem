@@ -186,7 +186,6 @@ class CommonJob implements CommonInterface
                 // ->groupBy('supplier')
                 ->groupBy('supplier')
                 ->get();
-
         })
         ->flatten(1) //Flata as 1 array
         ->groupBy('supplier') //Array group by specific object

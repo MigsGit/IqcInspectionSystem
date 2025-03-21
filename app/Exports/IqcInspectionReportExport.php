@@ -23,8 +23,8 @@ class IqcInspectionReportExport implements WithMultipleSheets
     }
     public function sheets(): array{
         $sheets = [];
-        $sheets['Daily'] = new IqcInspectionRawSheet($this->iqcInspectionRawSheet);
         $sheets['Weekly'] = new IqcInspectionByDateMaterialGroupBySheetWeekly($this->iqcInspectionByDateMaterialGroupBySheet);
+        $sheets['Daily'] = new IqcInspectionRawSheet($this->iqcInspectionRawSheet);
         return $sheets;
     }
 
