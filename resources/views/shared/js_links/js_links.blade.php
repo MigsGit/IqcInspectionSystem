@@ -64,7 +64,7 @@
         "iconClass":  "toast-custom"
     };
     globalVar = {
-        department : "add"
+        // department : "add"
     }
     $.ajax({
         type: 'GET',
@@ -76,32 +76,52 @@
            toastr.error(`Error: ${data.status}`);
         }
     });
-    $.ajax({
-        type: 'GET',
-        url: 'check_department',
-        dataType: 'json',
-        success: function (response) {
-            if(response.is_success === 'true'){
-                globalVar.department = response.department;
-                if(globalVar.department === 'TS' || globalVar.department === 'ISS'){
-                    $('.nav-item-ts').removeClass('d-none',true)
-                }
-                if(globalVar.department === 'CN' || globalVar.department === 'ISS'){
-                    $('.nav-item-cn').removeClass('d-none',true)
-                }
-                if(globalVar.department === 'PPS' || globalVar.department === 'PPD' || globalVar.department === 'ISS'){
-                    $('.nav-item-ppd').removeClass('d-none',true)
-                }
-                if(globalVar.department === 'YF' || globalVar.department === 'ISS'){
-                    $('.nav-item-yf').removeClass('d-none',true)
-                }
-                console.log('j',globalVar.department);
 
+
+    function fetchDepartment(callback) {
+        $.ajax({
+            type: 'GET',
+            url: 'check_department',
+            dataType: 'json',
+            success: function (response) {
+                if(response.is_success === 'true'){
+                    globalVar.department = response.department;
+                    if(globalVar.department === 'TS' || globalVar.department === 'ISS'){
+                        $('.nav-item-ts').removeClass('d-none',true)
+                    }
+                    if(globalVar.department === 'CN' || globalVar.department === 'ISS'){
+                        $('.nav-item-cn').removeClass('d-none',true)
+                    }
+                    if(globalVar.department === 'PPS' || globalVar.department === 'PPD' || globalVar.department === 'ISS'){
+                        $('.nav-item-ppd').removeClass('d-none',true)
+                    }
+                    if(globalVar.department === 'YF' || globalVar.department === 'ISS'){
+                        $('.nav-item-yf').removeClass('d-none',true)
+                    }
+                    // console.log('j',globalVar.department);
+                    if (callback) callback(); // Execute callback after setting the variable
+
+                }
+            },error: function (data, xhr, status){
+            toastr.error(`Error: ${data.status}`);
             }
-        },error: function (data, xhr, status){
-           toastr.error(`Error: ${data.status}`);
-        }
+        });
+        // $.ajax({
+        //     url: '/your-endpoint',
+        //     method: 'GET',
+        //     success: function(response) {
+        //         globalVar.department = response.department;
+
+        //     }
+        // });
+    }
+
+    fetchDepartment(function() {
+        console.log('dsadsdasd',globalVar.department); // Now it's guaranteed to have the value
     });
+    // console.log('dsadsdasd',globalVar.department);
+
+    // console.log(globalVar.department); // Works inside success
 </script>
 
 <script src="{{ asset('public/js/main/Common.js') }}?<?=time()?>"></script>

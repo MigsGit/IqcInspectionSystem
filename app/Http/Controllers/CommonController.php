@@ -2186,7 +2186,28 @@ class CommonController extends Controller
     }
     public function exportIqcInspectionReport(Request $request){
         try {
-            // return  $request->all();
+            // return $request->depart/ment;
+            switch ($request->department) {
+                case 'TS':
+                    $model = IqcInspection::class;
+                    break;
+                case 'CN':
+                    $model = CnIqcInspection::class;
+                    break;
+                case 'PPD':
+                    $model = PpdIqcInspection::class;
+                    break;
+                case 'YF':
+                    $model = YfIqcInspection::class;
+                    break;
+                case 'IIS':
+                    $model = YfIqcInspection::class;
+                    break;
+                default:
+                    $model = IqcInspection::class;
+                    break;
+            }
+            return  $model;
             $arr_filtered_arr_group_by1 = [];
             $arr_filtered_arr_group_by2 = [];
             $arr_group_by1 = $request->arr_group_by1;

@@ -252,14 +252,14 @@
                     ]
                 };
             }
+            // console.log('department',globalVar.department);
+            fetchDepartment(function() {
+                let department = ( globalVar.department == "ISS") ? "TS" : globalVar.department;
+                getDropdownDetailsByOptValue(department,$('#txtSearchMaterialName'),'iqc_category_material_id');
+            // Now it's guaranteed to have the value
+            });
 
-
-
-
-            getDropdownDetailsByOptValue('TS',$('#txtSearchMaterialName'),'iqc_category_material_id');
             $(document).ready(function () {
-
-
                 $('#modalSearchIqcInspectionRecord').modal('show');
 
                 let search_group_html = ``;
@@ -358,6 +358,7 @@
                     arr_group_by1: arr_group_by1,
                     arr_group_by2: arr_group_by2,
                     generate_type: 'chart',
+                    department: globalVar.department,
                 };
                 // var queryString = $.param(params);
                 $('#collapseIqcInspectionLarDppmCalculation').empty();
