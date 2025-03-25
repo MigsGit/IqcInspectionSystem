@@ -36,6 +36,8 @@
         let data = {
             yeuReceivesId : yeuReceivesId,
             "iqc_category_material_id"        : iqcCategoryMaterialId,
+            "arr_pkid_received"        : globalVar.arrPkidReceived,
+
 
         }
         let elFormId = form.iqcInspection;
@@ -43,6 +45,7 @@
             $('#modalSaveIqcInspection').modal('show');
 
             let iqcInspection = response['iqcInspection'][0];
+            console.log(iqcInspection);
             let generateControlNumber = response['generateControlNumber'];
             // return;
             let partCode = iqcInspection['item_code'];
@@ -57,7 +60,7 @@
             /* Visual Inspection */
             form.iqcInspection.find('#app_no').val(generateControlNumber.app_no);
             form.iqcInspection.find('#app_no_extension').val(generateControlNumber.app_no_extension);
-            form.iqcInspection.find('#whs_transaction_id').val(yeuReceivesId);
+            form.iqcInspection.find('#whs_transaction_id').val(iqcInspection.id);
             form.iqcInspection.find('#iqc_category_material_id').val($('#txtCategoryMaterial').val());
             form.iqcInspection.find('#invoice_no').val(invoiceNo);
             form.iqcInspection.find('#partcode').val(partCode);
