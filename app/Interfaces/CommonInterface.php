@@ -24,6 +24,19 @@ interface CommonInterface
         $to_date,
         $material_category
     );
+    public function iqcInspectionRawSheet(
+        $model,
+        $from_date,
+        $to_date,
+        $material_category
+    );
+    public function iqcInspectionByDateMaterialGroupBySheet(
+        $model,
+        $from_date,
+        $to_date,
+        $material_category,
+        $arr_merge_group
+    );
 
 
 }

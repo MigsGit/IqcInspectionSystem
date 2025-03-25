@@ -52,7 +52,7 @@
                             <!-- left column -->
                             <div class="col-12">
                                     <!-- Start Page Content -->
-                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                    {{-- <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
                                             <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">TS</a>
                                         </li>
@@ -65,7 +65,7 @@
                                         <li class="nav-item">
                                             <a class="nav-link .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu4" role="tab" aria-controls="menu4" aria-selected="false">YF</a>
                                         </li>
-                                    </ul>
+                                    </ul> --}}
                                     <div class="tab-content mt-4" id="myTabContent">
                                         <div class="row justify-content-end">
 
@@ -73,7 +73,7 @@
                                         <div class="tab-pane fade show active" id="menu1" role="tabpanel" aria-labelledby="menu1-tab">
                                             <div class="card card-primary">
                                                 <div class="card-header">
-                                                    <h3 class="card-title">Test Socket (TS)</h3>
+                                                    <h3 class="card-title">Export</h3>
                                                 </div>
                                                 <div class="card-body">
                                                     {{-- TS GRAPH --}}
@@ -337,8 +337,6 @@
                     material_category: $('select[name="material_category"]').val(),
                     arr_group_by1: arr_group_by1,
                     arr_group_by2: arr_group_by2,
-                    department: globalVar.department,
-
                 };
                 var queryString = $.param(params);
                 window.location.href = "{{ route('download.export_iqc_inspection_report') }}?" + queryString;
@@ -360,7 +358,6 @@
                     arr_group_by1: arr_group_by1,
                     arr_group_by2: arr_group_by2,
                     generate_type: 'chart',
-                    department: globalVar.department,
                 };
                 // var queryString = $.param(params);
                 $('#collapseIqcInspectionLarDppmCalculation').empty();
