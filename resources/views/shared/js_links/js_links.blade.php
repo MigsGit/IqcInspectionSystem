@@ -85,43 +85,41 @@
             dataType: 'json',
             success: function (response) {
                 if(response.is_success === 'true'){
+
+                    console.log(response.department);
+
                     globalVar.department = response.department;
+                    if (callback) callback(); // Execute callback after setting the variable
+
                     if(globalVar.department === 'TS' || globalVar.department === 'ISS'){
                         $('.nav-item-ts').removeClass('d-none',true)
+                        return;
                     }
                     if(globalVar.department === 'CN' || globalVar.department === 'ISS'){
                         $('.nav-item-cn').removeClass('d-none',true)
+                        return;
                     }
                     if(globalVar.department === 'PPS' || globalVar.department === 'PPD' || globalVar.department === 'ISS'){
                         $('.nav-item-ppd').removeClass('d-none',true)
+                        return;
                     }
                     if(globalVar.department === 'YF' || globalVar.department === 'ISS'){
                         $('.nav-item-yf').removeClass('d-none',true)
+                        return;
                     }
+                    toastr.error (` ${globalVar.department}: department name is invalid. Please contact ISS at local numbers 205 or 208 !`)
                     // console.log('j',globalVar.department);
-                    if (callback) callback(); // Execute callback after setting the variable
 
                 }
             },error: function (data, xhr, status){
             toastr.error(`Error: ${data.status}`);
             }
         });
-        // $.ajax({
-        //     url: '/your-endpoint',
-        //     method: 'GET',
-        //     success: function(response) {
-        //         globalVar.department = response.department;
-
-        //     }
-        // });
     }
-
     fetchDepartment(function() {
         console.log('dsadsdasd',globalVar.department); // Now it's guaranteed to have the value
     });
-    // console.log('dsadsdasd',globalVar.department);
 
-    // console.log(globalVar.department); // Works inside success
 </script>
 
 <script src="{{ asset('public/js/main/Common.js') }}?<?=time()?>"></script>

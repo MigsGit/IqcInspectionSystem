@@ -337,6 +337,8 @@
                     material_category: $('select[name="material_category"]').val(),
                     arr_group_by1: arr_group_by1,
                     arr_group_by2: arr_group_by2,
+                    department: globalVar.department,
+
                 };
                 var queryString = $.param(params);
                 window.location.href = "{{ route('download.export_iqc_inspection_report') }}?" + queryString;

@@ -121,6 +121,7 @@ class CommonJob implements CommonInterface
     }
 
     public function iqcInspectionByDateMaterialGroupBySupplierChart(
+        $model,
         $from_date,
         $to_date,
         $material_category
@@ -157,8 +158,7 @@ class CommonJob implements CommonInterface
             // Move to next week's start date
             $startDate = $endDate->copy()->addDay();
         }
-        $iqcInspectionSupplier = IqcInspection::
-        select('supplier')
+        $iqcInspectionSupplier = $model::select('supplier')
         ->where("iqc_category_material_id", "=", "$material_category")
         ->whereBetween('date_inspected', [$startOfMonth, $endOfMonth])
         ->groupBy('supplier')
@@ -167,9 +167,8 @@ class CommonJob implements CommonInterface
         // $targetLarDppm = ;
 
         // Fetch inspection data per week
-        $iqcInspectionCollection = collect($weekRanges)->map(function ($week)use($material_category) {
-            return $iqcInspectionPerSupplierCollection = IqcInspection::
-                select(['supplier'])
+        $iqcInspectionCollection = collect($weekRanges)->map(function ($week)use($material_category,$model) {
+            return $iqcInspectionPerSupplierCollection = $model::select(['supplier'])
                 ->addSelect(
                     DB::raw("'".Carbon::parse($week['start'])->format('M j')." - ".Carbon::parse($week['end'])->format('j')."' as week_range"), // Display week range
                     // DB::raw("DATE_FORMAT(DATE_ADD(date_inspected, INTERVAL (7 - WEEKDAY(date_inspected)) DAY), '%e') AS week_end"),
@@ -191,7 +190,7 @@ class CommonJob implements CommonInterface
         ->groupBy('supplier') //Array group by specific object
         ->toArray();
 
-        $totalIqcInspectionByDateMaterialGroupBySupplier = $this->totalIqcInspectionByDateMaterialGroupBySupplier($from_date,
+        $totalIqcInspectionByDateMaterialGroupBySupplier = $this->totalIqcInspectionByDateMaterialGroupBySupplier($model,$from_date,
         $to_date,
         $material_category);
 
@@ -208,6 +207,7 @@ class CommonJob implements CommonInterface
     }
 
     public function totalIqcInspectionByDateMaterialGroupBySupplier(
+        $model,
         $from_date,
         $to_date,
         $material_category
@@ -218,8 +218,7 @@ class CommonJob implements CommonInterface
 
         $startOfDate = Carbon::parse($from_date);
         $endOfDate = Carbon::parse($to_date);
-        return IqcInspection::
-        select('supplier')
+        return $model::select('supplier')
         ->addSelect(
             DB::raw("'".Carbon::parse($startOfDate)->format('M j')." - ".Carbon::parse($endOfDate)->format('j')."' as week_range"), // Display week range
             DB::raw("DATE_FORMAT(DATE_ADD(date_inspected, INTERVAL (7 - WEEKDAY(date_inspected)) DAY), '%e') AS week_end"),

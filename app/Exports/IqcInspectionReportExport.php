@@ -34,6 +34,6 @@ class IqcInspectionReportExport implements WithMultipleSheets
     {
         $daily = new IqcInspectionRawSheet($this->iqcInspectionRawSheet);
         $weekly = new IqcInspectionByDateMaterialGroupBySheetWeekly($this->iqcInspectionByDateMaterialGroupBySheet);
-        return $weekly->collection();
+        return $daily->collection();
     }
 }

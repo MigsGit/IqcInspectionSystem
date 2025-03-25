@@ -80,12 +80,6 @@ class IqcInspection extends Model
     public function iqc_dropdown_detail_family(){
         return $this->iqc_dropdown_detail('family');
     }
-    // public function classification(){
-    //     return $this->iqc_dropdown_detail('classification');
-    // }
-    // public function iqc_dropdown_detail_severity_of_inspection(){
-    //     return $this->iqc_dropdown_detail('severity_of_inspection');
-    // }
     public function iqc_dropdown_detail_severity_of_inspection(){
         return $this->iqc_dropdown_detail('severity_of_inspection');
     }
@@ -97,6 +91,11 @@ class IqcInspection extends Model
     }
     public function vw_list_of_received(){
             return $this->hasOne(VwListOfReceived::class, 'pkid_received', 'whs_transaction_id');
-
     }
+    // public function classification(){
+    //     return $this->iqc_dropdown_detail('classification');
+    // }
+    // public function iqc_dropdown_detail_severity_of_inspection(){
+    //     return $this->iqc_dropdown_detail('severity_of_inspection');
+    // }
 }

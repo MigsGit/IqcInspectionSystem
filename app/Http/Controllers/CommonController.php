@@ -2201,13 +2201,13 @@ class CommonController extends Controller
                     $model = YfIqcInspection::class;
                     break;
                 case 'IIS':
-                    $model = YfIqcInspection::class;
+                    $model = IqcInspection::class;
                     break;
                 default:
                     $model = IqcInspection::class;
                     break;
             }
-            return  $model;
+            // return  $model;
             $arr_filtered_arr_group_by1 = [];
             $arr_filtered_arr_group_by2 = [];
             $arr_group_by1 = $request->arr_group_by1;
@@ -2246,6 +2246,7 @@ class CommonController extends Controller
 
             if($request->generate_type == "chart"){
                 $iqcInspectionByDateMaterialGroupBySheet =  $this->commonInterface->iqcInspectionByDateMaterialGroupBySupplierChart(
+                    $model,
                     $from_date,
                     $to_date,
                     $material_category,
@@ -2254,12 +2255,15 @@ class CommonController extends Controller
             }
 
             $iqcInspectionByDateMaterialGroupBySheet =  CommonService::iqcInspectionByDateMaterialGroupBySheet(
+                $model,
                 $from_date,
                 $to_date,
                 $material_category,
                 $arr_merge_group
             );
             $iqcInspectionRawSheet =  CommonService::iqcInspectionRawSheet(
+                $model,
+
                 $from_date,
                 $to_date,
                 $material_category,
@@ -2269,6 +2273,7 @@ class CommonController extends Controller
                 $iqcInspectionByDateMaterialGroupBySheet,
                 $iqcInspectionRawSheet
             );
+
             // Debug Function
             // return $export->collection();
 
@@ -2287,16 +2292,17 @@ class CommonService
 {
 
     public function iqcInspectionRawSheet(
+        $model,
         $from_date,
         $to_date,
         $material_category
     ){
-
+        // return $model;
         /*
             dropdown_details
 
         */
-        return IqcInspection::with([
+        return $model::with([
             'user_iqc',
             'iqc_dropdown_detail_family',
             // 'iqc_dropdown_detail_type_of_inspection',
@@ -2308,6 +2314,7 @@ class CommonService
         ->whereBetween('date_inspected', [$from_date, $to_date]);
     }
     public function iqcInspectionByDateMaterialGroupBySheet(
+        $model,
         $from_date,
         $to_date,
         $material_category,
@@ -2345,10 +2352,10 @@ class CommonService
             // Move to next week's start date
             $startDate = $endDate->copy()->addDay();
         }
+
         // Fetch inspection data per week
-        return $iqcInspectionCollection = collect($weekRanges)->map(function ($week)use($material_category,$arr_merge_group) {
-            return IqcInspection::
-            select('supplier')
+        return $iqcInspectionCollection = collect($weekRanges)->map(function ($week)use($material_category,$arr_merge_group,$model) {
+            return $model::select('supplier')
             ->addSelect(
                 DB::raw("'".Carbon::parse($week['start'])->format('M j')." - ".Carbon::parse($week['end'])->format('j')."' as week_range"), // Display week range
                 DB::raw("DATE_FORMAT(DATE_ADD(date_inspected, INTERVAL (7 - WEEKDAY(date_inspected)) DAY), '%e') AS week_end"),

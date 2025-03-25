@@ -13,11 +13,13 @@ interface CommonInterface
     public function readIqcInspectionByMaterialCategory($model,$categoryMaterial);
     public function getIqcInspectionShift();
     public function iqcInspectionByDateMaterialGroupBySupplierChart(
+        $model,
         $from_date,
         $to_date,
         $material_category
     );
     public function totalIqcInspectionByDateMaterialGroupBySupplier(
+        $model,
         $from_date,
         $to_date,
         $material_category

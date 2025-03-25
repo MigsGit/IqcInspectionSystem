@@ -70,7 +70,7 @@ Route::get('check_user', function (Request $request) {
 });
 Route::get('check_department', function (Request $request) {
     session_start();
-    $get_department_by_id = Department::where('department_id',$_SESSION["rapidx_department_id"])->get(['department_group']);
+    $get_department_by_id = Department::where('department_id',$_SESSION["rapidx_department_id"])->get();
     $department = ($get_department_by_id[0]['department_group'] == "PPS" )? "PPD": $get_department_by_id[0]['department_group'];
     return response()->json(['is_success' => 'true','department' => $department,'dept_code' => $_SESSION["rapidx_department_id"] ]);
 });
