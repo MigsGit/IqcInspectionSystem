@@ -120,7 +120,9 @@ class IqcInspectionController extends Controller
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
-                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A" AND tbl_received.invoiceno = "'.$request->invoiceNo.'" AND tbl_itemList.partcode = "'.$request->partCode.'")
+                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A"
+                    AND tbl_received.invoiceno = "'.$request->invoiceNo.'"
+                    AND tbl_itemList.partcode = "'.$request->partCode.'")
                     AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
                     '.$whereWhsTransactionId.'
                 ');
@@ -177,20 +179,22 @@ class IqcInspectionController extends Controller
     {
         $categoryMaterial = $request->categoryMaterial;
         $whereWhsTransactionId =   $this->commonInterface->readIqcInspectionByMaterialCategory(IqcInspection::class,$categoryMaterial);
-
-        if( isset( $request->lotNum ) ){
+        // return $request->partCode;
+        if( isset( $request->invoiceNo ) && isset($request->partCode) ){
             $tbl_whs_trasanction = DB::connection('mysql_rapidx_yeu')
             ->select('SELECT yeu_receives.*  FROM yeu_receives yeu_receives
                 RIGHT JOIN item_masters item_masters ON yeu_receives.item_code = item_masters.part_code
                 WHERE 1=1
                 '.$whereWhsTransactionId.'
-                AND yeu_receives.lot_no = "'.$request->lotNum.'"
+                AND yeu_receives.invoice_no = "'.$request->invoiceNo.'"
+                AND yeu_receives.item_code = "'.$request->partCode.'"
                 AND yeu_receives.item_code IS NOT NULL
                 AND yeu_receives.item_name IS NOT NULL
                 AND yeu_receives.lot_no IS NOT NULL
                 AND YEAR(yeu_receives.created_at) != 2024
                 ORDER BY item_code DESC
-            ');
+                ');
+            // AND yeu_receives.lot_no = "'.$request->lotNum.'"
         }else{
             $tbl_whs_trasanction = DB::connection('mysql_rapidx_yeu')
             ->select('SELECT yeu_receives.*,item_masters.part_code  FROM yeu_receives yeu_receives
@@ -221,6 +225,13 @@ class IqcInspectionController extends Controller
         // }
 
         return DataTables::of($tbl_whs_trasanction)
+        ->addColumn('rawBulkCheckBox', function($row){
+            $result = '';
+            $result .= '<center>';
+            $result .= "<input class='checkBulkYeuIqcInspection' type='checkbox' pkid-received='".$row->id."' id='checkBulkYeuIqcInspection'>";
+            $result .= '</center>';
+            return $result;
+        })
         ->addColumn('rawAction', function($row){
             $result = '';
             $result .= '<center>';
@@ -235,7 +246,7 @@ class IqcInspectionController extends Controller
             $result .= '</center>';
             return $result;
         })
-        ->rawColumns(['rawAction','rawStatus'])
+        ->rawColumns(['rawAction','rawStatus','rawBulkCheckBox'])
         ->make(true);
         /*
             InvoiceNo
@@ -380,6 +391,30 @@ class IqcInspectionController extends Controller
     public function getYeuReceivingById(Request $request)
     {
         try {
+            $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class,$request->iqc_category_material_id);
+            //Get Batch Lot Number, Foreign Key , Total Qty
+            if( isset($request->arr_pkid_received)  ){
+                $iqcInspection = YeuReceive::whereIn('id',$request->arr_pkid_received)
+                ->get();
+                $sumTotalLotQty = $iqcInspection->sum('qty');
+                $lotNo = $iqcInspection->pluck('lot_no')->implode(', ');
+                $whsTransactionId = $iqcInspection->pluck('id')->implode(', ');
+
+                $iqcInspectionCollection = $iqcInspection->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId){
+                    // return implode(',',$row->lot_no);
+                    return [
+                        'id'    => $whsTransactionId,
+                        'invoice_no' => $row->invoice_no,
+                        'item_code' => $row->item_code,
+                        'item_name'  => $row->item_name,
+                        'supplier'  => $row->supplier,
+                        'lot_no'    => $lotNo,
+                        'qty'    => $sumTotalLotQty,
+                    ];
+
+                })->toArray();
+                return response()->json(['is_success' => 'true','iqcInspection' => $iqcInspectionCollection,'generateControlNumber' => $generateControlNumber]);
+            }
             /**
              * Add Conditions as many as you want
              *
@@ -391,7 +426,7 @@ class IqcInspectionController extends Controller
             ];
             $query = $this->resourceInterface->readAllWithConditions(YeuReceive::class,$conditions);
             $iqcInspection = $query->get();
-            $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class,$request->iqc_category_material_id);
+
             return response()->json(['is_success' => 'true','iqcInspection' => $iqcInspection,'generateControlNumber' => $generateControlNumber]);
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
@@ -399,6 +434,7 @@ class IqcInspectionController extends Controller
     }
     public function getIqcInspectionById(Request $request)
     {
+
         $tbl_whs_trasanction = IqcInspection::with('iqc_inspections_mods','iqc_inspections_mods.iqc_dropdown_detail','user_iqc')
         ->where('id',$request->iqc_inspection_id)
         ->get(['ts_iqc_inspections.id as iqc_inspection_id','ts_iqc_inspections.*']);
@@ -407,10 +443,9 @@ class IqcInspectionController extends Controller
     public function getTsWhsPackagingById(Request $request)
     {
         try {
-
+            //Get Batch Lot Number, Foreign Key , Total Qty
             $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class,$request->iqc_category_material_id);
             if( isset($request->arr_pkid_received)  ){
-                // $arr_pkid_received =  implode(',',$request->arr_pkid_received);
                 $vwListOfReceived =  VwListOfReceived::select(
                     [
                         'pkid_received as whs_transaction_id',
@@ -440,8 +475,6 @@ class IqcInspectionController extends Controller
                     ];
 
                 })->toArray();
-                // $lotNos = VwListOfReceived::whereIn('pkid_received', $request->arr_pkid_received)
-
 
                 return response()->json([
                     'is_success' => 'true',

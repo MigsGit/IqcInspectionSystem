@@ -184,6 +184,7 @@
                                                                     style="width: 100%;">
                                                                     <thead>
                                                                         <tr>
+                                                                            <th><center> <input class="d-none" type="checkbox" id="checkBulkYeuIqcInspectionSelectAll"> </center></th>
                                                                             <th><center><i  class="fa fa-cog"></i></center></th>
                                                                             <th>Status</th>
                                                                             <th>Invoice</th>
@@ -197,7 +198,7 @@
                                                                             <th>Part Code</th>
                                                                             <th>Part Name</th>
                                                                             <th>Lot No.</th>
-                                                                            {{-- <th>Lot Qty.</th> --}}
+                                                                            <th>Lot Qty.</th>
                                                                             {{-- <th>Total Lot Size</th> --}}
                                                                             {{-- <th>AQL</th> --}}
                                                                         </tr>
@@ -250,6 +251,7 @@
 
     @section('js_content')
         <script type="text/javascript">
+
             $(document).ready(function () {
 
                 globalVar = {
@@ -263,7 +265,6 @@
                 tbl = {
                     iqcInspection:'#tblIqcInspection',
                     iqcWhsReceivingPackaging:'#tblIqcWhsReceivingPackaging',
-                    iqcWhsDetails :'#tblWhsDetails',
                     iqcInspected:'#tblIqcInspected',
                     iqcYeuDetails:'#tblIqcYeuDetails',
                     iqcYeuInspected:'#tblIqcYeuInspected',
@@ -341,13 +342,15 @@
                     "ajax" : {
                         url: "load_yeu_details", //Rapidx TS YEU Receiving
                         data: function (param){
-                            param.lotNum = $('#txtSearchLotNum').val()
+                            param.lotNum = $('#txtSearchLotNum').val();
+                            param.invoiceNo = $('#txtInvoiceNo').val();
+                            param.partCode = $('#txtPartCode').val();
                             param.categoryMaterial = globalVar.categoryMaterialYeu;
                         },
                     },
                     fixedHeader: true,
                     "columns":[
-
+                        { "data" : "rawBulkCheckBox", orderable:false, searchable:false },
                         { "data" : "rawAction", orderable:false, searchable:false },
                         { "data" : "rawStatus",orderable:false, searchable:false },
                         { "data" : "invoice_no" },
@@ -355,6 +358,8 @@
                         { "data" : "item_code" },
                         { "data" : "item_name" },
                         { "data" : "lot_no" },
+                        { "data" : "qty" },
+
 
                     ],
                 });
@@ -427,9 +432,14 @@
                 // $(tbl.iqcYeuInspected).on('click','#btnEditIqcInspection', editIqcInspected);
 
                 //start nmodify =======
+
                 $('#modalSaveIqcInspection').on('hidden.bs.modal', function (e) { //nmodify
                     dataTable.iqcTsWhsPackaging.page.len(10).draw();
+                    dataTable.iqcYeuDetails.page.len(10).draw();
                     $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
+                    // $('#tblIqcWhsReceivingPackaging tbody tr').attr('style', 'background:white;');
+                    // $('#tblIqcYeuDetails tbody tr').attr('style', 'background:white;');
                 });
 
                 $(tbl.iqcWhsReceivingPackaging).on('click','#checkBulkIqcInspection','tr', function () {
@@ -464,7 +474,7 @@
                     } else {
                         dataTable.iqcTsWhsPackaging.page.len(10).draw();
                     }
-                    console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
+                    // console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
                 });
 
                 $('#checkBulkIqcInspectionSelectAll').on('change', function() {
@@ -478,30 +488,28 @@
                     let row = $(this).closest('tr'); // Get the row
 
                     if (this.checked) {
-                        // selectedIds.add(pkid); // Add ID
-                        // row.addClass('highlight-row'); // Add highlight class
-                        // globalVar.arrPkidReceived.push(pkid);
                         row.attr('style', 'background:#90EE90;');
                     } else {
-                        globalVar.arrPkidReceived = []; // Remove ID
                         row.attr('style', 'background:white;'); // Remove highlight class
                     }
                     // console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
                 });
+
+                $('#btnBatchSearch').attr('el-btn-attr','whseTransaction')
+
                 $('#btnBatchSearch').click(function (e) {
                     e.preventDefault();
                     let elModalAttr = $(this).attr('el-btn-attr');
                     $('#modalBatchSearch').attr('el-modal-attr',elModalAttr).modal('show');
                 });
+
                 $('#btnClickBatchSearch').click(function (e) {
                     e.preventDefault();
+
                     let invoiceNo = $('#txtInvoiceNo').val();
                     let partCode = $('#txtPartCode').val();
-                    $('#modalLotNum').modal('hide');
                     let modalId = $("#modalBatchSearch").attr('el-modal-attr');
                     let categoryMaterial = $('#txtCategoryMaterial').val();
-                    console.log(modalId);
-
                     switch (modalId) {
                         case 'whseTransaction':
 
@@ -525,6 +533,60 @@
                     $('#txtPartCode').val('');
                 });
 
+
+                $(tbl.iqcYeuDetails).on('click','#checkBulkYeuIqcInspection','tr', function () {
+                    let row = $(this).closest('tr'); // Get the parent row of the checkbox
+                    let pkidReceived = $(this).attr('pkid-received');
+                    if ($(this).prop('checked')) {
+                        row.attr('style', 'background:#90EE90;');
+                        $(this).each(function () {
+                            globalVar.arrPkidReceived.push(pkidReceived);
+                            console.log('arrPkidReceived',globalVar.arrPkidReceived);
+                        });
+                    }else{
+                        row.attr('style', 'background:white;');
+                        $(this).each(function () {
+                            let indexPkidReceived = globalVar.arrPkidReceived.indexOf(pkidReceived);
+                            globalVar.arrPkidReceived.splice(indexPkidReceived, 1);
+                            console.log('arrSplice_fkid_document',globalVar.arrPkidReceived);
+                        });
+                    }
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`); //nmodify
+                });
+
+                $('#checkBulkYeuIqcInspectionSelectAll').on('change', function() {
+                    let isChecked = this.checked;
+                    $('.checkBulkYeuIqcInspection').prop('checked', isChecked); // Toggle all row checkboxes
+
+                    if (isChecked) {
+                        $('.checkBulkYeuIqcInspection').each(function() {
+                            let row = $(this).closest('tr');
+                            globalVar.arrPkidReceived.push($(this).attr('pkid-received'));
+                        });
+                    } else {
+                        dataTable.iqcTsWhsPackaging.page.len(10).draw();
+                    }
+                    console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
+                });
+
+                $('#checkBulkYeuIqcInspectionSelectAll').on('change', function() {
+                    let isChecked = this.checked;
+                    $('.checkBulkYeuIqcInspection').prop('checked', isChecked).trigger('change'); // Toggle and trigger event
+                });
+
+                // // Individual row checkbox selection
+                $(document).on('change', '.checkBulkYeuIqcInspection', function() {
+                    let pkid = $(this).attr('pkid-received'); // Get ID
+                    let row = $(this).closest('tr'); // Get the row
+
+                    if (this.checked) {
+                        row.attr('style', 'background:#90EE90;');
+                    } else {
+                        row.attr('style', 'background:white;'); // Remove highlight class
+                    }
+                    // console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
+                });
+
                 dataTable.iqcTsWhsPackaging.on('draw', function () { //nmodify
                     globalVar.arrPkidReceived = [];
                     $('#checkBulkIqcInspectionSelectAll').addClass('d-none');
@@ -535,6 +597,20 @@
                             $(this).removeClass('d-none');
                         })
                         $('#checkBulkIqcInspectionSelectAll').removeClass('d-none');
+                        return;
+                    }
+                });
+
+                dataTable.iqcYeuDetails.on('draw', function () {
+                    globalVar.arrPkidReceived = [];
+                    $('#checkBulkYeuIqcInspectionSelectAll').addClass('d-none');
+                    $('#checkBulkYeuIqcInspectionSelectAll').prop('checked',false);
+                    if($('#txtInvoiceNo').val() != "" && $('#txtPartCode').val() != ""){
+                        // $('#tblIqcWhsReceivingPackaging tbody #btnEditIqcInspection').each(function(index, tr){
+                        $('#tblIqcYeuDetails tbody #checkBulkYeuIqcInspection').each(function(index, tr){
+                            $(this).removeClass('d-none');
+                        })
+                        $('#checkBulkYeuIqcInspectionSelectAll').removeClass('d-none');
                         return;
                     }
                 });
@@ -627,7 +703,6 @@
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
                     dataTable.iqcTsWhsPackaging.page.len(10).draw();
-
                 });
 
                 $('a[href="#menu2_1"]').click(function (e) {
@@ -651,13 +726,6 @@
                     dataTable.iqcYeuInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                 });
 
-                dataTable.iqcYeuDetails.on('draw', function () {
-                    if($('#txtSearchLotNum').val() != ""){
-                        $('#tblIqcYeuDetails tbody #btnEditIqcInspection').each(function(index, tr){
-                            $(this).removeClass('d-none');
-                        })
-                    }
-                });
 
                 form.iqcInspection.find('#accepted').keyup(function() {
                     divDisplayNoneClass(form.iqcInspection,$(this).val());
