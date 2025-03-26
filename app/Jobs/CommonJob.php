@@ -84,6 +84,44 @@ class CommonJob implements CommonInterface
         $iqcInspection = $this->resourceInterface->readCustomEloquent($model)
             ->where('iqc_category_material_id',$categoryMaterial)
             ->whereNull('deleted_at')
+            ->orderBy('id','DESC')
+            ->get(['whs_transaction_id']);
+        $whereWhsTransactionId = "";
+        if($categoryMaterial == "37" || $categoryMaterial == "46"
+            || $categoryMaterial == "123" || $categoryMaterial == "47"
+            || $categoryMaterial == "49" ) //Packaging Material Category
+        {
+            if(count ($iqcInspection) > 0){
+                // foreach ($iqcInspection as $key => $valIqcInspection) {
+                //     $arrWhsTransactionId[] = "AND tbl_received.pkid_received != '".$valIqcInspection->whs_transaction_id."' ";
+                // }
+                // $whereWhsTransactionId = implode(' ',$arrWhsTransactionId);
+                $iqcInspectionCollection = collect($iqcInspection)->Map(function ($value) {
+                    $value['whs_transaction_id'] = array_map('trim', explode(',', $value['whs_transaction_id']));
+                    return $value['whs_transaction_id'];
+                })->flatten(1)->toArray();
+                $iqcInspectionCollection = implode(',',$iqcInspectionCollection);
+                $arrWhsTransactionId = "AND tbl_received.pkid_received NOT IN ($iqcInspectionCollection)";
+            }
+
+        }else{ //YEU Material Category //nmodify
+            if(count ($iqcInspection) > 0){
+
+                $iqcInspectionCollection = collect($iqcInspection)->Map(function ($value) {
+                        $value['whs_transaction_id'] = array_map('trim', explode(',', $value['whs_transaction_id']));
+                        return $value['whs_transaction_id'];
+                })->flatten(1)->toArray();
+                $iqcInspectionCollection = implode(',',$iqcInspectionCollection);
+                $arrWhsTransactionId = "AND yeu_receives.id NOT IN ($iqcInspectionCollection)";
+            }
+        }
+        return $arrWhsTransactionId;
+    }
+    public function readIqcInspectionByMaterialCategoryTEST($model,$categoryMaterial){
+        $iqcInspection = $this->resourceInterface->readCustomEloquent($model)
+            ->where('iqc_category_material_id',$categoryMaterial)
+            ->whereNull('deleted_at')
+            ->orderBy('id','DESC')
             ->get();
         $whereWhsTransactionId = "";
         if($categoryMaterial == "37" || $categoryMaterial == "46"
@@ -96,9 +134,18 @@ class CommonJob implements CommonInterface
                 }
                 $whereWhsTransactionId = implode(' ',$arrWhsTransactionId);
             }
-        }else{ //YEU Material Category
+        }else{ //YEU Material Category //nmodify
             if(count ($iqcInspection) > 0){
+
                 foreach ($iqcInspection as $key => $valIqcInspection) {
+                    $str = $valIqcInspection->whs_transaction_id;
+                    $is_comma_exist = "/,/i";
+                    if( preg_match($is_comma_exist, $str) ){
+                        $arr_whs_transaction_id =  explode(',',$str);
+                        return $cleanedData = collect($arr_whs_transaction_id)->map(function ($value) {
+                            return trim($value);
+                        })->implode(" AND yeu_receives.id != '");
+                    }
                     $arrWhsTransactionId[] = "AND yeu_receives.id != '".$valIqcInspection->whs_transaction_id."' ";
                 }
                 $whereWhsTransactionId = implode(' ',$arrWhsTransactionId);

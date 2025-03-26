@@ -40,8 +40,6 @@ Route::middleware('CheckSessionExist')->group(function(){
     // * ADMIN VIEW
     Route::view('/user','user')->name('user');
     Route::view('/ts_iqc_inspection','ts_iqc_inspection')->name('ts_iqc_inspection');
-    Route::view('/bulk_ts_iqc_inspection','bulk_ts_iqc_inspection')->name('bulk_ts_iqc_inspection');
-    Route::view('/ts_iqc_inspection','ts_iqc_inspection')->name('ts_iqc_inspection');
     Route::view('/ppd_iqc_inspection','ppd_iqc_inspection')->name('ppd_iqc_inspection');
     Route::view('/cn_iqc_inspection','cn_iqc_inspection')->name('cn_iqc_inspection');
     Route::view('/yf_iqc_inspection','yf_iqc_inspection')->name('yf_iqc_inspection');
@@ -90,7 +88,6 @@ Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/get_mode_of_defects_by_id', 'getModeOfDefectsById')->name('get_mode_of_defects_by_id');
 
     Route::post('/save_iqc_inspection', 'saveIqcInspection')->name('save_iqc_inspection');
-    Route::post('/save_iqc_inspection_bulk', 'saveIqcInspectionBulk')->name('save_iqc_inspection_bulk');
 });
 Route::controller(CnIqcInspectionController::class)->group(function () {
     Route::get('/load_cn_whs_packaging', 'loadCnWhsPackaging')->name('load_cn_whs_packaging');
