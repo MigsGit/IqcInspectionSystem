@@ -173,11 +173,11 @@ class CommonJob implements CommonInterface
                 ->addSelect(
                     DB::raw("'".Carbon::parse($week['start'])->format('M j')." - ".Carbon::parse($week['end'])->format('j')."' as week_range"), // Display week range
                     // DB::raw("DATE_FORMAT(DATE_ADD(date_inspected, INTERVAL (7 - WEEKDAY(date_inspected)) DAY), '%e') AS week_end"),
-                    // DB::raw("COUNT(CASE WHEN judgement = 1 THEN 1 END) as accepted_count"),
-                    // DB::raw("COUNT(CASE WHEN judgement = 2 THEN 1 END) as rejected_count"),
+                    DB::raw("COUNT(CASE WHEN judgement = 1 OR judgement = 3 THEN 1 END) as accepted_count"),
+                    DB::raw("COUNT(CASE WHEN judgement = 2 THEN 1 END) as rejected_count"),
                     // DB::raw("SUM(sampling_size) as 'sampling_size_sum'"),
                     // DB::raw("SUM(no_of_defects) as 'no_of_defects_sum'"),
-                    DB::raw("ROUND( COUNT( CASE WHEN judgement = 1 THEN 1 END ) / ( SUM(lot_inspected) ) * 100,2) as 'actual_lar' "), //lot accepted / lot inspected * 100 - ROUND OF 2
+                    DB::raw("ROUND( COUNT( CASE WHEN judgement = 1 OR judgement = 3 THEN 1 END ) / ( SUM(lot_inspected) ) * 100,2) as 'actual_lar' "), //lot accepted / lot inspected * 100 - ROUND OF 2
                     DB::raw("ROUND( SUM(no_of_defects)  / SUM(sampling_size) * 1000000,0) as 'actual_dppm' "), //ng qty / sampling_size * 1000000 - ROUND OF 0
                     // DB::raw("(SUM(lot_inspected)) / (SUM(lot_inspected) - COUNT(CASE WHEN judgement = 2 THEN 1 END)) as 'actual_lar' "),
                 )
@@ -222,12 +222,12 @@ class CommonJob implements CommonInterface
         ->addSelect(
             DB::raw("'".Carbon::parse($startOfDate)->format('M j')." - ".Carbon::parse($endOfDate)->format('j')."' as week_range"), // Display week range
             DB::raw("DATE_FORMAT(DATE_ADD(date_inspected, INTERVAL (7 - WEEKDAY(date_inspected)) DAY), '%e') AS week_end"),
-            DB::raw("COUNT(CASE WHEN judgement = 1 THEN 1 END) as accepted_count"),
+            DB::raw("COUNT(CASE WHEN judgement = 1 OR judgement = 3 THEN 1 END) as accepted_count"),
             DB::raw("COUNT(CASE WHEN judgement = 2 THEN 1 END) as rejected_count"),
             DB::raw("SUM(lot_inspected) as lot_inspected_sum"),
             DB::raw("SUM(sampling_size) as 'sampling_size_sum'"),
             DB::raw("SUM(no_of_defects) as 'no_of_defects_sum'"),
-            DB::raw("ROUND( COUNT( CASE WHEN judgement = 1 THEN 1 END ) / ( SUM(lot_inspected) ) * 100,2) as 'actual_lar' "), //lot accepted / lot inspected * 100 - ROUND OF 2
+            DB::raw("ROUND( COUNT( CASE WHEN judgement = 1 OR judgement = 3 THEN 1 END ) / ( SUM(lot_inspected) ) * 100,2) as 'actual_lar' "), //lot accepted / lot inspected * 100 - ROUND OF 2
             DB::raw("ROUND( SUM(no_of_defects)  / SUM(sampling_size) * 1000000,0) as 'actual_dppm' "), //ng qty / sampling_size * 1000000 - ROUND OF 0
         )
         ->where("iqc_category_material_id", "=", "$material_category")
@@ -303,12 +303,12 @@ class CommonJob implements CommonInterface
             ->addSelect(
                 DB::raw("'".Carbon::parse($week['start'])->format('M j')." - ".Carbon::parse($week['end'])->format('j')."' as week_range"), // Display week range
                 DB::raw("DATE_FORMAT(DATE_ADD(date_inspected, INTERVAL (7 - WEEKDAY(date_inspected)) DAY), '%e') AS week_end"),
-                DB::raw("COUNT(CASE WHEN judgement = 1 THEN 1 END) as accepted_count"),
+                DB::raw("COUNT(CASE WHEN judgement = 1 OR judgement = 3 THEN 1 END) as accepted_count"),
                 DB::raw("COUNT(CASE WHEN judgement = 2 THEN 1 END) as rejected_count"),
                 DB::raw("SUM(lot_inspected) as 'lot_inspected_sum'"),
                 DB::raw("SUM(sampling_size) as 'sampling_size_sum'"),
                 DB::raw("SUM(no_of_defects) as 'no_of_defects_sum'"),
-                DB::raw("ROUND( COUNT( CASE WHEN judgement = 1 THEN 1 END ) / ( SUM(lot_inspected) ) * 100,2) as 'actual_lar' "), //lot accepted / lot inspected * 100 - ROUND OF 2
+                DB::raw("ROUND( COUNT( CASE WHEN judgement = 1 OR judgement = 3 THEN 1 END ) / ( SUM(lot_inspected) ) * 100,2) as 'actual_lar' "), //lot accepted / lot inspected * 100 - ROUND OF 2
                 DB::raw("ROUND( SUM(no_of_defects)  / SUM(sampling_size) * 1000000,0) as 'actual_dppm' "), //ng qty / sampling_size * 1000000 - ROUND OF 0
             )
             ->where("iqc_category_material_id", "=", "$material_category")

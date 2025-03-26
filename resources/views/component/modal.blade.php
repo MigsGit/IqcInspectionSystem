@@ -306,6 +306,7 @@
                                     <option value="" selected disabled>-Select-</option>
                                     <option value="1">Accept</option>
                                     <option value="2">Reject</option>
+                                    <option value="3">Special Acceptance</option>
                                 </select>
                             </div>
                             <div class="input-group input-group-sm mb-3 d-none divMod">
