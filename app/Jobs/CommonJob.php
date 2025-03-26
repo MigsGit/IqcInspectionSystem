@@ -30,6 +30,7 @@ class CommonJob implements CommonInterface
         $query = $this->resourceInterface->readCustomEloquent($model);
         //Rapidx User
         //TODO: I cannot access the systemone/db_subcon, so I came up with rapidx user DB
+        // return session('rapidx_department_id');
         $rapidx_user = DB::connection('mysql_rapidx')
         ->select(" SELECT department_group
             FROM departments

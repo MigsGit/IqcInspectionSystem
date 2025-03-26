@@ -356,7 +356,10 @@ class IqcInspectionController extends Controller
                     $judgement = 'Reject';
                     $backgound = 'bg-danger';
                     break;
-
+                case 3:
+                    $judgement = 'Special Acceptance';
+                    $backgound = 'bg-warning';
+                    break;
                 default:
                     $judgement = 'On-going';
                     $backgound = 'bg-primary';
@@ -627,6 +630,7 @@ class IqcInspectionController extends Controller
             $mod_defects = explode(',',$request->modeOfDefects);
             $mod_lot_qty = explode(',',$request->lotQty);
             $arr_sum_mod_lot_qty = array_sum($mod_lot_qty);
+            // return IqcInspection::where('iqc_category_material_id',$request->iqc_category_material_id)->get();
             $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class,$request->iqc_category_material_id);
             $appNoExtension = $generateControlNumber['app_no_extension'];
             $requestValidated = $request->validated();
@@ -637,11 +641,31 @@ class IqcInspectionController extends Controller
             if(isset($request->iqc_inspection_id)){ //Edit
 
                 $iqc_inspections_id = $request->iqc_inspection_id;
+                //Save Iqc Inspection from Reject to Special Acceptance Judgement
+                $is_iqc_inspection = IqcInspection::where('id', $iqc_inspections_id)->get(['judgement']);
+                if( count($is_iqc_inspection ) > 0){
+                    if( $is_iqc_inspection[0]->judgement == 2){
+                        $create_iqc_inspection_id = IqcInspection::insertGetId($requestValidated);
+                        /*  All not required fields should to be inside the update method below
+                            NOTE: the name of fields must be match in column name
+                        */
+                        IqcInspection::where('id', $create_iqc_inspection_id)
+                        ->update([
+                            'app_no_extension' => $request->app_no_extension,
+                            'judgement' => 3,
+                            'no_of_defects' => $arr_sum_mod_lot_qty,
+                            'remarks' => $request->remarks,
+                            'inspector' => session('rapidx_user_id'),
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'shift' => $iqcInspectionShift,
+                        ]);
+                    }
+                }
+                //Update Iqc Inspection if Accepted
                 IqcInspection::where('id', $iqc_inspections_id)->update($requestValidated); //PO and packinglist number
-
                 IqcInspection::where('id', $iqc_inspections_id)
                 ->update([
-                    'app_no_extension' => $appNoExtension,
+                    'app_no_extension' => $request->app_no_extension,
                     // 'judgement' => $request->judgement,
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
@@ -650,7 +674,6 @@ class IqcInspectionController extends Controller
                 ]);
 
             }else{ //Add
-                // return 'dsadsd';
                 /* All required fields is the $request validated, check the column is IqcInspectionRequest
                     NOTE: the name of fields must be match in column name
                 */
@@ -726,6 +749,7 @@ class IqcInspectionController extends Controller
     public function saveIqcInspection(IqcInspectionRequest $request)
     // public function saveIqcInspection(Request $request)
     {
+
         date_default_timezone_set('Asia/Manila');
         try {
             DB::beginTransaction();
@@ -854,7 +878,7 @@ class IqcInspectionController extends Controller
                     ]);
                 }
             }
-            DB::commit();
+            // DB::commit();
             return response()->json( [ 'result' => 1 ] );
         } catch (\Throwable $th) {
             DB::rollback();
