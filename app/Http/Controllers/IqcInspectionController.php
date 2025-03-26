@@ -633,21 +633,22 @@ class IqcInspectionController extends Controller
             //TODO:
             //Attachment
             //MOD
-            //TESTING
+            //TESTING 93
             if(isset($request->iqc_inspection_id)){ //Edit
-                IqcInspection::where('id', $request->iqc_inspection_id)->update($requestValidated); //PO and packinglist number
 
-                IqcInspection::where('id', $request->iqc_inspection_id)
+                $iqc_inspections_id = $request->iqc_inspection_id;
+                IqcInspection::where('id', $iqc_inspections_id)->update($requestValidated); //PO and packinglist number
+
+                IqcInspection::where('id', $iqc_inspections_id)
                 ->update([
                     'app_no_extension' => $appNoExtension,
-                    // 'invoice_no' => $request->invoice_no,
+                    // 'judgement' => $request->judgement,
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
                     'inspector' => session('rapidx_user_id'),
                     'shift' => $iqcInspectionShift
                 ]);
 
-                $iqc_inspections_id = $request->iqc_inspection_id;
             }else{ //Add
                 // return 'dsadsd';
                 /* All required fields is the $request validated, check the column is IqcInspectionRequest
@@ -660,7 +661,7 @@ class IqcInspectionController extends Controller
                 IqcInspection::where('id', $create_iqc_inspection_id)
                 ->update([
                     'app_no_extension' => $appNoExtension,
-                    // 'invoice_no' => $request->invoice_no,
+                    // 'judgement' => $request->judgement,
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
                     'inspector' => session('rapidx_user_id'),
