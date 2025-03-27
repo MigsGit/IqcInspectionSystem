@@ -108,7 +108,6 @@
                                                                         <tr>
                                                                             <th><center> <input class="d-none" type="checkbox" id="checkBulkIqcInspectionSelectAll"> </center></th>
                                                                             <th><center><i  class="fa fa-cog"></i></center></th>
-                                                                            <th>ID</th>
                                                                             <th>Status</th>
                                                                             <th>Invoice</th>
                                                                             {{-- <th>Date Inspected</th> --}}
@@ -199,7 +198,7 @@
                                                                             <th>Part Name</th>
                                                                             <th>Lot No.</th>
                                                                             <th>Lot Qty.</th>
-                                                                            {{-- <th>Total Lot Size</th> --}}
+                                                                            <th>Received Date</th>
                                                                             {{-- <th>AQL</th> --}}
                                                                         </tr>
                                                                     </thead>
@@ -251,9 +250,7 @@
 
     @section('js_content')
         <script type="text/javascript">
-
             $(document).ready(function () {
-
                 globalVar = {
                     modeOfDefectsById: "",
                     section: "TS",
@@ -324,7 +321,6 @@
                     "columns":[
                         { "data" : "rawBulkCheckBox", orderable:false, searchable:false },
                         { "data" : "rawAction", orderable:false, searchable:false },
-                        { "data" : "receiving_detail_id", orderable:false, searchable:false },
                         { "data" : "rawStatus", orderable:false, searchable:false },
                         { "data" : "InvoiceNo" },
                         { "data" : "Supplier" },
@@ -464,7 +460,7 @@
 
                 $('#checkBulkIqcInspectionSelectAll').on('change', function() {
                     let isChecked = this.checked;
-                    $('.checkBulkIqcInspection').prop('checked', isChecked); // Toggle all row checkboxes
+                    $('.checkBulkIqcInspection').prop('checked', isChecked).trigger('change');; // Toggle all row checkboxes
 
                     if (isChecked) {
                         $('.checkBulkIqcInspection').each(function() {
@@ -472,18 +468,14 @@
                             globalVar.arrPkidReceived.push($(this).attr('pkid-received'));
                         });
                     } else {
-                        dataTable.iqcTsWhsPackaging.page.len(10).draw();
+                        // dataTable.iqcTsWhsPackaging.page.len(10).draw();
+                        globalVar.arrPkidReceived = [];
                     }
-                    // console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
-                });
-
-                $('#checkBulkIqcInspectionSelectAll').on('change', function() {
-                    let isChecked = this.checked;
-                    $('.checkBulkIqcInspection').prop('checked', isChecked).trigger('change'); // Toggle and trigger event
+                    console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
                 });
 
                 // Individual row checkbox selection
-                $(document).on('change', '.checkBulkIqcInspection', function() {
+                $(tbl.iqcWhsReceivingPackaging).on('change', '.checkBulkIqcInspection', function() {
                     let pkid = $(this).attr('pkid-received'); // Get ID
                     let row = $(this).closest('tr'); // Get the row
 
@@ -512,13 +504,12 @@
                     let categoryMaterial = $('#txtCategoryMaterial').val();
                     switch (modalId) {
                         case 'whseTransaction':
-
                                 dataTable.iqcTsWhsPackaging.page.len(-1).draw(); //nmodify
                                 dataTable.iqcTsWhsPackagingInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                             break;
                         case 'yeu':
                                 // alert('yeu')
-                                dataTable.iqcYeuDetails.draw();
+                                dataTable.iqcTsWhsPackaging.page.len(-1).draw(); //nmodify
                                 dataTable.iqcYeuInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                             break;
 
@@ -526,13 +517,13 @@
                             break;
                     }
                     $('#modalBatchSearch').modal('hide');
+
                 });
 
                 $('#modalBatchSearch').on('hidden.bs.modal', function () {
                     $('#txtInvoiceNo').val('');
                     $('#txtPartCode').val('');
                 });
-
 
                 $(tbl.iqcYeuDetails).on('click','#checkBulkYeuIqcInspection','tr', function () {
                     let row = $(this).closest('tr'); // Get the parent row of the checkbox
@@ -556,7 +547,7 @@
 
                 $('#checkBulkYeuIqcInspectionSelectAll').on('change', function() {
                     let isChecked = this.checked;
-                    $('.checkBulkYeuIqcInspection').prop('checked', isChecked); // Toggle all row checkboxes
+                    $('.checkBulkYeuIqcInspection').prop('checked', isChecked).trigger('change'); // Toggle all row checkboxes
 
                     if (isChecked) {
                         $('.checkBulkYeuIqcInspection').each(function() {
@@ -569,13 +560,8 @@
                     console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
                 });
 
-                $('#checkBulkYeuIqcInspectionSelectAll').on('change', function() {
-                    let isChecked = this.checked;
-                    $('.checkBulkYeuIqcInspection').prop('checked', isChecked).trigger('change'); // Toggle and trigger event
-                });
-
                 // // Individual row checkbox selection
-                $(document).on('change', '.checkBulkYeuIqcInspection', function() {
+                $(tbl.iqcYeuDetails).on('change', '.checkBulkYeuIqcInspection', function() {
                     let pkid = $(this).attr('pkid-received'); // Get ID
                     let row = $(this).closest('tr'); // Get the row
 

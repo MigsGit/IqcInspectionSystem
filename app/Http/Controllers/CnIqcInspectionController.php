@@ -36,31 +36,44 @@ class CnIqcInspectionController extends Controller
             $whereWhsTransactionId =   $this->commonInterface->readIqcInspectionByMaterialCategory(CnIqcInspection::class,$categoryMaterial);
             // Read IqcInspection (Material already Inspected) then do not
             // display it to the ON-GOING status
-            if( isset( $request->lotNum ) ){
+            if( isset( $request->invoiceNo ) && isset($request->partCode) ){
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_cn_whs_packaging')
-                ->select(' SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_received.partcode as "PartNumber",
-                    tbl_received.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
-                    FROM  vw_list_of_received2 tbl_received
+                ->select(' SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
+                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo",
+                    tbl_received.receivedate as "ReceivedDate",tbl_received.rcvqty as "TotalLotQty"
+                    FROM  tbl_received tbl_received
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
-                    AND tbl_itemList.is_iqc_inspection = 1
-                    AND date = "'.$request->lotNum.'"
+                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A"
+                    AND tbl_received.invoiceno = "'.$request->invoiceNo.'"
+                    AND tbl_itemList.partcode = "'.$request->partCode.'")
+                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "")
+                    -- AND tbl_received.lot_no != "N/A"
                     '.$whereWhsTransactionId.'
                 ');
             }else{
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_cn_whs_packaging')
                 ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
-                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
+                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo",
+                    tbl_received.receivedate as "ReceivedDate",tbl_received.rcvqty as "TotalLotQty"
                     FROM  tbl_received tbl_received
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
                     AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
-                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "")
+                    -- AND tbl_received.lot_no != "N/A"
                     '.$whereWhsTransactionId.'
                 ');
             }
             return DataTables::of($tbl_whs_trasanction)
+            ->addColumn('rawBulkCheckBox', function($row){
+                $result = '';
+                $result .= '<center>';
+                $result .= "<input class='checkBulkRopCnIqcInspection' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkRopCnIqcInspection'>";
+                $result .= '</center>';
+                return $result;
+            })
             ->addColumn('rawAction', function($row){
                 $result = '';
                 $result .= '<center>';
@@ -75,7 +88,8 @@ class CnIqcInspectionController extends Controller
                 $result .= '</center>';
                 return $result;
             })
-            ->rawColumns(['rawAction','rawStatus'])
+            ->rawColumns(['rawBulkCheckBox','rawAction','rawStatus'])
+
             ->make(true);
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
@@ -88,35 +102,47 @@ class CnIqcInspectionController extends Controller
             $whereWhsTransactionId =   $this->commonInterface->readIqcInspectionByMaterialCategory(CnIqcInspection::class,$categoryMaterial);
             // Read IqcInspection (Material already Inspected) then do not
             // display it to the ON-GOING status
-            if( isset( $request->lotNum ) ){
+            if( isset( $request->invoiceNo ) && isset($request->partCode) ){
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_cn_fixed_whs_packaging')
-                ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_received.partcode as "PartNumber",
-                    tbl_received.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
+                ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
+                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo",
+                    tbl_received.receivedate as "ReceivedDate",tbl_received.rcvqty as "TotalLotQty"
                     FROM  tbl_received tbl_received
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
-                    AND tbl_received.lot_no = "'.$request->lotNum.'"
-                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
-                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A"
+                    AND tbl_received.invoiceno = "'.$request->invoiceNo.'"
+                    AND tbl_itemList.partcode = "'.$request->partCode.'")
+                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "")
+                    -- AND tbl_received.lot_no != "N/A"
 
                     '.$whereWhsTransactionId.'
                 ');
             }else{
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_cn_fixed_whs_packaging')
                 ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
-                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
+                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo",
+                    tbl_received.receivedate as "ReceivedDate",tbl_received.rcvqty as "TotalLotQty"
                     FROM  tbl_received tbl_received
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
+                    AND tbl_itemList.is_iqc_inspection = 1
                     AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
                     AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "")
-                    -- AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+                    -- AND tbl_received.lot_no != "N/A"
                     '.$whereWhsTransactionId.'
                 ');
             }
             return DataTables::of($tbl_whs_trasanction)
+            ->addColumn('rawBulkCheckBox', function($row){
+                $result = '';
+                $result .= '<center>';
+                $result .= "<input class='checkBulkFixedCnIqcInspection' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkFixedCnIqcInspection'>";
+                $result .= '</center>';
+                return $result;
+            })
             ->addColumn('rawAction', function($row){
                 $result = '';
                 $result .= '<center>';
@@ -131,7 +157,8 @@ class CnIqcInspectionController extends Controller
                 $result .= '</center>';
                 return $result;
             })
-            ->rawColumns(['rawAction','rawStatus'])
+            ->rawColumns(['rawBulkCheckBox','rawAction','rawStatus'])
+
             ->make(true);
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
@@ -190,6 +217,10 @@ class CnIqcInspectionController extends Controller
                         $judgement = 'Reject';
                         $backgound = 'bg-danger';
                         break;
+                    case 3:
+                        $judgement = 'Special Acceptance';
+                        $backgound = 'bg-warning';
+                        break;
 
                     default:
                         $judgement = 'On-going';
@@ -228,25 +259,63 @@ class CnIqcInspectionController extends Controller
     public function getCnWhsPackagingById(Request $request)
     {
         try {
-            $query = $this->resourceInterface->readCustomEloquent( VwCnListOfReceived::class);
-            $cnWhsReceivedPackaging = $query->where('pkid_received',$request->pkid_received)->get(
-                [
-                    'pkid_received as whs_transaction_id',
-                    'invoiceno as invoice_no',
-                    'lot_no as lot_no',
-                    'partcode as partcode',
-                    'partname as partname',
-                    'supplier as supplier',
-                    'rcvqty as total_lot_qty',
-                ]
-            );
+            // return $request->arr_pkid_received;
             $generateControlNumber = $this->commonInterface->generateControlNumber(CnIqcInspection::class,$request->iqc_category_material_id);
+            if( isset($request->arr_pkid_received)  ){
+                $vwListOfReceived =  VwCnListOfReceived::select(
+                    [
+                        'pkid_received as whs_transaction_id',
+                        'invoiceno as invoice_no',
+                        'lot_no as lot_no',
+                        'partcode as partcode',
+                        'partname as partname',
+                        'supplier as supplier',
+                        'rcvqty as total_lot_qty',
+                    ]
+                )
+                ->whereIn('pkid_received',$request->arr_pkid_received)
+                ->get();
+                $sumTotalLotQty = $vwListOfReceived->sum('total_lot_qty');
+                $lotNo = $vwListOfReceived->pluck('lot_no')->implode(', ');
+                $whsTransactionId = $vwListOfReceived->pluck('whs_transaction_id')->implode(', ');
+                $cnWhsReceivedPackaging = $vwListOfReceived->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId){
+                    // return implode(',',$row->lot_no);
+                    return [
+                        'whs_transaction_id'    => $whsTransactionId,
+                        'invoice_no' => $row->invoice_no,
+                        'partcode' => $row->partcode,
+                        'partname'  => $row->partname,
+                        'supplier'  => $row->supplier,
+                        'lot_no'    => $lotNo,
+                        'total_lot_qty'    => $sumTotalLotQty,
+                    ];
 
-            return response()->json(['is_success' => 'true',
-                'cnWhsReceivedPackaging' => $cnWhsReceivedPackaging[0],
-                'generateControlNumber' => $generateControlNumber
-            ]);
-            return response()->json(['is_success' => 'true']);
+                })->toArray();
+
+                return response()->json([
+                    'is_success' => 'true',
+                    'cnWhsReceivedPackaging' => $cnWhsReceivedPackaging[0],
+                    'generateControlNumber' => $generateControlNumber
+                ]);
+            }else{
+                $query = $this->resourceInterface->readCustomEloquent( VwCnListOfReceived::class);
+                $cnWhsReceivedPackaging = $query->where('pkid_received',$request->pkid_received)->get(
+                    [
+                        'pkid_received as whs_transaction_id',
+                        'invoiceno as invoice_no',
+                        'lot_no as lot_no',
+                        'partcode as partcode',
+                        'partname as partname',
+                        'supplier as supplier',
+                        'rcvqty as total_lot_qty',
+                    ]
+                );
+
+                return response()->json(['is_success' => 'true',
+                    'cnWhsReceivedPackaging' => $cnWhsReceivedPackaging[0],
+                    'generateControlNumber' => $generateControlNumber
+                ]);
+            }
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
@@ -254,25 +323,63 @@ class CnIqcInspectionController extends Controller
     public function getCnFixedWhsPackagingById(Request $request)
     {
         try {
-            $query = $this->resourceInterface->readCustomEloquent( VwCnFixedListOfReceived::class);
-            $cnWhsReceivedPackaging = $query->where('pkid_received',$request->pkid_received)->get(
-                [
-                    'pkid_received as whs_transaction_id',
-                    'invoiceno as invoice_no',
-                    'lot_no as lot_no',
-                    'partcode as partcode',
-                    'partname as partname',
-                    'supplier as supplier',
-                    'rcvqty as total_lot_qty',
-                ]
-            );
+            // return $request->arr_pkid_received;
             $generateControlNumber = $this->commonInterface->generateControlNumber(CnIqcInspection::class,$request->iqc_category_material_id);
+            if( isset($request->arr_pkid_received)  ){
+                $vwListOfReceived =  VwCnFixedListOfReceived::select(
+                    [
+                        'pkid_received as whs_transaction_id',
+                        'invoiceno as invoice_no',
+                        'lot_no as lot_no',
+                        'partcode as partcode',
+                        'partname as partname',
+                        'supplier as supplier',
+                        'rcvqty as total_lot_qty',
+                    ]
+                )
+                ->whereIn('pkid_received',$request->arr_pkid_received)
+                ->get();
+                $sumTotalLotQty = $vwListOfReceived->sum('total_lot_qty');
+                $lotNo = $vwListOfReceived->pluck('lot_no')->implode(', ');
+                $whsTransactionId = $vwListOfReceived->pluck('whs_transaction_id')->implode(', ');
+                $cnWhsReceivedPackaging = $vwListOfReceived->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId){
+                    // return implode(',',$row->lot_no);
+                    return [
+                        'whs_transaction_id'    => $whsTransactionId,
+                        'invoice_no' => $row->invoice_no,
+                        'partcode' => $row->partcode,
+                        'partname'  => $row->partname,
+                        'supplier'  => $row->supplier,
+                        'lot_no'    => $lotNo,
+                        'total_lot_qty'    => $sumTotalLotQty,
+                    ];
 
-            return response()->json(['is_success' => 'true',
-                'cnWhsReceivedPackaging' => $cnWhsReceivedPackaging[0],
-                'generateControlNumber' => $generateControlNumber
-            ]);
-            return response()->json(['is_success' => 'true']);
+                })->toArray();
+
+                return response()->json([
+                    'is_success' => 'true',
+                    'cnWhsReceivedPackaging' => $cnWhsReceivedPackaging[0],
+                    'generateControlNumber' => $generateControlNumber
+                ]);
+            }else{
+                $query = $this->resourceInterface->readCustomEloquent( VwCnFixedListOfReceived::class);
+                $cnWhsReceivedPackaging = $query->where('pkid_received',$request->pkid_received)->get(
+                    [
+                        'pkid_received as whs_transaction_id',
+                        'invoiceno as invoice_no',
+                        'lot_no as lot_no',
+                        'partcode as partcode',
+                        'partname as partname',
+                        'supplier as supplier',
+                        'rcvqty as total_lot_qty',
+                    ]
+                );
+                return response()->json(['is_success' => 'true',
+                    'cnWhsReceivedPackaging' => $cnWhsReceivedPackaging[0],
+                    'generateControlNumber' => $generateControlNumber
+                ]);
+            }
+
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
@@ -299,31 +406,50 @@ class CnIqcInspectionController extends Controller
             $arr_sum_mod_lot_qty = array_sum($mod_lot_qty);
             $generateControlNumber = $this->commonInterface->generateControlNumber(CnIqcInspection::class,$request->iqc_category_material_id);
             $appNoExtension = $generateControlNumber['app_no_extension'];
+            $requestValidated = $request->validated();
             if(isset($request->iqc_inspection_id)){ //Edit
-                CnIqcInspection::where('id', $request->iqc_inspection_id)->update($request->validated()); //PO and packinglist number
-
-                CnIqcInspection::where('id', $request->iqc_inspection_id)
-                ->update([
-                    // 'app_no_extension' => $appNoExtension,
-                    'invoice_no' => $request->invoice_no,
-                    'no_of_defects' => $arr_sum_mod_lot_qty,
-                    'remarks' => $request->remarks,
-                    'inspector' => session('rapidx_user_id'),
-                    'shift' => $iqcInspectionShift
-                ]);
-
                 $iqc_inspections_id = $request->iqc_inspection_id;
+                //Save Iqc Inspection from Reject to Special Acceptance Judgement
+                $is_iqc_inspection = CnIqcInspection::where('id', $iqc_inspections_id)->get(['judgement']);
+                if( count($is_iqc_inspection ) > 0){
+                    if( $is_iqc_inspection[0]->judgement == 2){
+                        $create_iqc_inspection_id = CnIqcInspection::insertGetId($requestValidated);
+                        /*  All not required fields should to be inside the update method below
+                            NOTE: the name of fields must be match in column name
+                        */
+                        CnIqcInspection::where('id', $create_iqc_inspection_id)
+                        ->update([
+                            'judgement' => 3,
+                            'no_of_defects' => $arr_sum_mod_lot_qty,
+                            'remarks' => $request->remarks,
+                            'inspector' => session('rapidx_user_id'),
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'shift' => $iqcInspectionShift,
+                        ]);
+                    }else{
+                        //Update Iqc Inspection if Accepted
+                        CnIqcInspection::where('id', $iqc_inspections_id)->update($requestValidated); //PO and packinglist number
+                        CnIqcInspection::where('id', $iqc_inspections_id)
+                        ->update([
+                            // 'judgement' => $request->judgement,
+                            'no_of_defects' => $arr_sum_mod_lot_qty,
+                            'remarks' => $request->remarks,
+                            'inspector' => session('rapidx_user_id'),
+                            'shift' => $iqcInspectionShift
+                        ]);
+                    }
+                }
             }else{ //Add
                 /* All required fields is the $request validated, check the column is IqcInspectionRequest
                     NOTE: the name of fields must be match in column name
                 */
-                $create_iqc_inspection_id = CnIqcInspection::insertGetId($request->validated());
+                $create_iqc_inspection_id = CnIqcInspection::insertGetId($requestValidated);
                 /*  All not required fields should to be inside the update method below
                     NOTE: the name of fields must be match in column name
                 */
                 CnIqcInspection::where('id', $create_iqc_inspection_id)
                 ->update([
-                    // 'app_no_extension' => $appNoExtension,
+                    'app_no_extension' => $appNoExtension,
                     'invoice_no' => $request->invoice_no,
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
@@ -333,20 +459,6 @@ class CnIqcInspectionController extends Controller
 
                 ]);
 
-                /* Update rapid/db_pps TblWarehouseTransaction, set inspection_class to 3 */
-                // if($request->whs_transaction_id != 0){
-                //     TblWarehouseTransaction::where('pkid', $request->whs_transaction_id)
-                //     ->update([
-                //         'inspection_class' => 3,
-                //     ]);
-                // }
-                // /* Update status ReceivingDetails into 2*/
-                // if($request->receiving_detail_id != 0){
-                //     ReceivingDetails::where('id', $request->receiving_detail_id)
-                //     ->update([
-                //         'rawStatus' => 2,
-                //     ]);
-                // }
                 $iqc_inspections_id = $create_iqc_inspection_id;
             }
             /* Uploading of file if checked & iqc_coc_file is exist*/

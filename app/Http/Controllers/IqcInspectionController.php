@@ -59,7 +59,7 @@ class IqcInspectionController extends Controller
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_ts_whs_packaging')
                 ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
                     tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo",
-                    receivedate as "ReceivedDate",rcvqty as "TotalLotQty"
+                    tbl_received.receivedate as "ReceivedDate",tbl_received.rcvqty as "TotalLotQty"
                     FROM  tbl_received tbl_received
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
@@ -234,31 +234,7 @@ class IqcInspectionController extends Controller
     }
     public function loadIqcInspection(Request $request)
     {
-        /*  Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
-            NOTE: If the data exist to iqc_inspections it means the data is already inspected
-        */
-
-        // if( isset( $request->lotNum ) ){
-        //     $tbl_iqc_inspected = DB::connection('mysql')
-        //     ->select(' SELECT *
-        //         FROM ts_iqc_inspections
-        //         WHERE 1=1
-        //         AND iqc_category_material_id = "'.$request->category_material.'"
-        //         AND deleted_at IS NULL AND judgement >= 1
-        //         AND lot_no = "'.$request->lotNum.'"
-        //         ORDER BY created_at DESC
-        //     ');
-        // }else{
-        //     $tbl_iqc_inspected = DB::connection('mysql')
-        //     ->select('SELECT *
-        //         FROM ts_iqc_inspections
-        //         WHERE 1=1
-        //         AND iqc_category_material_id = "'.$request->category_material.'"
-        //         AND deleted_at IS NULL
-        //         AND judgement >= 1
-        //         ORDER BY created_at DESC
-        //     ');
-        // }
+        
         $tbl_iqc_inspected = DB::connection('mysql')
         ->select('SELECT *
             FROM ts_iqc_inspections
@@ -484,7 +460,6 @@ class IqcInspectionController extends Controller
                         */
                         IqcInspection::where('id', $create_iqc_inspection_id)
                         ->update([
-                            'app_no_extension' => $request->app_no_extension,
                             'judgement' => 3,
                             'no_of_defects' => $arr_sum_mod_lot_qty,
                             'remarks' => $request->remarks,
@@ -497,7 +472,6 @@ class IqcInspectionController extends Controller
                         IqcInspection::where('id', $iqc_inspections_id)->update($requestValidated); //PO and packinglist number
                         IqcInspection::where('id', $iqc_inspections_id)
                         ->update([
-                            'app_no_extension' => $request->app_no_extension,
                             // 'judgement' => $request->judgement,
                             'no_of_defects' => $arr_sum_mod_lot_qty,
                             'remarks' => $request->remarks,

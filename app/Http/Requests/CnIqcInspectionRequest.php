@@ -23,6 +23,7 @@ class CnIqcInspectionRequest extends FormRequest
      */
     public function rules()
     {
+        /*
         return [
             'whs_transaction_id'=>'required',
             'iqc_category_material_id'=>'required',
@@ -55,6 +56,39 @@ class CnIqcInspectionRequest extends FormRequest
             'lot_inspected'=>'required',
             'accepted'=>'required',
             'judgement'=>'required',
+        ];
+        */
+        return [
+            'whs_transaction_id'=>'required',
+            'iqc_category_material_id'=>'required',
+            'invoice_no'=>'required',
+            'partcode'=>'required',
+            'partname'=>'required',
+            'supplier'=>'required',
+            'lot_no'=>'required',
+            'app_no'=>'required',
+            'app_no_extension'=>'required',
+            'total_lot_qty'=>'required',
+            'judgement'=>'required',
+            'family'=>'required',
+            'die_no'=>'required',
+            'classification'=>'required',
+            'type_of_inspection'=>'required',
+            'severity_of_inspection'=>'required',
+            'inspection_lvl'=>'required',
+            'aql'=>'required',
+            'accept'=>'required',
+            'reject'=>'required',
+            'date_inspected'=>'required',
+            'time_ins_from'=>'required',
+            'time_ins_to'=>'required',
+            'submission'=>'required',
+            'category'=>'required',
+            'target_lar'=>'required',
+            'target_dppm'=>'required',
+            'sampling_size'=>'required',
+            'lot_inspected'=>'required',
+            'accepted'=>'required',
         ];
     }
 }

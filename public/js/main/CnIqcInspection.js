@@ -1,5 +1,4 @@
 // $(document).ready(function () {
-
     const getCnWhsPackagingById = function ()
     {
         form.iqcInspection.find('input').removeClass('is-valid');
@@ -17,6 +16,7 @@
         let iqcCategoryMaterialId = $('#txtCategoryMaterial').val();
         let data = {
             "pkid_received"        : pkidReceived,
+            "arr_pkid_received"                 : globalVar.arrPkidReceived,
         }
         call_ajax(data, 'get_cn_whs_packaging_by_id', function(response){
             // console.log(response);
@@ -63,7 +63,6 @@
             form.iqcInspection.find('#lot_inspected').val(1);
             form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
             form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
-            form.iqcInspection.find('#isUploadCoc').prop('required',true);
             if( iqcCocFile === undefined || iqcCocFile === null ){
                 form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
                 // form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
@@ -106,7 +105,8 @@
         let pkidReceived = ($(this).attr('pkid-received') != undefined) ?  $(this).attr('pkid-received') : 0;
         let iqcCategoryMaterialId = $('#txtCategoryMaterial').val();
         let data = {
-            "pkid_received"        : pkidReceived,
+            "pkid_received"                     : pkidReceived,
+            "arr_pkid_received"                 : globalVar.arrPkidReceived,
         }
         call_ajax(data, 'get_cn_fixed_whs_packaging_by_id', function(response){
             // console.log(response);
@@ -153,7 +153,6 @@
             form.iqcInspection.find('#lot_inspected').val(1);
             form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
             form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
-            form.iqcInspection.find('#isUploadCoc').prop('required',true);
             if( iqcCocFile === undefined || iqcCocFile === null ){
                 form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
                 // form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
@@ -245,10 +244,11 @@
             form.iqcInspection.find('#no_of_defects').val(tblWhsTrasanction['no_of_defects']);
             form.iqcInspection.find('#lot_inspected').val(tblWhsTrasanction['lot_inspected']);
             form.iqcInspection.find('#accepted').val(lotAccepted);
-            form.iqcInspection.find('#judgement').val(tblWhsTrasanction['judgement']);
+            setTimeout(() => { //Bug in select tag
+                form.iqcInspection.find('#judgement').val(tblWhsTrasanction['judgement']).trigger('change');
+            }, 100);
             form.iqcInspection.find('#remarks').val(tblWhsTrasanction['remarks']);
             form.iqcInspection.find('#iqc_coc_file').val('');
-            form.iqcInspection.find('#isUploadCoc').prop('required',false);
 
             if( iqcCocFile === undefined || iqcCocFile === null ){
                 form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
@@ -322,8 +322,8 @@
                 $('#modal-loading').modal('hide');
                 if (response['result'] === 1){
                     $('#modalSaveIqcInspection').modal('hide');
-                    dataTable.iqcCnFWhsPackaging.draw();
-                    dataTable.iqcCnFWhsPackagingInspected.ajax.url("load_cn_iqc_inspection?category_material="+categoryMaterialId).draw();
+                    dataTable.iqcCnFixedWhsPackaging.draw();
+                    dataTable.iqcCnFixedWhsPackagingInspected.ajax.url("load_cn_iqc_inspection?category_material="+categoryMaterialId).draw();
                     Swal.fire({
                         position: "center",
                         icon: "success",
