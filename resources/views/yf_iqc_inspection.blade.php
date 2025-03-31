@@ -58,15 +58,20 @@
                                         </li>
                                     </ul>
                                     <div class="tab-content mt-4" id="myTabContent">
-                                        <div class="row justify-content-end">
-                                            <div class="col-sm-2 d-none">
-                                                <label class="form-label">Lot Number</label>
+                                        <div class="row justify-content-between">
+                                            <div class="col-sm-2">
+                                                <label class="form-label">Batch Search</label>
                                                 <div class="input-group mb-3">
-                                                    <button class="btn btn-primary" id="btnModalLotNum" el-btn-attr="ppdWhsDatabase"><i class="fa-solid fa-qrcode"></i></button>
-                                                    <input type="search" class="form-control" placeholder="Lot Number" id="txtSearchLotNum" readonly>
+                                                    <button class="btn btn-primary" id="btnBatchSearch" > <i class="fa-solid fa-search"></i></button>
                                                 </div>
                                             </div>
                                             <div class="col-sm-2">
+                                                <label class="form-label">Batch Count</label>
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="countBulkIqcInspection">0</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
                                                 <label class="form-label">Material Category</label>
                                                 <div class="input-group mb-3">
                                                     <select class="form-control" id="txtCategoryMaterial" disabled>
@@ -104,22 +109,16 @@
                                                                     style="width: 100%;">
                                                                     <thead>
                                                                         <tr>
+                                                                            <th><center> <input class="d-none" type="checkbox" id="checkBulkYfIqcInspectionSelectAll"> </center></th>
                                                                             <th><center><i  class="fa fa-cog"></i></center></th>
                                                                             <th>Status</th>
                                                                             <th>Invoice</th>
-                                                                            {{-- <th>Date Inspected</th> --}}
-                                                                            {{-- <th>Time Inspected</th> --}}
-                                                                            {{-- <th>App Ctrl No.</th> --}}
-                                                                            {{-- <th>Classification</th> --}}
-                                                                            {{-- <th>Family</th> --}}
-                                                                            {{-- <th>Category</th> --}}
                                                                             <th>Supplier</th>
                                                                             <th>Part Code</th>
                                                                             <th>Part Name</th>
                                                                             <th>Lot No.</th>
-                                                                            {{-- <th>Lot Qty.</th> --}}
-                                                                            {{-- <th>Total Lot Size</th> --}}
-                                                                            {{-- <th>AQL</th> --}}
+                                                                            <th>Lot Qty.</th>
+                                                                            <th>WHS Received Date</th>
                                                                         </tr>
                                                                     </thead>
                                                                 </table>
@@ -173,7 +172,6 @@
     @section('js_content')
         <script type="text/javascript">
             getDropdownDetailsByOptValue('YF',$('#txtCategoryMaterial'),'iqc_category_material_id','47');
-
             $(document).ready(function () {
                 globalVar = {
                     modeOfDefectsById: "",
@@ -182,6 +180,7 @@
                     categoryMaterialPackaging: "47", //Rapid YF Whse Packaging V3
 
                 }
+
                 tbl = {
                     iqcYfWhsPackaging:'#tblIqcYfWhsPackaging',
                     iqcYfWhsPackagingInspected:'#tblIqcYfWhsPackagingInspected',
@@ -228,12 +227,17 @@
                         url: "load_yf_whs_packaging", //Rapid PPS WHS Transaction
                         data: function (param){
                             param.lotNum = $('#txtSearchLotNum').val()
+                            param.invoiceNo = $('#txtInvoiceNo').val();
+                            param.partCode = $('#txtPartCode').val();
+                            //nmodify
                             param.categoryMaterial = globalVar.categoryMaterialPackaging;
+
 
                         },
                     },
                     fixedHeader: true,
                     "columns":[
+                        { "data" : "rawBulkCheckBox", orderable:false, searchable:false },
                         { "data" : "rawAction", orderable:false, searchable:false },
                         { "data" : "rawStatus", orderable:false, searchable:false },
                         { "data" : "InvoiceNo" },
@@ -241,6 +245,8 @@
                         { "data" : "PartNumber" },
                         { "data" : "MaterialType" },
                         { "data" : "Lot_number" },
+                        { "data" : "TotalLotQty" },
+                        { "data" : "ReceivedDate" },
                     ],
                 });
 
@@ -251,7 +257,7 @@
                         url: "load_yf_iqc_inspection",
                         data: function (param){
                             param.lotNum = $('#txtSearchLotNum').val()
-                            // param.categoryMaterial = $('#txtCategoryMaterial').val()
+                            param.categoryMaterial = $('#txtCategoryMaterial').val()
                         },
                     },
                     fixedHeader: true,
@@ -281,13 +287,85 @@
                     let iqcCategoryMaterialId = $('#txtCategoryMaterial').val();
                     getYfIqcInspectionById (iqcInspectionId,iqcCategoryMaterialId);
                 });
+
                 $(tbl.iqcYfWhsPackaging).on('click','#btnEditIqcInspection', getYfWhsPackagingById);
 
-                $('#btnLotNo').click(function (e) {
+                //==================nmodify ====================
+                $('#btnBatchSearch').attr('el-btn-attr','yfWhsPackaging')
+
+                $('#btnBatchSearch').click(function (e) {
                     e.preventDefault();
-                    $('#modalLotNo').modal('show');
+                    let elModalAttr = $(this).attr('el-btn-attr');
+                    $('#modalBatchSearch').attr('el-modal-attr',elModalAttr).modal('show');
                 });
 
+                $('#btnClickBatchSearch').click(function (e) {
+                    e.preventDefault();
+                    let invoiceNo = $('#txtInvoiceNo').val();
+                    let partCode = $('#txtPartCode').val();
+                    let modalId = $("#modalBatchSearch").attr('el-modal-attr');
+                    let categoryMaterial = $('#txtCategoryMaterial').val();
+                    switch (modalId) {
+                        case 'yfWhsPackaging':
+                                dataTable.iqcYfWhsPackaging.page.len(-1).draw(); //nmodify
+                                dataTable.iqcTsWhsPackagingInspected.ajax.url("load_yf_iqc_inspection?category_material="+categoryMaterial).draw();
+                            break;
+                        default:
+                            break;
+                    }
+                    $('#modalBatchSearch').modal('hide');
+                });
+
+                $(tbl.iqcYfWhsPackaging).on('click','#checkBulkIqcInspection','tr', function () {
+                    let row = $(this).closest('tr'); // Get the parent row of the checkbox
+                    let pkidReceived = $(this).attr('pkid-received');
+                    if ($(this).prop('checked')) {
+                        row.attr('style', 'background:#90EE90;');
+                        $(this).each(function () {
+                            globalVar.arrPkidReceived.push(pkidReceived);
+                            console.log('arrPkidReceived',globalVar.arrPkidReceived);
+                        });
+                    }else{
+                        row.attr('style', 'background:white;');
+                        $(this).each(function () {
+                            let indexPkidReceived = globalVar.arrPkidReceived.indexOf(pkidReceived);
+                            globalVar.arrPkidReceived.splice(indexPkidReceived, 1);
+                            console.log('arrSplice_fkid_document',globalVar.arrPkidReceived);
+                        });
+                    }
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`); //nmodify
+                });
+
+                $('#checkBulkYfIqcInspectionSelectAll').on('change', function() { //checkBulkYfIqcInspection
+                    let isChecked = this.checked;
+                    $('.checkBulkYfIqcInspection').prop('checked', isChecked).trigger('change');; // Toggle all row checkboxes
+
+                    if (isChecked) {
+                        $('.checkBulkYfIqcInspection').each(function() {
+                            let row = $(this).closest('tr');
+                            globalVar.arrPkidReceived.push($(this).attr('pkid-received'));
+                        });
+                    } else {
+                        // dataTable.iqcTsWhsPackaging.page.len(10).draw();
+                        globalVar.arrPkidReceived = [];
+                    }
+                    console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
+                });
+
+                // Individual row checkbox selection
+                $(tbl.iqcYfWhsPackaging).on('change', '.checkBulkYfIqcInspection', function() {
+                    let pkid = $(this).attr('pkid-received'); // Get ID
+                    let row = $(this).closest('tr'); // Get the row
+
+                    if (this.checked) {
+                        row.attr('style', 'background:#90EE90;');
+                    } else {
+                        row.attr('style', 'background:white;'); // Remove highlight class
+                    }
+                    // console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
+                });
+
+                //=====================end nmodify========================
                 $('#btnMod').click(function (e) {
                     e.preventDefault();
                     $('#modalModeOfDefect').modal('show');
@@ -343,13 +421,6 @@
                     console.log('deleted',arrTableMod.lotQty);
                     // console.log(arrTableMod);
                 });
-
-                $('#btnModalLotNum').click(function (e) {
-                    e.preventDefault();
-                    let elModalAttr = $(this).attr('el-btn-attr');
-                    $('#modalLotNum').attr('el-modal-attr',elModalAttr).modal('show')
-                });
-
 
                 $('a[href="#menu1_2"]').click(function (e) {
                     e.preventDefault();

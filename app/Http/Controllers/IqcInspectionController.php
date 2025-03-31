@@ -48,7 +48,7 @@ class IqcInspectionController extends Controller
     public function loadWhsPackaging(Request $request)
     {
         try {
-            // Read IqcInspection (Material already Inspected) then do not
+            // Read IqcInspection (Material already Inspected) then do not categoryMaterialPackaging
             // display it to the ON-GOING status
             //TODO: Array ID
             $categoryMaterial = $request->categoryMaterial;
@@ -234,7 +234,7 @@ class IqcInspectionController extends Controller
     }
     public function loadIqcInspection(Request $request)
     {
-        
+
         $tbl_iqc_inspected = DB::connection('mysql')
         ->select('SELECT *
             FROM ts_iqc_inspections

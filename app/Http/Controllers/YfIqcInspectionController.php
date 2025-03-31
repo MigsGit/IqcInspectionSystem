@@ -33,24 +33,26 @@ class YfIqcInspectionController extends Controller
             $whereWhsTransactionId =   $this->commonInterface->readIqcInspectionByMaterialCategory(YfIqcInspection::class,$categoryMaterial);
 
             // Read IqcInspection (Material already Inspected) then do not
-            // display it to the ON-GOING status
-            if( isset( $request->lotNum ) ){
+            // display it to the ON-GOING status 3042 YF-PKI-001
+            if( isset( $request->invoiceNo ) && isset($request->partCode) ){
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_yf_whs_packaging')
                 ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
-                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
+                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo",
+                    tbl_received.receivedate as "ReceivedDate",tbl_received.rcvqty as "TotalLotQty"
                     FROM  tbl_received tbl_received
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
-                    AND tbl_itemList.is_iqc_inspection = 1
-                    AND tbl_received.lot_no = "'.$request->lotNum.'"
-                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
+                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A"
+                    AND tbl_received.invoiceno = "'.$request->invoiceNo.'"
+                    AND tbl_itemList.partcode = "'.$request->partCode.'")
                     AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
                     '.$whereWhsTransactionId.'
                 ');
             }else{
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_yf_whs_packaging')
                 ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
-                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
+                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo",
+                    tbl_received.receivedate as "ReceivedDate",tbl_received.rcvqty as "TotalLotQty"
                     FROM  tbl_received tbl_received
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
@@ -61,6 +63,13 @@ class YfIqcInspectionController extends Controller
                 ');
             }
             return DataTables::of($tbl_whs_trasanction)
+            ->addColumn('rawBulkCheckBox', function($row){
+                $result = '';
+                $result .= '<center>';
+                $result .= "<input class='checkBulkIqcIYfnspection' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkYfIqcInspection'>";
+                $result .= '</center>';
+                return $result;
+            })
             ->addColumn('rawAction', function($row){
                 $result = '';
                 $result .= '<center>';
@@ -75,7 +84,7 @@ class YfIqcInspectionController extends Controller
                 $result .= '</center>';
                 return $result;
             })
-            ->rawColumns(['rawAction','rawStatus'])
+            ->rawColumns(['rawAction','rawStatus','rawBulkCheckBox'])
             ->make(true);
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);

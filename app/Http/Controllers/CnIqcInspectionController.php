@@ -70,7 +70,7 @@ class CnIqcInspectionController extends Controller
             ->addColumn('rawBulkCheckBox', function($row){
                 $result = '';
                 $result .= '<center>';
-                $result .= "<input class='checkBulkRopCnIqcInspection' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkRopCnIqcInspection'>";
+                $result .= "<input class='checkBulkRopCnIqcInspection d-none' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkRopCnIqcInspection'>";
                 $result .= '</center>';
                 return $result;
             })
@@ -116,7 +116,6 @@ class CnIqcInspectionController extends Controller
                     AND tbl_itemList.partcode = "'.$request->partCode.'")
                     AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "")
                     -- AND tbl_received.lot_no != "N/A"
-
                     '.$whereWhsTransactionId.'
                 ');
             }else{
@@ -139,7 +138,7 @@ class CnIqcInspectionController extends Controller
             ->addColumn('rawBulkCheckBox', function($row){
                 $result = '';
                 $result .= '<center>';
-                $result .= "<input class='checkBulkFixedCnIqcInspection' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkFixedCnIqcInspection'>";
+                $result .= "<input class='checkBulkFixedCnIqcInspection d-none' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkFixedCnIqcInspection'>";
                 $result .= '</center>';
                 return $result;
             })

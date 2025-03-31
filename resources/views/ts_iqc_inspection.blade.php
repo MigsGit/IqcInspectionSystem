@@ -140,9 +140,9 @@
                                                                             <th>Status</th>
                                                                             <th>Date Inspected</th>
                                                                             <th>Time Inspected</th>
+                                                                            <th>Invoice No</th>
                                                                             <th>Supplier</th>
                                                                             <th>App Ctrl No.</th>
-                                                                            {{-- <th>Classification</th> --}}
                                                                             {{-- <th>Family</th> --}}
                                                                             {{-- <th>Category</th> --}}
                                                                             <th>Part Code</th>
@@ -376,9 +376,9 @@
                         { "data" : "rawStatus",orderable:false, searchable:false },
                         { "data" : "date_inspected" },
                         { "data" : "time_inspected" }, //
+                        { "data" : "invoice_no" },//
                         { "data": "supplier" },
                         { "data" : "app_ctrl_no" }, //
-                        // { "data" : "classification" },//
                         // { "data" : "family" },//
                         // { "data" : "category" },//
                         { "data" : "partcode" },
@@ -425,10 +425,9 @@
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspected);
                 $(tbl.iqcYeuDetails).on('click','#btnEditIqcInspection', editYeuIqcDetails);
                 $(tbl.iqcYeuInspected).on('click','#btnEditIqcInspection', editIqcInspected);
-                // $(tbl.iqcYeuInspected).on('click','#btnEditIqcInspection', editIqcInspected);
 
-                //start nmodify =======
-
+                //=====start nmodify =======
+                //WBS Packaging
                 $('#modalSaveIqcInspection').on('hidden.bs.modal', function (e) { //nmodify
                     dataTable.iqcTsWhsPackaging.page.len(10).draw();
                     dataTable.iqcYeuDetails.page.len(10).draw();
@@ -519,12 +518,12 @@
                     $('#modalBatchSearch').modal('hide');
 
                 });
-
                 $('#modalBatchSearch').on('hidden.bs.modal', function () {
                     $('#txtInvoiceNo').val('');
                     $('#txtPartCode').val('');
                 });
 
+                //YEU
                 $(tbl.iqcYeuDetails).on('click','#checkBulkYeuIqcInspection','tr', function () {
                     let row = $(this).closest('tr'); // Get the parent row of the checkbox
                     let pkidReceived = $(this).attr('pkid-received');

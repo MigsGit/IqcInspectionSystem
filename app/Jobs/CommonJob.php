@@ -86,7 +86,7 @@ class CommonJob implements CommonInterface
             ->whereNull('deleted_at')
             ->orderBy('id','DESC')
             ->get(['whs_transaction_id']);
-        $whereWhsTransactionId = "";
+        $arrWhsTransactionId = "";
         if($categoryMaterial == "37" || $categoryMaterial == "46"
             || $categoryMaterial == "123" || $categoryMaterial == "47"
             || $categoryMaterial == "49" ) //Packaging Material Category
