@@ -276,8 +276,9 @@ class CnIqcInspectionController extends Controller
                 ->get();
                 $sumTotalLotQty = $vwListOfReceived->sum('total_lot_qty');
                 $lotNo = $vwListOfReceived->pluck('lot_no')->implode(', ');
+                $qtyPerLot = $vwListOfReceived->pluck('qty')->implode(', ');
                 $whsTransactionId = $vwListOfReceived->pluck('whs_transaction_id')->implode(', ');
-                $cnWhsReceivedPackaging = $vwListOfReceived->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId){
+                $cnWhsReceivedPackaging = $vwListOfReceived->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId,$qtyPerLot){
                     // return implode(',',$row->lot_no);
                     return [
                         'whs_transaction_id'    => $whsTransactionId,
@@ -287,6 +288,8 @@ class CnIqcInspectionController extends Controller
                         'supplier'  => $row->supplier,
                         'lot_no'    => $lotNo,
                         'total_lot_qty'    => $sumTotalLotQty,
+                        'qty_per_lot'    => $qtyPerLot,
+
                     ];
 
                 })->toArray();
@@ -340,9 +343,9 @@ class CnIqcInspectionController extends Controller
                 ->get();
                 $sumTotalLotQty = $vwListOfReceived->sum('total_lot_qty');
                 $lotNo = $vwListOfReceived->pluck('lot_no')->implode(', ');
+                $qtyPerLot = $vwListOfReceived->pluck('qty')->implode(', ');
                 $whsTransactionId = $vwListOfReceived->pluck('whs_transaction_id')->implode(', ');
-                $cnWhsReceivedPackaging = $vwListOfReceived->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId){
-                    // return implode(',',$row->lot_no);
+                $cnWhsReceivedPackaging = $vwListOfReceived->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId,$qtyPerLot){
                     return [
                         'whs_transaction_id'    => $whsTransactionId,
                         'invoice_no' => $row->invoice_no,
@@ -351,8 +354,9 @@ class CnIqcInspectionController extends Controller
                         'supplier'  => $row->supplier,
                         'lot_no'    => $lotNo,
                         'total_lot_qty'    => $sumTotalLotQty,
-                    ];
+                        'qty_per_lot'    => $qtyPerLot,
 
+                    ];
                 })->toArray();
 
                 return response()->json([

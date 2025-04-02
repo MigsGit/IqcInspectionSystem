@@ -101,6 +101,12 @@
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">Qty per Lot</span>
+                                </div>
+                                <input type="text" class="form-control form-control-sm" id="qty_per_lot" name="qty_per_lot" readonly>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Lot No.</span>
                                 </div>
                                 <input type="text" class="form-control form-control-sm" id="lot_no" name="lot_no" readonly>
@@ -464,7 +470,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title"><i class="fa fa-edit"></i> Test Socket (TS)</h4>
+                <h4 class="modal-title"><i class="fa fa-edit"></i>Export Group By</h4>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

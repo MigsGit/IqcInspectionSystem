@@ -355,6 +355,7 @@
                         { "data" : "item_name" },
                         { "data" : "lot_no" },
                         { "data" : "qty" },
+                        { "data" : "created_at" },
 
 
                     ],

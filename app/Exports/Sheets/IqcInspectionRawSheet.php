@@ -40,7 +40,7 @@ class IqcInspectionRawSheet implements
     */
     public function collection()
     {
-        
+
         $this->iqcInspectionRawSheet->chunk(40, function ($inspections) use(&$results) {
             foreach ($inspections as $inspection) {
                 $results[] =  $inspection->toArray();
@@ -96,6 +96,35 @@ class IqcInspectionRawSheet implements
                 $classification = 'N/A';
                 break;
         }
+        switch ($data['judgement']) {
+            case '1':
+                $judgement = 'Accepted';
+                break;
+            case '2':
+                $judgement = 'Rejected';
+                break;
+            case '3':
+                $judgement = 'Special Acceptance';
+                break;
+            default:
+                $judgement = 'N/A';
+                break;
+        }
+        switch ($data['submission']) {
+            case '1':
+                $submission = '1st';
+                break;
+            case '2':
+                $submission = '2nd';
+                break;
+            case '3':
+                $submission = '3rd';
+                break;
+            default:
+                $submission = 'N/A';
+                break;
+        }
+
         return [
             $data['invoice_no'],
             $data['partcode'],
@@ -104,24 +133,23 @@ class IqcInspectionRawSheet implements
             $data['vw_list_of_received']['date'],
             $data['lot_no'],
             $data['total_lot_qty'],
-            $type_of_inspection,//E
-            $data['iqc_dropdown_detail_severity_of_inspection']['dropdown_details'], //I
-            $data['iqc_dropdown_detail_inspection_lvl']['dropdown_details'], //I
-            $data['iqc_dropdown_detail_aql']['dropdown_details'], //I
+            $type_of_inspection,
+            $data['iqc_dropdown_detail_severity_of_inspection']['dropdown_details'],
+            $data['iqc_dropdown_detail_inspection_lvl']['dropdown_details'],
+            $data['iqc_dropdown_detail_aql']['dropdown_details'],
             $data['accept'],
             $data['reject'],
             $data['date_inspected'],
-            $data['shift'], //1-A 2-B
+            $data['shift'] == 1 ? "A" : "B" ,
             $data['user_iqc']['name'], //Get Name by Id from User Database
-            $data['submission'],
-            $data['judgement'],
+            $submission,
+            $judgement,
             $data['lot_inspected'],
             $data['accepted'],
             $data['sampling_size'],
             $data['no_of_defects'],
-            $data['classification'],
+            $classification,
             $data['remarks'],
-            // $classification,
         ];
     }
     /**

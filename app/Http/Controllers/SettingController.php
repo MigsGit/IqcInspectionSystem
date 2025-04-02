@@ -53,6 +53,11 @@ class SettingController extends Controller
             $result .= '</center>';
             return $result;
         })
+        ->addColumn('updated_by', function($row){
+            $result = '';
+            $result .= ( $row->updated_by != NULL ) ? $row->updated_by : 'N/A';
+            return $result;
+        })
         ->rawColumns(['raw_action','raw_status'])
         ->make(true);
     }
@@ -73,6 +78,11 @@ class SettingController extends Controller
             $result .= '<center>';
             $result .= '<span class="badge rounded-pill bg-primary"> Active </span>';
             $result .= '</center>';
+            return $result;
+        })
+        ->addColumn('updated_by', function($row){
+            $result = '';
+            $result .= ($row->updated_by != NULL) ? $row->updated_by : 'N/A';
             return $result;
         })
         ->rawColumns(['raw_action','raw_status'])

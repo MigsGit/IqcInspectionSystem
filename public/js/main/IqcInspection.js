@@ -45,13 +45,12 @@
             $('#modalSaveIqcInspection').modal('show');
 
             let iqcInspection = response['iqcInspection'][0];
-            console.log(iqcInspection);
             let generateControlNumber = response['generateControlNumber'];
-            // return;
             let partCode = iqcInspection['item_code'];
             let partName = iqcInspection['item_name'];
             let supplier = iqcInspection['supplier']; // aql
             let lotNo = iqcInspection['lot_no'];
+            let qtyPerLot =iqcInspection['qty_per_lot'] == undefined ? 0 : iqcInspection['qty_per_lot'];
             let lotQty = iqcInspection['qty'];
             let invoiceNo = iqcInspection['invoice_no'];
             let iqcCocFile = iqcInspection['iqc_coc_file'];
@@ -67,6 +66,7 @@
             form.iqcInspection.find('#partname').val(partName);
             form.iqcInspection.find('#supplier').val(supplier);
             form.iqcInspection.find('#total_lot_qty').val(lotQty);
+            form.iqcInspection.find('#qty_per_lot').val(qtyPerLot);
             form.iqcInspection.find('#lot_no').val(lotNo);
             form.iqcInspection.find('#iqc_coc_file').val('');
             form.iqcInspection.find('#sample_size').val(response.sample_size)
@@ -127,7 +127,12 @@
         form.iqcInspection.find('select').removeClass('is-invalid');
         form.iqcInspection.find('select').attr('title', '');
 
-        /*Upload and Download file*/
+        /*Upload and Download file
+        5201,5202,5203,5204,5205,5206,5207,5208,5209,5210,5211,5212,5213
+
+        TS-PKI-021 0052153
+
+        */
         $('#isUploadCoc').prop('checked',false);
         form.iqcInspection.find('#fileIqcCocUpload').addClass('d-none',true)
 
@@ -147,9 +152,10 @@
             let partName =tsWhsReceivedPackaging['partname'];
             let supplier =tsWhsReceivedPackaging['supplier']; // aql
             let lotNo =tsWhsReceivedPackaging['lot_no'];
-            let lotQty =tsWhsReceivedPackaging['total_lot_qty'];
+            let lotQty = tsWhsReceivedPackaging['total_lot_qty'];
+            let qtyPerLot =tsWhsReceivedPackaging['qty_per_lot'] == undefined ? 0 : tsWhsReceivedPackaging['qty_per_lot'];
+            let pkidReceived = (tsWhsReceivedPackaging['whs_transaction_id'] != undefined ||tsWhsReceivedPackaging['whs_transaction_id'] != null) ?tsWhsReceivedPackaging['whs_transaction_id'] : 0;
             let iqcCocFile = tsWhsReceivedPackaging['iqc_coc_file'];
-            // let pkidReceived = (tsWhsReceivedPackaging['whs_transaction_id'] != undefined ||tsWhsReceivedPackaging['whs_transaction_id'] != null) ?tsWhsReceivedPackaging['whs_transaction_id'] : 0;
             let lotAccepted =tsWhsReceivedPackaging['accepted'];
             let invoiceNo = tsWhsReceivedPackaging['invoice_no'];
             let generateControlNumber = response['generateControlNumber'];
@@ -165,6 +171,7 @@
             form.iqcInspection.find('#partname').val(partName);
             form.iqcInspection.find('#supplier').val(supplier);
             form.iqcInspection.find('#total_lot_qty').val(lotQty);
+            form.iqcInspection.find('#qty_per_lot').val(qtyPerLot);
             form.iqcInspection.find('#lot_no').val(lotNo);
             form.iqcInspection.find('#iqc_coc_file').val('');
 
@@ -232,6 +239,7 @@
                 let supplier = tblWhsTrasanction['supplier'];
                 let lotNo = tblWhsTrasanction['lot_no'];
                 let lotQty = tblWhsTrasanction['total_lot_qty'];
+                let qtyPerLot = tblWhsTrasanction['qty_per_lot'];
 
                 let whsTransactionId = ( tblWhsTrasanction['whs_transaction_id'] != undefined || tblWhsTrasanction['whs_transaction_id'] != null) ? tblWhsTrasanction['whs_transaction_id'] : 0;
                 let iqcCategoryMaterialId = ( tblWhsTrasanction['iqc_category_material_id'] != undefined || tblWhsTrasanction['iqc_category_material_id'] != null ) ? tblWhsTrasanction['iqc_category_material_id'] : 0;
@@ -248,6 +256,7 @@
                 form.iqcInspection.find('#partname').val(partName);
                 form.iqcInspection.find('#supplier').val(supplier);
                 form.iqcInspection.find('#total_lot_qty').val(lotQty);
+                form.iqcInspection.find('#qty_per_lot').val(qtyPerLot);
                 form.iqcInspection.find('#lot_no').val(lotNo);
                 form.iqcInspection.find('#iqc_inspection_id').val(iqcInspectionId);
                 form.iqcInspection.find('#app_no').val(tblWhsTrasanction['app_no']);

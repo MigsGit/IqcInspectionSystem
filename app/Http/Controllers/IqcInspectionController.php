@@ -44,7 +44,6 @@ class IqcInspectionController extends Controller
     {
         return $iqc_inspection_by = IqcInspection::where('judgement',1)->get();
     }
-
     public function loadWhsPackaging(Request $request)
     {
         try {
@@ -83,7 +82,7 @@ class IqcInspectionController extends Controller
                     AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
                     '.$whereWhsTransactionId.'
                 ');
-            } //TODO : Lot Number 	133707
+            }
             return DataTables::of($tbl_whs_trasanction)
             ->addColumn('rawBulkCheckBox', function($row){
                 $result = '';
@@ -177,21 +176,6 @@ class IqcInspectionController extends Controller
         })
         ->rawColumns(['rawAction','rawStatus','rawBulkCheckBox'])
         ->make(true);
-        /*
-            InvoiceNo
-            whs_transaction_username,whs_username
-            whs_transaction_lastupdate,whs_lastupdate
-            whs_transaction_lastupdate,whs_lastupdate
-            *Inspection Times*
-            *Application Ctrl. No*
-            *FY#*
-            *WW#*
-            *Sub*
-            PartNumber
-            ProductLine,MaterialType
-            Supplier
-            Lot_number
-        */
     }
     public function loadWhsDetails(Request $request)
     { //PATS PPD WHS Receiving
@@ -311,14 +295,13 @@ class IqcInspectionController extends Controller
             $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class,$request->iqc_category_material_id);
             //Get Batch Lot Number, Foreign Key , Total Qty
             if( isset($request->arr_pkid_received)  ){
-                $iqcInspection = YeuReceive::whereIn('id',$request->arr_pkid_received)
-                ->get();
+                $iqcInspection = YeuReceive::whereIn('id',$request->arr_pkid_received)->get();
                 $sumTotalLotQty = $iqcInspection->sum('qty');
+                $qtyPerLot = $iqcInspection->pluck('qty')->implode(', ');
                 $lotNo = $iqcInspection->pluck('lot_no')->implode(', ');
                 $whsTransactionId = $iqcInspection->pluck('id')->implode(', ');
 
-                $iqcInspectionCollection = $iqcInspection->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId){
-                    // return implode(',',$row->lot_no);
+                $iqcInspectionCollection = $iqcInspection->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId,$qtyPerLot){
                     return [
                         'id'    => $whsTransactionId,
                         'invoice_no' => $row->invoice_no,
@@ -327,6 +310,7 @@ class IqcInspectionController extends Controller
                         'supplier'  => $row->supplier,
                         'lot_no'    => $lotNo,
                         'qty'    => $sumTotalLotQty,
+                        'qty_per_lot'    => $qtyPerLot,
                     ];
 
                 })->toArray();
@@ -377,9 +361,10 @@ class IqcInspectionController extends Controller
                 ->whereIn('pkid_received',$request->arr_pkid_received)
                 ->get();
                 $sumTotalLotQty = $vwListOfReceived->sum('total_lot_qty');
+                $qtyPerLot = $vwListOfReceived->pluck('total_lot_qty')->implode(', ');
                 $lotNo = $vwListOfReceived->pluck('lot_no')->implode(', ');
                 $whsTransactionId = $vwListOfReceived->pluck('whs_transaction_id')->implode(', ');
-                $tsWhsReceivedPackaging = $vwListOfReceived->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId){
+                $tsWhsReceivedPackaging = $vwListOfReceived->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId,$qtyPerLot){
                     // return implode(',',$row->lot_no);
                     return [
                         'whs_transaction_id'    => $whsTransactionId,
@@ -389,6 +374,7 @@ class IqcInspectionController extends Controller
                         'supplier'  => $row->supplier,
                         'lot_no'    => $lotNo,
                         'total_lot_qty'    => $sumTotalLotQty,
+                        'qty_per_lot'    => $qtyPerLot,
                     ];
 
                 })->toArray();

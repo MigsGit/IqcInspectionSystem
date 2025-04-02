@@ -34,6 +34,7 @@ class YfIqcInspectionRequest extends FormRequest
             'app_no'=>'required',
             'app_no_extension'=>'required',
             'total_lot_qty'=>'required',
+            'qty_per_lot'=>'required',
             'judgement'=>'required',
             'family'=>'required',
             'die_no'=>'required',

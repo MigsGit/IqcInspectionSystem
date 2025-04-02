@@ -28,6 +28,7 @@
             let supplier =whsReceiving['supplier'];
             let lotNo =whsReceiving['lot_no'];
             let lotQty =whsReceiving['total_lot_qty'];
+            let qtyPerLot =whsReceiving['qty_per_lot'] == undefined ? 0 : whsReceiving['qty_per_lot'];
             let iqcCocFile = whsReceiving['iqc_coc_file'];
             let pkidReceived = (whsReceiving['whs_transaction_id'] != undefined ||whsReceiving['whs_transaction_id'] != null) ?whsReceiving['whs_transaction_id'] : 0;
             let lotAccepted =whsReceiving['accepted'];
@@ -53,6 +54,7 @@
             form.iqcInspection.find('#partname').val(partName);
             form.iqcInspection.find('#supplier').val(supplier);
             form.iqcInspection.find('#total_lot_qty').val(lotQty);
+            form.iqcInspection.find('#qty_per_lot').val(qtyPerLot);
             form.iqcInspection.find('#lot_no').val(lotNo);
             form.iqcInspection.find('#iqc_coc_file').val('');
 
@@ -118,6 +120,7 @@
             let supplier =whsReceiving['supplier'];
             let lotNo =whsReceiving['lot_no'];
             let lotQty =whsReceiving['total_lot_qty'];
+            let qtyPerLot =whsReceiving['qty_per_lot'] == undefined ? 0 : whsReceiving['qty_per_lot'];
             let iqcCocFile = whsReceiving['iqc_coc_file'];
             let pkidReceived = (whsReceiving['whs_transaction_id'] != undefined ||whsReceiving['whs_transaction_id'] != null) ?whsReceiving['whs_transaction_id'] : 0;
             let lotAccepted =whsReceiving['accepted'];
@@ -143,6 +146,7 @@
             form.iqcInspection.find('#partname').val(partName);
             form.iqcInspection.find('#supplier').val(supplier);
             form.iqcInspection.find('#total_lot_qty').val(lotQty);
+            form.iqcInspection.find('#qty_per_lot').val(qtyPerLot);
             form.iqcInspection.find('#lot_no').val(lotNo);
             form.iqcInspection.find('#iqc_coc_file').val('');
 
@@ -194,6 +198,7 @@
             let supplier = tblWhsTrasanction['supplier'];
             let lotNo = tblWhsTrasanction['lot_no'];
             let lotQty = tblWhsTrasanction['total_lot_qty'];
+            let qtyPerLot = tblWhsTrasanction['qty_per_lot'] == undefined ? 0 : tblWhsTrasanction['qty_per_lot'];
 
             let whsTransactionId = ( tblWhsTrasanction['whs_transaction_id'] != undefined || tblWhsTrasanction['whs_transaction_id'] != null) ? tblWhsTrasanction['whs_transaction_id'] : 0;
             let iqcInspectionId = tblWhsTrasanction['iqc_inspection_id'];
@@ -218,6 +223,7 @@
             form.iqcInspection.find('#partname').val(partName);
             form.iqcInspection.find('#supplier').val(supplier);
             form.iqcInspection.find('#total_lot_qty').val(lotQty);
+            form.iqcInspection.find('#qty_per_lot').val(qtyPerLot);
             form.iqcInspection.find('#lot_no').val(lotNo);
             form.iqcInspection.find('#iqc_inspection_id').val(iqcInspectionId);
             form.iqcInspection.find('#app_no').val(tblWhsTrasanction['app_no']);

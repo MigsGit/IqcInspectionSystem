@@ -35,6 +35,7 @@ class PpdIqcInspectionRequest extends FormRequest
             'app_no_extension'=>'required',
             'die_no'=>'required',
             'total_lot_qty'=>'required',
+            'qty_per_lot'=>'required',
             'lot_no'=>'required',
             'classification'=>'required',
             'type_of_inspection'=>'required',
