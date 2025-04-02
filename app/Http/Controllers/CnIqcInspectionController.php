@@ -70,7 +70,7 @@ class CnIqcInspectionController extends Controller
             ->addColumn('rawBulkCheckBox', function($row){
                 $result = '';
                 $result .= '<center>';
-                $result .= "<input class='checkBulkRopCnIqcInspection d-none' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkRopCnIqcInspection'>";
+                $result .= "<input class='checkBulkRopCnIqcInspection' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkRopCnIqcInspection'>";
                 $result .= '</center>';
                 return $result;
             })
@@ -138,7 +138,7 @@ class CnIqcInspectionController extends Controller
             ->addColumn('rawBulkCheckBox', function($row){
                 $result = '';
                 $result .= '<center>';
-                $result .= "<input class='checkBulkFixedCnIqcInspection d-none' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkFixedCnIqcInspection'>";
+                $result .= "<input class='checkBulkFixedCnIqcInspection' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkFixedCnIqcInspection'>";
                 $result .= '</center>';
                 return $result;
             })
@@ -275,8 +275,8 @@ class CnIqcInspectionController extends Controller
                 ->whereIn('pkid_received',$request->arr_pkid_received)
                 ->get();
                 $sumTotalLotQty = $vwListOfReceived->sum('total_lot_qty');
+                $qtyPerLot = $vwListOfReceived->pluck('total_lot_qty')->implode(', ');
                 $lotNo = $vwListOfReceived->pluck('lot_no')->implode(', ');
-                $qtyPerLot = $vwListOfReceived->pluck('qty')->implode(', ');
                 $whsTransactionId = $vwListOfReceived->pluck('whs_transaction_id')->implode(', ');
                 $cnWhsReceivedPackaging = $vwListOfReceived->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId,$qtyPerLot){
                     // return implode(',',$row->lot_no);
@@ -342,8 +342,8 @@ class CnIqcInspectionController extends Controller
                 ->whereIn('pkid_received',$request->arr_pkid_received)
                 ->get();
                 $sumTotalLotQty = $vwListOfReceived->sum('total_lot_qty');
+                $qtyPerLot = $vwListOfReceived->pluck('total_lot_qty')->implode(', ');
                 $lotNo = $vwListOfReceived->pluck('lot_no')->implode(', ');
-                $qtyPerLot = $vwListOfReceived->pluck('qty')->implode(', ');
                 $whsTransactionId = $vwListOfReceived->pluck('whs_transaction_id')->implode(', ');
                 $cnWhsReceivedPackaging = $vwListOfReceived->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId,$qtyPerLot){
                     return [
