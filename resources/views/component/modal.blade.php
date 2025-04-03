@@ -11,7 +11,8 @@
             <form method="post" id="formSaveIqcInspection" autocomplete="off">
                 @csrf
                 <div class="modal-body modal-body-custom">
-                    <div class="row ">
+                    <div class="row d-none">
+                    {{-- <div class="row"> --}}
                         <div class="col-sm-6 mt-3">
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">

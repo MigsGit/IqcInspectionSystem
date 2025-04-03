@@ -461,7 +461,6 @@
                 $('#checkBulkIqcInspectionSelectAll').on('change', function() {
                     let isChecked = this.checked;
                     $('.checkBulkIqcInspection').prop('checked', isChecked).trigger('change');; // Toggle all row checkboxes
-
                     if (isChecked) {
                         $('.checkBulkIqcInspection').each(function() {
                             let row = $(this).closest('tr');

@@ -127,12 +127,7 @@
         form.iqcInspection.find('select').removeClass('is-invalid');
         form.iqcInspection.find('select').attr('title', '');
 
-        /*Upload and Download file
-        5201,5202,5203,5204,5205,5206,5207,5208,5209,5210,5211,5212,5213
-
-        TS-PKI-021 0052153
-
-        */
+        /*Upload and Download file*/
         $('#isUploadCoc').prop('checked',false);
         form.iqcInspection.find('#fileIqcCocUpload').addClass('d-none',true)
 
@@ -159,7 +154,6 @@
             let lotAccepted =tsWhsReceivedPackaging['accepted'];
             let invoiceNo = tsWhsReceivedPackaging['invoice_no'];
             let generateControlNumber = response['generateControlNumber'];
-            //whs_transaction_id
 
             /* Visual Inspection */
             form.iqcInspection.find('#app_no').val(generateControlNumber.app_no);

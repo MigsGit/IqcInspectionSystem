@@ -156,7 +156,7 @@ class IqcInspectionController extends Controller
         ->addColumn('rawBulkCheckBox', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<input class='checkBulkYeuIqcInspection' type='checkbox' pkid-received='".$row->id."' id='checkBulkYeuIqcInspection'>";
+            $result .= "<input class='checkBulkYeuIqcInspection d-none' type='checkbox' pkid-received='".$row->id."' id='checkBulkYeuIqcInspection'>";
             $result .= '</center>';
             return $result;
         })
@@ -401,7 +401,6 @@ class IqcInspectionController extends Controller
                     'generateControlNumber' => $generateControlNumber
                 ]);
             }
-
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }

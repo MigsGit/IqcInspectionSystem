@@ -66,7 +66,7 @@ class YfIqcInspectionController extends Controller
             ->addColumn('rawBulkCheckBox', function($row){
                 $result = '';
                 $result .= '<center>';
-                $result .= "<input class='checkBulkIqcIYfnspection' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkYfIqcInspection'>";
+                $result .= "<input class='checkBulkYfIqcInspection' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkYfIqcInspection'>";
                 $result .= '</center>';
                 return $result;
             })
@@ -182,30 +182,71 @@ class YfIqcInspectionController extends Controller
     {
         // return '1';
         try {
-            $query = $this->resourceInterface->readCustomEloquent( VwYfListOfReceived::class);
-            $yfWhsReceivedPackaging = $query->where('pkid_received',$request->pkid_received)->get(
-                [
-                    'pkid_received as whs_transaction_id',
-                    'invoiceno as invoice_no',
-                    'lot_no as lot_no',
-                    'partcode as partcode',
-                    'partname as partname',
-                    'supplier as supplier',
-                    'rcvqty as total_lot_qty',
-                ]
-            );
-            $generateControlNumber = $this->commonInterface->generateControlNumber(YfIqcInspection::class,$request->iqc_category_material_id);
+                //Get Batch Lot Number, Foreign Key , Total Qty
+                $generateControlNumber = $this->commonInterface->generateControlNumber(YfIqcInspection::class,$request->iqc_category_material_id);
+                if( isset($request->arr_pkid_received)  ){
+                    $vwListOfReceived =  VwYfListOfReceived::select(
+                        [
+                            'pkid_received as whs_transaction_id',
+                            'invoiceno as invoice_no',
+                            'lot_no as lot_no',
+                            'partcode as partcode',
+                            'partname as partname',
+                            'supplier as supplier',
+                            'rcvqty as total_lot_qty',
+                        ]
+                    )
+                    ->whereIn('pkid_received',$request->arr_pkid_received)
+                    ->get();
+                    $sumTotalLotQty = $vwListOfReceived->sum('total_lot_qty');
+                    $qtyPerLot = $vwListOfReceived->pluck('total_lot_qty')->implode(', ');
+                    $lotNo = $vwListOfReceived->pluck('lot_no')->implode(', ');
+                    $whsTransactionId = $vwListOfReceived->pluck('whs_transaction_id')->implode(', ');
+                    $yfWhsReceivedPackaging = $vwListOfReceived->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId,$qtyPerLot){
+                        return [
+                            'whs_transaction_id'    => $whsTransactionId,
+                            'invoice_no' => $row->invoice_no,
+                            'partcode' => $row->partcode,
+                            'partname'  => $row->partname,
+                            'supplier'  => $row->supplier,
+                            'lot_no'    => $lotNo,
+                            'total_lot_qty'    => $sumTotalLotQty,
+                            'qty_per_lot'    => $qtyPerLot,
+                        ];
 
-            return response()->json(['is_success' => 'true',
-                'yfWhsReceivedPackaging' => $yfWhsReceivedPackaging[0],
-                'generateControlNumber' => $generateControlNumber
-            ]);
-            return response()->json(['is_success' => 'true']);
+                    })->toArray();
+
+                    return response()->json([
+                        'is_success' => 'true',
+                        'yfWhsReceivedPackaging' => $yfWhsReceivedPackaging[0],
+                        'generateControlNumber' => $generateControlNumber
+                    ]);
+                }else{
+                    $vwListOfReceived = $this->resourceInterface->readCustomEloquent( VwYfListOfReceived::class);
+                    $yfWhsReceivedPackaging = $vwListOfReceived->where('pkid_received',$request->pkid_received)->get(
+                        [
+                            'pkid_received as whs_transaction_id',
+                            'invoiceno as invoice_no',
+                            'lot_no as lot_no',
+                            'partcode as partcode',
+                            'partname as partname',
+                            'supplier as supplier',
+                            'rcvqty as total_lot_qty',
+                        ]
+                    );
+                    $generateControlNumber = $this->commonInterface->generateControlNumber(YfIqcInspection::class,$request->iqc_category_material_id);
+
+                    return response()->json([
+                        'is_success' => 'true',
+                        'yfWhsReceivedPackaging' => $yfWhsReceivedPackaging[0],
+                        'generateControlNumber' => $generateControlNumber
+                    ]);
+                    return response()->json(['is_success' => 'true']);
+                }
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
     }
-
     public function getYfIqcInspectionById(Request $request){
         try {
             $tbl_whs_trasanction = YfIqcInspection::with('yf_iqc_inspections_mods','yf_iqc_inspections_mods.iqc_dropdown_detail','user_iqc')
@@ -239,8 +280,6 @@ class YfIqcInspectionController extends Controller
                     'remarks' => $request->remarks,
                     'inspector' => session('rapidx_user_id'),
                     'shift' => $iqcInspectionShift,
-
-
                 ]);
 
                 $iqc_inspections_id = $request->iqc_inspection_id;
@@ -254,15 +293,13 @@ class YfIqcInspectionController extends Controller
                 */
                 YfIqcInspection::where('id', $create_iqc_inspection_id)
                 ->update([
-                    // 'app_no_extension' => $appNoExtension,
+                    'app_no_extension' => $appNoExtension,
                     'invoice_no' => $request->invoice_no,
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
                     'inspector' => session('rapidx_user_id'),
                     'created_at' => date('Y-m-d H:i:s'),
                     'shift' => $iqcInspectionShift,
-
-
                 ]);
 
                 /* Update rapid/db_pps TblWarehouseTransaction, set inspection_class to 3 */

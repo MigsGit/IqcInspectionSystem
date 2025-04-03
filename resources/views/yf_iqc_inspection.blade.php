@@ -109,7 +109,7 @@
                                                                     style="width: 100%;">
                                                                     <thead>
                                                                         <tr>
-                                                                            <th><center> <input class="d-none" type="checkbox" id="checkBulkYfIqcInspectionSelectAll"> </center></th>
+                                                                            <th><center> <input class="" type="checkbox" id="checkBulkYfIqcInspectionSelectAll"> </center></th>
                                                                             <th><center><i  class="fa fa-cog"></i></center></th>
                                                                             <th>Status</th>
                                                                             <th>Invoice</th>
@@ -178,7 +178,7 @@
                     section: "YF",
                     dropdownSection: "YF",
                     categoryMaterialPackaging: "47", //Rapid YF Whse Packaging V3
-
+                    arrPkidReceived: [], //Batch IQC Inspection
                 }
 
                 tbl = {
@@ -291,6 +291,13 @@
                 $(tbl.iqcYfWhsPackaging).on('click','#btnEditIqcInspection', getYfWhsPackagingById);
 
                 //==================nmodify ====================
+                $('#modalSaveIqcInspection').on('hidden.bs.modal', function (e) { //nmodify
+                    dataTable.iqcYfWhsPackaging.page.len(10).draw();
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
+                    // $('#tblIqcWhsReceivingPackaging tbody tr').attr('style', 'background:white;');
+                    // $('#tblIqcYeuDetails tbody tr').attr('style', 'background:white;');
+                });
+
                 $('#btnBatchSearch').attr('el-btn-attr','yfWhsPackaging')
 
                 $('#btnBatchSearch').click(function (e) {
@@ -308,7 +315,7 @@
                     switch (modalId) {
                         case 'yfWhsPackaging':
                                 dataTable.iqcYfWhsPackaging.page.len(-1).draw(); //nmodify
-                                dataTable.iqcTsWhsPackagingInspected.ajax.url("load_yf_iqc_inspection?category_material="+categoryMaterial).draw();
+                                dataTable.iqcYfWhsPackagingInspected.ajax.url("load_yf_iqc_inspection?category_material="+categoryMaterial).draw();
                             break;
                         default:
                             break;
@@ -316,7 +323,7 @@
                     $('#modalBatchSearch').modal('hide');
                 });
 
-                $(tbl.iqcYfWhsPackaging).on('click','#checkBulkIqcInspection','tr', function () {
+                $(tbl.iqcYfWhsPackaging).on('click','#checkBulkYfIqcInspection','tr', function () {
                     let row = $(this).closest('tr'); // Get the parent row of the checkbox
                     let pkidReceived = $(this).attr('pkid-received');
                     if ($(this).prop('checked')) {
@@ -339,7 +346,6 @@
                 $('#checkBulkYfIqcInspectionSelectAll').on('change', function() { //checkBulkYfIqcInspection
                     let isChecked = this.checked;
                     $('.checkBulkYfIqcInspection').prop('checked', isChecked).trigger('change');; // Toggle all row checkboxes
-
                     if (isChecked) {
                         $('.checkBulkYfIqcInspection').each(function() {
                             let row = $(this).closest('tr');
@@ -356,13 +362,26 @@
                 $(tbl.iqcYfWhsPackaging).on('change', '.checkBulkYfIqcInspection', function() {
                     let pkid = $(this).attr('pkid-received'); // Get ID
                     let row = $(this).closest('tr'); // Get the row
-
                     if (this.checked) {
                         row.attr('style', 'background:#90EE90;');
                     } else {
                         row.attr('style', 'background:white;'); // Remove highlight class
                     }
                     // console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
+                });
+
+                dataTable.iqcYfWhsPackaging.on('draw', function () { //nmodify
+                    globalVar.arrPkidReceived = [];
+                    $('#checkBulkYfIqcInspectionSelectAll').addClass('d-none');
+                    $('#checkBulkYfIqcInspectionSelectAll').prop('checked',false);
+                    if($('#txtInvoiceNo').val() != "" && $('#txtPartCode').val() != ""){
+                        // $('#tblIqcWhsReceivingPackaging tbody #btnEditIqcInspection').each(function(index, tr){
+                        $('#tblIqcWhsReceivingPackaging tbody #checkBulkYfIqcInspection').each(function(index, tr){
+                            $(this).removeClass('d-none');
+                        })
+                        $('#checkBulkYfIqcInspectionSelectAll').removeClass('d-none');
+                        return;
+                    }
                 });
 
                 //=====================end nmodify========================
