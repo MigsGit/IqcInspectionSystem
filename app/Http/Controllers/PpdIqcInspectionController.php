@@ -122,15 +122,24 @@ class PpdIqcInspectionController extends Controller
         /*  Get the data only with whs_transaction.inspection_class = 1 - For Inspection, while
             Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
         */
-        // return 'true';
-        if( isset( $request->lotNum ) ){
-            $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
+        // InvoiceNo
+        // AND tbl_itemList.is_iqc_inspection = 1
+        //                   AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A"
+        //                   AND tbl_received.invoiceno = "'.$request->invoiceNo.'"
+        //                   AND tbl_itemList.partcode = "'.$request->partCode.'")
+        //                   AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+        //                   '.$whereWhsTransactionId.'
+        if( isset( $request->invoiceNo ) && isset($request->partCode) ){
+           $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
             ->select(' SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
                 FROM tbl_WarehouseTransaction whs_transaction
                 INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
                 WHERE 1=1
                 AND whs.Factory = 3
-                AND  whs_transaction.inspection_class = 1 AND whs_transaction.Lot_number = "'.$request->lotNum.'"
+                AND whs_transaction.InvoiceNo = "'.$request->invoiceNo.'"
+                AND whs.PartNumber = "'.$request->partCode.'"
+                AND  whs_transaction.inspection_class = 1
+                AND whs_transaction.Lot_number IS NOT NULL
                 ORDER BY whs.PartNumber DESC
             ');
         }else{
@@ -141,11 +150,19 @@ class PpdIqcInspectionController extends Controller
                 WHERE 1=1
                 AND whs.Factory = 3
                 AND whs_transaction.inspection_class = 1
+                AND whs_transaction.Lot_number IS NOT NULL
                 ORDER BY whs.PartNumber DESC
             ');
         }
 
         return DataTables::of($tbl_whs_trasanction)
+        ->addColumn('rawBulkCheckBox', function($row){
+            $result = '';
+            $result .= '<center>';
+            $result .= "<input class='checkBulkIqcInspection' type='checkbox' pkid-received='".$row->pkid."' id='checkBulkIqcInspection'>";
+            $result .= '</center>';
+            return $result;
+        })
         ->addColumn('rawAction', function($row){
             $result = '';
             $result .= '<center>';
@@ -160,7 +177,7 @@ class PpdIqcInspectionController extends Controller
             $result .= '</center>';
             return $result;
         })
-        ->rawColumns(['rawAction','rawStatus'])
+        ->rawColumns(['rawAction','rawStatus','rawBulkCheckBox'])
         ->make(true);
     }
     public function loadPpdWhsPackaging(Request $request)
@@ -171,7 +188,7 @@ class PpdIqcInspectionController extends Controller
             // display it to the ON-GOING status
             $categoryMaterial = $request->categoryMaterial;
             $whereWhsTransactionId =   $this->commonInterface->readIqcInspectionByMaterialCategory(PpdIqcInspection::class,$categoryMaterial);
-            if( isset( $request->lotNum ) ){
+            if( isset( $request->invoiceNo ) && isset($request->partCode) ){
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_ppd_whs_packaging')
                 ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_received.partcode as "PartNumber",
                     tbl_received.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
@@ -221,23 +238,67 @@ class PpdIqcInspectionController extends Controller
     }
     public function getWhsReceivingById(Request $request)
     {
-        $tblWhsTrasanction = DB::connection('mysql_rapid_pps')
-        ->select('
-            SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.Username as "whs_transaction_username",
-            whs_transaction.LastUpdate as "whs_transaction_lastupdate",whs_transaction.inspection_class,
-            whs_transaction.InvoiceNo as "invoice_no",whs_transaction.Lot_number as "lot_no",whs_transaction.In as "total_lot_qty",
-            whs.PartNumber as "partcode",whs.MaterialType as "partname",whs.Supplier as supplier,
-            whs.*,whs.id as "whs_id",whs.Username as "whs_username",whs.LastUpdate as "whs_lastupdate"
-            FROM tbl_WarehouseTransaction whs_transaction
-            INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
-            WHERE whs_transaction.pkid = '.$request->whs_transaction_id.'
-            LIMIT 0,1
-        ');
+
         $generateControlNumber = $this->commonInterface->generateControlNumber(PpdIqcInspection::class,$request->iqc_category_material_id);
-        return response()->json(['is_success' => 'true',
-        'tblWhsTrasanction' => $tblWhsTrasanction[0],
-        'generateControlNumber' => $generateControlNumber
-    ]);
+        if( isset($request->arr_pkid_received)  ){
+            $implodeArrPkidReceived = implode(',',$request->arr_pkid_received);
+
+           $tblWhsTrasanction = DB::connection('mysql_rapid_pps')
+            ->select('
+                SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.Username as "whs_transaction_username",
+                whs_transaction.LastUpdate as "whs_transaction_lastupdate",whs_transaction.inspection_class,
+                whs_transaction.InvoiceNo as "invoice_no",whs_transaction.Lot_number as "lot_no",whs_transaction.In as "total_lot_qty",
+                whs.PartNumber as "partcode",whs.MaterialType as "partname",whs.Supplier as supplier,
+                whs.*,whs.id as "whs_id",whs.Username as "whs_username",whs.LastUpdate as "whs_lastupdate"
+                FROM tbl_WarehouseTransaction whs_transaction
+                INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
+                WHERE whs_transaction.pkid IN ('.$implodeArrPkidReceived.')
+            ');
+            $tblWhsTrasanction = collect($tblWhsTrasanction);
+            $sumTotalLotQty = $tblWhsTrasanction->sum('total_lot_qty');
+            $qtyPerLot = $tblWhsTrasanction->pluck('total_lot_qty')->implode(', ');
+            $lotNo = $tblWhsTrasanction->pluck('lot_no')->implode(', ');
+            $whsTransactionId = $tblWhsTrasanction->pluck('whs_transaction_id')->implode(', ');
+            $tblWhsTrasanction = $tblWhsTrasanction->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId,$qtyPerLot){
+
+                return [
+                    'whs_transaction_id'    => $whsTransactionId,
+                    'invoice_no' => $row->invoice_no,
+                    'partcode' => $row->partcode,
+                    'partname'  => $row->partname,
+                    'supplier'  => $row->supplier,
+                    'lot_no'    => $lotNo,
+                    'total_lot_qty'    => $sumTotalLotQty,
+                    'qty_per_lot'    => $qtyPerLot,
+                ];
+
+            })->toArray();
+
+            return response()->json([
+                'is_success' => 'true',
+                'tblWhsTrasanction' => $tblWhsTrasanction[0],
+                'generateControlNumber' => $generateControlNumber
+            ]);
+        }else{
+            $tblWhsTrasanction = DB::connection('mysql_rapid_pps')
+            ->select('
+                SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.Username as "whs_transaction_username",
+                whs_transaction.LastUpdate as "whs_transaction_lastupdate",whs_transaction.inspection_class,
+                whs_transaction.InvoiceNo as "invoice_no",whs_transaction.Lot_number as "lot_no",whs_transaction.In as "total_lot_qty",
+                whs.PartNumber as "partcode",whs.MaterialType as "partname",whs.Supplier as supplier,
+                whs.*,whs.id as "whs_id",whs.Username as "whs_username",whs.LastUpdate as "whs_lastupdate"
+                FROM tbl_WarehouseTransaction whs_transaction
+                INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
+                WHERE whs_transaction.pkid = '.$request->whs_transaction_id.'
+                LIMIT 0,1
+            ');
+            return response()->json(['is_success' => 'true',
+                'tblWhsTrasanction' => $tblWhsTrasanction[0],
+                'generateControlNumber' => $generateControlNumber
+            ]);
+
+        }
+
     }
     public function getPpdWhsPackagingById(Request $request)
     {

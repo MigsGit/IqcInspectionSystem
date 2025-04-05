@@ -496,7 +496,6 @@
 
                 $('#btnClickBatchSearch').click(function (e) {
                     e.preventDefault();
-
                     let invoiceNo = $('#txtInvoiceNo').val();
                     let partCode = $('#txtPartCode').val();
                     let modalId = $("#modalBatchSearch").attr('el-modal-attr');

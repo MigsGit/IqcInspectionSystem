@@ -15,7 +15,8 @@
         let iqcCategoryMaterialId = $('#txtCategoryMaterial').val();
         let data = {
             "whs_transaction_id"        : whsTransactionId,
-
+            "iqc_category_material_id"  : iqcCategoryMaterialId,
+            "arr_pkid_received"         : globalVar.arrPkidReceived,
         }
 
         call_ajax(data, 'get_whs_receiving_by_id', function(response){
@@ -27,6 +28,7 @@
             let supplier =whsDetails['supplier']; // aql
             let lotNo =whsDetails['lot_no'];
             let lotQty =whsDetails['total_lot_qty'];
+            let qtyPerLot =whsDetails['qty_per_lot'] == undefined ? 0 : whsDetails['qty_per_lot'];
             let iqcCocFile =whsDetails['iqc_coc_file'];
             let whsTransactionId = (whsDetails['whs_transaction_id'] != undefined ||whsDetails['whs_transaction_id'] != null) ?whsDetails['whs_transaction_id'] : 0;
             let lotAccepted =whsDetails['accepted'];
@@ -41,18 +43,18 @@
             getDropdownDetailsByOptValue(globalVar.dropdownSection,form.iqcInspection.find('#severity_of_inspection'),'severity_of_inspection');
             getDropdownDetailsByOptValue(globalVar.dropdownSection,$('#mode_of_defect'),'mode_of_defects');
 
-
             /* Visual Inspection */
             form.iqcInspection.find('#app_no').val(generateControlNumber.app_no);
             form.iqcInspection.find('#app_no').val(generateControlNumber.app_no);
             form.iqcInspection.find('#app_no_extension').val(generateControlNumber.app_no_extension);
             form.iqcInspection.find('#whs_transaction_id').val(whsTransactionId);
             form.iqcInspection.find('#iqc_category_material_id').val(iqcCategoryMaterialId);
-            form.iqcInspection.find('#invoice_no').val();
+            form.iqcInspection.find('#invoice_no').val(invoiceNo);
             form.iqcInspection.find('#partcode').val(partCode);
             form.iqcInspection.find('#partname').val(partName);
             form.iqcInspection.find('#supplier').val(supplier);
             form.iqcInspection.find('#total_lot_qty').val(lotQty);
+            form.iqcInspection.find('#qty_per_lot').val(qtyPerLot);
             form.iqcInspection.find('#lot_no').val(lotNo);
             form.iqcInspection.find('#iqc_coc_file').val('');
             /* Sampling Plan */
@@ -63,8 +65,6 @@
             form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
             form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
             form.iqcInspection.find('#isUploadCoc').prop('required',true);
-
-
 
             if( iqcCocFile === undefined || iqcCocFile === null ){
                 form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);

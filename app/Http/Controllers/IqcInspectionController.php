@@ -365,7 +365,6 @@ class IqcInspectionController extends Controller
                 $lotNo = $vwListOfReceived->pluck('lot_no')->implode(', ');
                 $whsTransactionId = $vwListOfReceived->pluck('whs_transaction_id')->implode(', ');
                 $tsWhsReceivedPackaging = $vwListOfReceived->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId,$qtyPerLot){
-                    // return implode(',',$row->lot_no);
                     return [
                         'whs_transaction_id'    => $whsTransactionId,
                         'invoice_no' => $row->invoice_no,
