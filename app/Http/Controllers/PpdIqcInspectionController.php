@@ -190,32 +190,47 @@ class PpdIqcInspectionController extends Controller
             $whereWhsTransactionId =   $this->commonInterface->readIqcInspectionByMaterialCategory(PpdIqcInspection::class,$categoryMaterial);
             if( isset( $request->invoiceNo ) && isset($request->partCode) ){
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_ppd_whs_packaging')
-                ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_received.partcode as "PartNumber",
-                    tbl_received.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
+                ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
+                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo",
+                    receivedate as "ReceivedDate",rcvqty as "TotalLotQty"
                     FROM  tbl_received tbl_received
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
-                    AND tbl_received.lot_no = "'.$request->lotNum.'"
-                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
-                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
                     '.$whereWhsTransactionId.'
+
 
                 ');
             }else{
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_ppd_whs_packaging')
                 ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
-                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo"
+                    tbl_itemList.partname as "MaterialType",tbl_received.lot_no as "Lot_number",tbl_received.invoiceno as "InvoiceNo",
+                    receivedate as "ReceivedDate",rcvqty as "TotalLotQty"
                     FROM  tbl_received tbl_received
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
-                    AND tbl_itemList.is_iqc_inspection = 1
-                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
-                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
                     '.$whereWhsTransactionId.'
+
+
                 ');
+                // AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
+                // AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+                //'.$whereWhsTransactionId.'
+
+
+                //  AND tbl_itemList.is_iqc_inspection = 1
+                //  AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
+                //  AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+                //  '.$whereWhsTransactionId.'
             }
             return DataTables::of($tbl_whs_trasanction)
+            ->addColumn('rawBulkCheckBox', function($row){
+                $result = '';
+                $result .= '<center>';
+                $result .= "<input class='checkBulkPpdIqcInspection' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkPpdIqcInspection'>";
+                $result .= '</center>';
+                return $result;
+            })
             ->addColumn('rawAction', function($row){
                 $result = '';
                 $result .= '<center>';
@@ -230,7 +245,7 @@ class PpdIqcInspectionController extends Controller
                 $result .= '</center>';
                 return $result;
             })
-            ->rawColumns(['rawAction','rawStatus'])
+            ->rawColumns(['rawAction','rawStatus','rawBulkCheckBox'])
             ->make(true);
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
@@ -303,23 +318,62 @@ class PpdIqcInspectionController extends Controller
     public function getPpdWhsPackagingById(Request $request)
     {
         try {
-
-            $query = $this->resourceInterface->readCustomEloquent( VwPpdListOfReceived::class);
-            $ppdWhsReceivedPackaging = $query->where('pkid_received',$request->pkid_received)->get([
-                'pkid_received as whs_transaction_id',
-                'invoiceno as invoice_no',
-                'lot_no as lot_no',
-                'partcode as partcode',
-                'partname as partname',
-                'supplier as supplier',
-                'rcvqty as total_lot_qty',
-            ]);
+            //Get Batch Lot Number, Foreign Key , Total Qty
             $generateControlNumber = $this->commonInterface->generateControlNumber(PpdIqcInspection::class,$request->iqc_category_material_id);
+            if( isset($request->arr_pkid_received)  ){
+                $vwListOfReceived =  VwPpdListOfReceived::select(
+                    [
+                        'pkid_received as whs_transaction_id',
+                        'invoiceno as invoice_no',
+                        'lot_no as lot_no',
+                        'partcode as partcode',
+                        'partname as partname',
+                        'supplier as supplier',
+                        'rcvqty as total_lot_qty',
+                    ]
+                )
+                ->whereIn('pkid_received',$request->arr_pkid_received)
+                ->get();
+                $sumTotalLotQty = $vwListOfReceived->sum('total_lot_qty');
+                $qtyPerLot = $vwListOfReceived->pluck('total_lot_qty')->implode(', ');
+                $lotNo = $vwListOfReceived->pluck('lot_no')->implode(', ');
+                $whsTransactionId = $vwListOfReceived->pluck('whs_transaction_id')->implode(', ');
+                $ppdWhsReceivedPackaging = $vwListOfReceived->map(function($row) use($sumTotalLotQty,$lotNo,$whsTransactionId,$qtyPerLot){
+                    return [
+                        'whs_transaction_id'    => $whsTransactionId,
+                        'invoice_no' => $row->invoice_no,
+                        'partcode' => $row->partcode,
+                        'partname'  => $row->partname,
+                        'supplier'  => $row->supplier,
+                        'lot_no'    => $lotNo,
+                        'total_lot_qty'    => $sumTotalLotQty,
+                        'qty_per_lot'    => $qtyPerLot,
+                    ];
 
-            return response()->json(['is_success' => 'true',
-                'ppdWhsReceivedPackaging' => $ppdWhsReceivedPackaging[0],
-                'generateControlNumber' => $generateControlNumber
-            ]);
+                })->toArray();
+
+                return response()->json([
+                    'is_success' => 'true',
+                    'ppdWhsReceivedPackaging' => $ppdWhsReceivedPackaging[0],
+                    'generateControlNumber' => $generateControlNumber
+                ]);
+            }else{
+                $query = $this->resourceInterface->readCustomEloquent( VwPpdListOfReceived::class);
+                $ppdWhsReceivedPackaging = $query->where('pkid_received',$request->pkid_received)->get([
+                    'pkid_received as whs_transaction_id',
+                    'invoiceno as invoice_no',
+                    'lot_no as lot_no',
+                    'partcode as partcode',
+                    'partname as partname',
+                    'supplier as supplier',
+                    'rcvqty as total_lot_qty',
+                ]);
+
+                return response()->json(['is_success' => 'true',
+                    'ppdWhsReceivedPackaging' => $ppdWhsReceivedPackaging[0],
+                    'generateControlNumber' => $generateControlNumber
+                ]);
+            }
         } catch (Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }

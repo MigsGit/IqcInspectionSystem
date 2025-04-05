@@ -114,6 +114,8 @@
         let iqcCategoryMaterialId = $('#txtCategoryMaterial').val();
         let data = {
             "pkid_received"        : pkidReceived,
+            "iqc_category_material_id"  : iqcCategoryMaterialId,
+            "arr_pkid_received"         : globalVar.arrPkidReceived,
         }
         call_ajax(data, 'get_ppd_whs_packaging_by_id', function(response){
             $('#modalSaveIqcInspection').modal('show')
@@ -123,6 +125,7 @@
             let supplier =ppdWhsReceiving['supplier'];
             let lotNo =ppdWhsReceiving['lot_no'];
             let lotQty =ppdWhsReceiving['total_lot_qty'];
+            let qtyPerLot =ppdWhsReceiving['qty_per_lot'] == undefined ? 0 : ppdWhsReceiving['qty_per_lot'];
             let iqcCocFile = ppdWhsReceiving['iqc_coc_file'];
             let pkidReceived = (ppdWhsReceiving['whs_transaction_id'] != undefined ||ppdWhsReceiving['whs_transaction_id'] != null) ?ppdWhsReceiving['whs_transaction_id'] : 0;
             let lotAccepted =ppdWhsReceiving['accepted'];
@@ -148,6 +151,7 @@
             form.iqcInspection.find('#partname').val(partName);
             form.iqcInspection.find('#supplier').val(supplier);
             form.iqcInspection.find('#total_lot_qty').val(lotQty);
+            form.iqcInspection.find('#qty_per_lot').val(qtyPerLot);
             form.iqcInspection.find('#lot_no').val(lotNo);
             form.iqcInspection.find('#iqc_coc_file').val('');
 

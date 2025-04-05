@@ -167,13 +167,6 @@
                                                     <h3 class="card-title">Rapid PPD WHS Packaging V3</h3>
                                                 </div>
                                                 <div class="card-body">
-                                                    {{-- <br><br> --}}
-                                                    {{-- TABS --}}
-                                                    {{-- <div class="row">
-                                                        <div class="col-12">
-                                                            <button class="btn btn-lg btn-outline-info float-end"><i class="fa fa-users" aria-hidden="true"></i>  Group by</button>
-                                                        </div>
-                                                    </div> txtScanVerifyData modalVerifyData --}}
                                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                                         <li class="nav-item">
                                                             <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1_2" role="tab" aria-controls="menu1_2" aria-selected="true">On-going</a>
@@ -191,22 +184,17 @@
                                                                     style="width: 100%;">
                                                                     <thead>
                                                                         <tr>
+                                                                            <th><center> <input class="" type="checkbox" id="checkBulkPpdIqcInspectionSelectAll"> </center></th>
                                                                             <th><center><i  class="fa fa-cog"></i></center></th>
                                                                             <th>Status</th>
                                                                             <th>Invoice</th>
-                                                                            {{-- <th>Date Inspected</th> --}}
-                                                                            {{-- <th>Time Inspected</th> --}}
-                                                                            {{-- <th>App Ctrl No.</th> --}}
-                                                                            {{-- <th>Classification</th> --}}
-                                                                            {{-- <th>Family</th> --}}
                                                                             {{-- <th>Category</th> --}}
                                                                             <th>Supplier</th>
                                                                             <th>Part Code</th>
                                                                             <th>Part Name</th>
                                                                             <th>Lot No.</th>
-                                                                            {{-- <th>Lot Qty.</th> --}}
-                                                                            {{-- <th>Total Lot Size</th> --}}
-                                                                            {{-- <th>AQL</th> --}}
+                                                                            <th>Lot Qty.</th>
+                                                                            <th>WHS Received Date</th>
                                                                         </tr>
                                                                     </thead>
                                                                 </table>
@@ -357,6 +345,7 @@
                     },
                     fixedHeader: true,
                     "columns":[
+                        { "data" : "rawBulkCheckBox", orderable:false, searchable:false },
                         { "data" : "rawAction", orderable:false, searchable:false },
                         { "data" : "rawStatus", orderable:false, searchable:false },
                         { "data" : "InvoiceNo" },
@@ -364,6 +353,8 @@
                         { "data" : "PartNumber" },
                         { "data" : "MaterialType" },
                         { "data" : "Lot_number" },
+                        { "data" : "TotalLotQty" },
+                        { "data" : "ReceivedDate" },
                     ],
                 });
 
@@ -451,10 +442,71 @@
                     dataTable.iqcInspection.page.len(10).draw();
                     dataTable.iqcPpdWhsPackaging.page.len(10).draw();
                     $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
-                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
+                    $('#countBulkPpdIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
+                });
+                //PPD WHS Packaging
+                $(tbl.iqcPpdWhsPackaging).on('click','#checkBulkPpdIqcInspection','tr', function () {
+                    let row = $(this).closest('tr'); // Get the parent row of the checkbox
+                    let pkidReceived = $(this).attr('pkid-received');
+                    if ($(this).prop('checked')) {
+                        row.attr('style', 'background:#90EE90;');
+                        $(this).each(function () {
+                            globalVar.arrPkidReceived.push(pkidReceived);
+                            console.log('arrPkidReceived',globalVar.arrPkidReceived);
+                        });
+                    }else{
+                        row.attr('style', 'background:white;');
+                        $(this).each(function () {
+                            let indexPkidReceived = globalVar.arrPkidReceived.indexOf(pkidReceived);
+                            globalVar.arrPkidReceived.splice(indexPkidReceived, 1);
+                            console.log('arrSplice_fkid_document',globalVar.arrPkidReceived);
+                        });
+                    }
+                    $('#countBulkPpdIqcInspection').text(`${globalVar.arrPkidReceived.length}`); //nmodify
                 });
 
-                $(tbl.iqcInspection).on('click','#checkBulkIqcInspection','tr', function () {
+                $('#checkBulkPpdIqcInspectionSelectAll').on('change', function() {
+                    let isChecked = this.checked;
+                    $('.checkBulkPpdIqcInspection').prop('checked', isChecked).trigger('change');; // Toggle all row checkboxes
+                    if (isChecked) {
+                        $('.checkBulkPpdIqcInspection').each(function() {
+                            let row = $(this).closest('tr');
+                            globalVar.arrPkidReceived.push($(this).attr('pkid-received'));
+                        });
+                    } else {
+                        // dataTable.iqcTsWhsPackaging.page.len(10).draw();
+                        globalVar.arrPkidReceived = [];
+                    }
+                    console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
+                });
+                // Individual row checkbox selection
+                $(tbl.iqcPpdWhsPackaging).on('change', '.checkBulkPpdIqcInspection', function() {
+                    let pkid = $(this).attr('pkid-received'); // Get ID
+                    let row = $(this).closest('tr'); // Get the row
+
+                    if (this.checked) {
+                        row.attr('style', 'background:#90EE90;');
+                    } else {
+                        row.attr('style', 'background:white;'); // Remove highlight class
+                    }
+                    // console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
+                });
+
+                //PPD WHS Transaction
+                // Individual row checkbox selection
+                $(tbl.iqcInspection).on('change', '.checkBulkIqcInspection', function() {
+                    let pkid = $(this).attr('pkid-received'); // Get ID
+                    let row = $(this).closest('tr'); // Get the row
+
+                    if (this.checked) {
+                        row.attr('style', 'background:#90EE90;');
+                    } else {
+                        row.attr('style', 'background:white;'); // Remove highlight class
+                    }
+                    // console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
+                });
+
+                $(tbl.iqcInspection).on('click','#checkBulkPpdIqcInspection','tr', function () {
                     let row = $(this).closest('tr'); // Get the parent row of the checkbox
                     let pkidReceived = $(this).attr('pkid-received');
                     if ($(this).prop('checked')) {
@@ -712,20 +764,31 @@
                     }
                 });
 
-
-                dataTable.iqcInspection.on('draw', function () {
-                    if($('#txtSearchLotNum').val() != ""){
-                        $('#tblIqcInspection tbody #btnEditIqcInspection').each(function(index, tr){
+                dataTable.iqcInspection.on('draw', function () { //nmodify
+                    globalVar.arrPkidReceived = [];
+                    // $('#checkBulkIqcInspectionSelectAll').addClass('d-none');
+                    $('#checkBulkIqcInspectionSelectAll').prop('checked',false);
+                    if($('#txtInvoiceNo').val() != "" && $('#txtPartCode').val() != ""){
+                        // $('#tblIqcWhsReceivingPackaging tbody #btnEditIqcInspection').each(function(index, tr){
+                        $('#tblIqcInspection tbody #checkBulkIqcInspection').each(function(index, tr){
                             $(this).removeClass('d-none');
                         })
+                        $('#checkBulkIqcInspectionSelectAll').removeClass('d-none');
+                        return;
                     }
                 });
 
                 dataTable.iqcPpdWhsPackaging.on('draw', function () {
-                    if($('#txtSearchLotNum').val() != ""){
-                        $('#tblIqcPpdWhsPackaging tbody #btnEditIqcInspection').each(function(index, tr){
+                    globalVar.arrPkidReceived = [];
+                    // $('#checkBulkPpdIqcInspectionSelectAll').addClass('d-none');
+                    $('#checkBulkPpdIqcInspectionSelectAll').prop('checked',false);
+                    if($('#txtInvoiceNo').val() != "" && $('#txtPartCode').val() != ""){
+                        // $('#tblIqcWhsReceivingPackaging tbody #btnEditIqcInspection').each(function(index, tr){
+                        $('#tblIqcWhsReceivingPackaging tbody #checkBulkPpdIqcInspection').each(function(index, tr){
                             $(this).removeClass('d-none');
                         })
+                        $('#checkBulkPpdIqcInspectionSelectAll').removeClass('d-none');
+                        return;
                     }
                 });
 
@@ -744,11 +807,11 @@
                     e.preventDefault();
                     $('#iqc_coc_file').val('');
                     if ($(this).is(':checked')) {
-                        form.iqcInspection.find('#iqc_coc_file').prop('required',true);
+                        // form.iqcInspection.find('#iqc_coc_file').prop('required',true);
                         form.iqcInspection.find('#fileIqcCocUpload').removeClass('d-none',true);
                         form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
                     }else{
-                        form.iqcInspection.find('#iqc_coc_file').prop('required',false);
+                        // form.iqcInspection.find('#iqc_coc_file').prop('required',false);
                         form.iqcInspection.find('#fileIqcCocUpload').addClass('d-none',true);
                         form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
                     }

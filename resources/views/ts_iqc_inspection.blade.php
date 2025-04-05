@@ -434,8 +434,6 @@
                     dataTable.iqcYeuDetails.page.len(10).draw();
                     $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
                     $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
-                    // $('#tblIqcWhsReceivingPackaging tbody tr').attr('style', 'background:white;');
-                    // $('#tblIqcYeuDetails tbody tr').attr('style', 'background:white;');
                 });
 
                 $(tbl.iqcWhsReceivingPackaging).on('click','#checkBulkIqcInspection','tr', function () {
@@ -517,6 +515,7 @@
                     $('#modalBatchSearch').modal('hide');
 
                 });
+
                 $('#modalBatchSearch').on('hidden.bs.modal', function () {
                     $('#txtInvoiceNo').val('');
                     $('#txtPartCode').val('');
@@ -558,7 +557,7 @@
                     console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
                 });
 
-                // // Individual row checkbox selection
+                // Individual row checkbox selection
                 $(tbl.iqcYeuDetails).on('change', '.checkBulkYeuIqcInspection', function() {
                     let pkid = $(this).attr('pkid-received'); // Get ID
                     let row = $(this).closest('tr'); // Get the row
