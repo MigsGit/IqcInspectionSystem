@@ -464,7 +464,6 @@
                     dataTable.iqcCnFixedWhsPackaging.page.len(10).draw();
                     dataTable.iqcCnWhsPackaging.page.len(10).draw();
                     $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
-                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
                 });
 
                 $('#btnBatchSearch').attr('el-btn-attr','fixedWhsPackaging');
@@ -528,7 +527,7 @@
                         // dataTable.iqcCnFixedWhsPackaging.page.len(10).draw();
                         globalVar.arrPkidReceived = [];
                     }
-                    console.log("Selected ID:", Array.from(globalVar.arrPkidReceived));
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`); //nmodify
                 });
 
                 $('#checkBulkRopCnIqcInspectionSelectAll').on('change', function() {
@@ -543,7 +542,7 @@
                         // dataTable.iqcCnFixedWhsPackaging.page.len(10).draw();
                         globalVar.arrPkidReceived = [];
                     }
-                    console.log("Selected IDsSSS:", Array.from(globalVar.arrPkidReceived));
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`); //nmodify
                 });
 
                 // Individual row checkbox selection
@@ -555,7 +554,6 @@
                     } else {
                         row.attr('style', 'background:white;'); // Remove highlight class
                     }
-                    console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
                 });
 
                 $(tbl.iqcCnWhsPackaging).on('change', '.checkBulkRopCnIqcInspection', function() {
@@ -566,7 +564,6 @@
                     } else {
                         row.attr('style', 'background:white;'); // Remove highlight class
                     }
-                    // console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
                 });
 
                 $('#modalBatchSearch').on('hidden.bs.modal', function () {
