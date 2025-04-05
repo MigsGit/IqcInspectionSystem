@@ -433,7 +433,6 @@
                     dataTable.iqcTsWhsPackaging.page.len(10).draw();
                     dataTable.iqcYeuDetails.page.len(10).draw();
                     $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
-                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
                 });
 
                 $(tbl.iqcWhsReceivingPackaging).on('click','#checkBulkIqcInspection','tr', function () {
@@ -468,7 +467,7 @@
                         // dataTable.iqcTsWhsPackaging.page.len(10).draw();
                         globalVar.arrPkidReceived = [];
                     }
-                    console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`); //nmodify
                 });
 
                 // Individual row checkbox selection
@@ -481,7 +480,6 @@
                     } else {
                         row.attr('style', 'background:white;'); // Remove highlight class
                     }
-                    // console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
                 });
 
                 $('#btnBatchSearch').attr('el-btn-attr','whseTransaction')
@@ -554,7 +552,7 @@
                     } else {
                         dataTable.iqcTsWhsPackaging.page.len(10).draw();
                     }
-                    console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`); //nmodify
                 });
 
                 // Individual row checkbox selection
@@ -567,7 +565,6 @@
                     } else {
                         row.attr('style', 'background:white;'); // Remove highlight class
                     }
-                    // console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
                 });
 
                 dataTable.iqcTsWhsPackaging.on('draw', function () { //nmodify

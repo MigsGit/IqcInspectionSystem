@@ -159,7 +159,7 @@ class PpdIqcInspectionController extends Controller
         ->addColumn('rawBulkCheckBox', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<input class='checkBulkIqcInspection' type='checkbox' pkid-received='".$row->pkid."' id='checkBulkIqcInspection'>";
+            $result .= "<input class='checkBulkIqcInspection d-none' type='checkbox' pkid-received='".$row->pkid."' id='checkBulkIqcInspection'>";
             $result .= '</center>';
             return $result;
         })
@@ -227,7 +227,7 @@ class PpdIqcInspectionController extends Controller
             ->addColumn('rawBulkCheckBox', function($row){
                 $result = '';
                 $result .= '<center>';
-                $result .= "<input class='checkBulkPpdIqcInspection' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkPpdIqcInspection'>";
+                $result .= "<input class='checkBulkPpdIqcInspection d-none' type='checkbox' pkid-received='".$row->receiving_detail_id."' id='checkBulkPpdIqcInspection'>";
                 $result .= '</center>';
                 return $result;
             })

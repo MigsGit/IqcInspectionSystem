@@ -355,7 +355,7 @@
                         // dataTable.iqcTsWhsPackaging.page.len(10).draw();
                         globalVar.arrPkidReceived = [];
                     }
-                    console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`); //nmodify
                 });
 
                 // Individual row checkbox selection
@@ -367,7 +367,6 @@
                     } else {
                         row.attr('style', 'background:white;'); // Remove highlight class
                     }
-                    // console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
                 });
 
                 dataTable.iqcYfWhsPackaging.on('draw', function () { //nmodify

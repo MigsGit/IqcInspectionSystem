@@ -442,7 +442,6 @@
                     dataTable.iqcInspection.page.len(10).draw();
                     dataTable.iqcPpdWhsPackaging.page.len(10).draw();
                     $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
-                    $('#countBulkPpdIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
                 });
                 //PPD WHS Packaging
                 $(tbl.iqcPpdWhsPackaging).on('click','#checkBulkPpdIqcInspection','tr', function () {
@@ -462,7 +461,7 @@
                             console.log('arrSplice_fkid_document',globalVar.arrPkidReceived);
                         });
                     }
-                    $('#countBulkPpdIqcInspection').text(`${globalVar.arrPkidReceived.length}`); //nmodify
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`); //nmodify
                 });
 
                 $('#checkBulkPpdIqcInspectionSelectAll').on('change', function() {
@@ -477,7 +476,6 @@
                         // dataTable.iqcTsWhsPackaging.page.len(10).draw();
                         globalVar.arrPkidReceived = [];
                     }
-                    console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
                 });
                 // Individual row checkbox selection
                 $(tbl.iqcPpdWhsPackaging).on('change', '.checkBulkPpdIqcInspection', function() {
@@ -489,7 +487,6 @@
                     } else {
                         row.attr('style', 'background:white;'); // Remove highlight class
                     }
-                    // console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
                 });
 
                 //PPD WHS Transaction
@@ -503,7 +500,6 @@
                     } else {
                         row.attr('style', 'background:white;'); // Remove highlight class
                     }
-                    // console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
                 });
 
                 $(tbl.iqcInspection).on('click','#checkBulkPpdIqcInspection','tr', function () {
@@ -553,7 +549,6 @@
                     } else {
                         row.attr('style', 'background:white;'); // Remove highlight class
                     }
-                    // console.log("Selected IDs:", Array.from(globalVar.arrPkidReceived));
                 });
 
                 $('#btnBatchSearch').click(function (e) {
