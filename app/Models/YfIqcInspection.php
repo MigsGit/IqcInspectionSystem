@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\VwYfListOfReceived;
 use App\Models\YfIqcInspectionsMod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -40,7 +41,7 @@ class YfIqcInspection extends Model
     public function iqc_dropdown_detail_aql(){
         return $this->iqc_dropdown_detail('aql');
     }
-    public function vw_list_of_received(){
-            return $this->hasOne(VwListOfReceived::class, 'pkid_received', 'whs_transaction_id');
+    public function vw_yf_list_of_received(){
+        return $this->hasOne(VwYfListOfReceived::class, 'pkid_received', 'whs_transaction_id');
     }
 }

@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Models\User;
-use App\Models\VwListOfReceived;
 use App\Models\IqcDropdownDetail;
 use App\Models\IqcInspectionsMod;
+use App\Models\VwPpdListOfReceived;
 use App\Models\PpdIqcInspectionsMod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -46,8 +46,8 @@ class PpdIqcInspection extends Model
     public function iqc_dropdown_detail_aql(){
         return $this->iqc_dropdown_detail('aql');
     }
-    public function vw_list_of_received(){
-            return $this->hasOne(VwListOfReceived::class, 'pkid_received', 'whs_transaction_id');
+    public function vw_ppd_list_of_received(){
+        return $this->hasOne(VwPpdListOfReceived::class, 'pkid_received', 'whs_transaction_id');
     }
 
 

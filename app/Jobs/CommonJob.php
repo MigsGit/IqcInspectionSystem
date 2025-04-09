@@ -104,7 +104,10 @@ class CommonJob implements CommonInterface
                 $arrWhsTransactionId = "AND tbl_received.pkid_received NOT IN ($iqcInspectionCollection)";
             }
 
-        }else{ //YEU Material Category //nmodify
+        }else if($categoryMaterial == "48"){
+
+        }
+        else{ //YEU Material Category //nmodify
             if(count ($iqcInspection) > 0){
 
                 $iqcInspectionCollection = collect($iqcInspection)->Map(function ($value) {
@@ -288,20 +291,7 @@ class CommonJob implements CommonInterface
         $to_date,
         $material_category
     ){
-        // return $model;
-        /*
-            dropdown_details
-
-        */
-        return $model::with([
-            'user_iqc',
-            'iqc_dropdown_detail_family',
-            // 'iqc_dropdown_detail_type_of_inspection',
-            'iqc_dropdown_detail_severity_of_inspection',
-            'iqc_dropdown_detail_inspection_lvl',
-            'iqc_dropdown_detail_aql',
-            'vw_list_of_received'
-        ])->where("iqc_category_material_id", "=", $material_category)
+       return $model->where("iqc_category_material_id", "=", $material_category)
         ->whereBetween('date_inspected', [$from_date, $to_date]);
     }
     public function iqcInspectionByDateMaterialGroupBySheet(

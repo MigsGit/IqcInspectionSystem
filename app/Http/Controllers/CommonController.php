@@ -2191,18 +2191,61 @@ class CommonController extends Controller
             switch ($iqc_dropdown_category_section) {
                 case 'TS':
                     $model = IqcInspection::class;
+                    $model_with_relationsip = $model::with([
+                        'user_iqc',
+                        'iqc_dropdown_detail_family',
+                        'iqc_dropdown_detail_severity_of_inspection',
+                        'iqc_dropdown_detail_inspection_lvl',
+                        'iqc_dropdown_detail_aql',
+                        'vw_list_of_received',
+                        'yeu_receive',
+                    ]);
                     break;
                 case 'CN':
                     $model = CnIqcInspection::class;
+                    $model_with_relationsip = $model::with([
+                        'user_iqc',
+                        'iqc_dropdown_detail_family',
+                        'iqc_dropdown_detail_severity_of_inspection',
+                        'iqc_dropdown_detail_inspection_lvl',
+                        'iqc_dropdown_detail_aql',
+                        'vw_cn_list_of_received',
+                        'vw_cn_fixed_list_of_received',
+                    ]);
                     break;
                 case 'PPD':
                     $model = PpdIqcInspection::class;
+                    $model_with_relationsip = $model::with([
+                        'user_iqc',
+                        'iqc_dropdown_detail_family',
+                        'iqc_dropdown_detail_severity_of_inspection',
+                        'iqc_dropdown_detail_inspection_lvl',
+                        'iqc_dropdown_detail_aql',
+                        'vw_ppd_list_of_received',
+                    ]);
                     break;
                 case 'YF':
                     $model = YfIqcInspection::class;
+                    $model_with_relationsip = $model::with([
+                        'user_iqc',
+                        'iqc_dropdown_detail_family',
+                        'iqc_dropdown_detail_severity_of_inspection',
+                        'iqc_dropdown_detail_inspection_lvl',
+                        'iqc_dropdown_detail_aql',
+                        'vw_yf_list_of_received',
+                    ]);
                     break;
                 case 'IIS':
                     $model = IqcInspection::class;
+                    $model_with_relationsip = $model::with([
+                        'user_iqc',
+                        'iqc_dropdown_detail_family',
+                        'iqc_dropdown_detail_severity_of_inspection',
+                        'iqc_dropdown_detail_inspection_lvl',
+                        'iqc_dropdown_detail_aql',
+                        'vw_list_of_received',
+                        'yeu_receive',
+                    ]);
                     break;
                 default:
                     return response()->json([
@@ -2266,8 +2309,7 @@ class CommonController extends Controller
                 $arr_merge_group
             );
             $iqcInspectionRawSheet =  $this->commonInterface->iqcInspectionRawSheet(
-                $model,
-
+                $model_with_relationsip,
                 $from_date,
                 $to_date,
                 $material_category,
@@ -2285,7 +2327,7 @@ class CommonController extends Controller
                 $iqcInspectionByDateMaterialGroupBySheet,
                 $iqcInspectionRawSheet
             ),
-            'report.xlsx');
+            $iqc_dropdown_category_section."    report.xlsx");
 
         } catch (\Throwable $th) {
             throw $th;

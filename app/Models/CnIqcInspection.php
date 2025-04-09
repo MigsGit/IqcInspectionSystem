@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use App\Models\User;
-use App\Models\VwListOfReceived;
 use App\Models\IqcDropdownDetail;
+use App\Models\VwCnListOfReceived;
 use App\Models\CnIqcInspectionsMod;
+use App\Models\VwCnFixedListOfReceived;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -44,7 +45,10 @@ class CnIqcInspection extends Model
     public function iqc_dropdown_detail_aql(){
         return $this->iqc_dropdown_detail('aql');
     }
-    public function vw_list_of_received(){
-            return $this->hasOne(VwListOfReceived::class, 'pkid_received', 'whs_transaction_id');
+    public function vw_cn_fixed_list_of_received(){
+        return $this->hasOne(VwCnFixedListOfReceived::class, 'pkid_received', 'whs_transaction_id');
+    }
+    public function vw_cn_list_of_received(){
+        return $this->hasOne(VwCnListOfReceived::class, 'pkid_received', 'whs_transaction_id');
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Exports\Sheets;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -124,13 +125,37 @@ class IqcInspectionRawSheet implements
                 $submission = 'N/A';
                 break;
         }
-
+        switch ($data['iqc_category_material_id']) {
+            case '37': // TS Packaging
+               $whs_received_date =$data['vw_list_of_received']['date']; // pass an array
+                break;
+            case '38': //YEU Packaging
+                $whs_received_date = Carbon::parse($data['yeu_receive']['created_at'])->format('Y-m-d'); // pass an array
+                break;
+            case '46': //CN ROP Packaging
+                $whs_received_date = $data['vw_cn_list_of_received']['date'];
+                break;
+            case '123': // CN FIXED Packaging
+                $whs_received_date = $data['vw_cn_fixed_list_of_received']['date'];
+                break;
+            case '110': // PPD Packaging
+                $whs_received_date = $data['vw_ppd_list_of_received']['date'];
+                break;
+            case '47': // YF Packaging
+                $whs_received_date = $data['vw_yf_list_of_received']['date'];
+                break;
+            default:
+                $whs_received_date = 'N/A';
+                break;
+        }
         return [
             $data['invoice_no'],
             $data['partcode'],
             $data['partname'],
             $data['supplier'],
-            $data['vw_list_of_received']['date'],
+            // date('Y-m-d',$data['yeu_receive']['created_at']), //Not working need to use Carbon
+            // optional($data['yeu_receive']['created_at'])->format('Y-m-d') ?? '', // pass an object only
+            $whs_received_date,
             $data['lot_no'],
             $data['total_lot_qty'],
             $type_of_inspection,

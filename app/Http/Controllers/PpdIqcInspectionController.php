@@ -129,13 +129,17 @@ class PpdIqcInspectionController extends Controller
         //                   AND tbl_itemList.partcode = "'.$request->partCode.'")
         //                   AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
         //                   '.$whereWhsTransactionId.'
+        $categoryMaterial = $request->categoryMaterial;
+        $whereWhsTransactionId =   $this->commonInterface->readIqcInspectionByMaterialCategory(PpdIqcInspection::class,$categoryMaterial);
+        // '.$whereWhsTransactionId.'
+
         if( isset( $request->invoiceNo ) && isset($request->partCode) ){
            $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
             ->select(' SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
                 FROM tbl_WarehouseTransaction whs_transaction
                 INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
                 WHERE 1=1
-                AND whs.Factory = 3
+                AND whs.Factory = 1
                 AND whs_transaction.InvoiceNo = "'.$request->invoiceNo.'"
                 AND whs.PartNumber = "'.$request->partCode.'"
                 AND  whs_transaction.inspection_class = 1
@@ -148,7 +152,7 @@ class PpdIqcInspectionController extends Controller
                 FROM tbl_WarehouseTransaction whs_transaction
                 INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
                 WHERE 1=1
-                AND whs.Factory = 3
+                AND whs.Factory = 1
                 AND whs_transaction.inspection_class = 1
                 AND whs_transaction.Lot_number IS NOT NULL
                 ORDER BY whs.PartNumber DESC
@@ -197,6 +201,8 @@ class PpdIqcInspectionController extends Controller
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
+                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
+                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
                     '.$whereWhsTransactionId.'
 
 
@@ -209,18 +215,18 @@ class PpdIqcInspectionController extends Controller
                     FROM  tbl_received tbl_received
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
+                    AND tbl_itemList.is_iqc_inspection = 1
+                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
+                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
                     '.$whereWhsTransactionId.'
 
 
                 ');
-                // AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
-                // AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+
                 //'.$whereWhsTransactionId.'
 
 
-                //  AND tbl_itemList.is_iqc_inspection = 1
-                //  AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
-                //  AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+
                 //  '.$whereWhsTransactionId.'
             }
             return DataTables::of($tbl_whs_trasanction)
