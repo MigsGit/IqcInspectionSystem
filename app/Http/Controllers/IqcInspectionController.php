@@ -345,7 +345,7 @@ class IqcInspectionController extends Controller
     {
         try {
             //Get Batch Lot Number, Foreign Key , Total Qty
-            $generateControlNumber = $this->commonInterface->generateControlNumber(PpdIqcInspection::class,$request->iqc_category_material_id);
+            $generateControlNumber = $this->commonInterface->generateControlNumber(IqcInspection::class,$request->iqc_category_material_id);
             if( isset($request->arr_pkid_received)  ){
                 $vwListOfReceived =  VwListOfReceived::select(
                     [

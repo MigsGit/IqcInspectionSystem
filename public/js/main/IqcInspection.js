@@ -380,17 +380,12 @@
 
     const saveIqcInspection = function (categoryMaterialId)
     { //amodify
-        // console.log('saveIqcInspection',globalVar.arrPkidReceived);
-        // return;
-        alert(globalVar.arrPkidReceived)
         let arrPkidReceived = globalVar.arrPkidReceived == undefined || null ? 'null' : globalVar.arrPkidReceived;
         let serialized_data = new FormData(form.iqcInspection[0]);
             serialized_data.append('lotNo',arrTableMod.lotNo);
             serialized_data.append('modeOfDefects',arrTableMod.modeOfDefects);
             serialized_data.append('lotQty',arrTableMod.lotQty);
             serialized_data.append('pkidReceived',arrPkidReceived);
-            // console.log('serialized_data',serialized_data);
-            // return;
         $.ajax({
             type: "POST",
             url: "save_iqc_inspection",

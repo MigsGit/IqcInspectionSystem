@@ -459,7 +459,31 @@
 
                 $(tbl.iqcCnFixedWhsPackaging).on('click','#btnEditIqcInspection', getCnWhsFixedPackagingById);
 
-                //==============nmodify =======
+                $('#btnQrBatchSearch1').click(function (e) { //Invoice No Btn
+                    e.preventDefault();
+                    let elModalId = $(this).attr('id');
+                    $('#mdlScanQrCodeBatchSearch').modal('show');
+                    $('#txtScanQrCodeBatchSearch').attr('btn-attr-id',elModalId);
+                    $('#txtInvoiceNo').addClass(elModalId);
+                });
+                $('#btnQrBatchSearch2').click(function (e) { //PartCode No Btn
+                    e.preventDefault();
+                    let elModalId = $(this).attr('id');
+                    $('#mdlScanQrCodeBatchSearch').modal('show');
+                    $('#txtScanQrCodeBatchSearch').attr('btn-attr-id',elModalId);
+                    $('#txtPartCode').addClass(elModalId);
+                });
+
+                $('#txtScanQrCodeBatchSearch').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        let elBtnId = $(this).attr('btn-attr-id');
+                        let valScanQrCodeBatchSearch = $(this).val();
+                        $(`.${elBtnId}`).val(valScanQrCodeBatchSearch);
+                        $(this).val('');
+                        $('#mdlScanQrCodeBatchSearch').modal('hide');
+                    }
+                });
+                
                 $('#modalSaveIqcInspection').on('hidden.bs.modal', function (e) { //nmodify
                     dataTable.iqcCnFixedWhsPackaging.page.len(10).draw();
                     dataTable.iqcCnWhsPackaging.page.len(10).draw();

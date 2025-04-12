@@ -310,7 +310,7 @@
                             param.lotNum = $('#txtSearchLotNum').val()
                             param.invoiceNo = $('#txtInvoiceNo').val();
                             param.partCode = $('#txtPartCode').val();
-                            //nmodify
+
                             param.categoryMaterial = globalVar.categoryMaterialRapidDatabase;
                         },
                     },
@@ -339,7 +339,7 @@
                             param.lotNum = $('#txtSearchLotNum').val()
                             param.invoiceNo = $('#txtInvoiceNo').val();
                             param.partCode = $('#txtPartCode').val();
-                            //nmodify
+
                             param.categoryMaterial = globalVar.categoryMaterialPackaging;
                         },
                     },
@@ -438,7 +438,32 @@
                     getPpdIqcInspectionById (iqcInspectionId,iqcCategoryMaterialId);
                 });
 
-                $('#modalSaveIqcInspection').on('hidden.bs.modal', function (e) { //nmodify
+                $('#btnQrBatchSearch1').click(function (e) { //Invoice No Btn
+                    e.preventDefault();
+                    let elModalId = $(this).attr('id');
+                    $('#mdlScanQrCodeBatchSearch').modal('show');
+                    $('#txtScanQrCodeBatchSearch').attr('btn-attr-id',elModalId);
+                    $('#txtInvoiceNo').addClass(elModalId);
+                });
+                $('#btnQrBatchSearch2').click(function (e) { //PartCode No Btn
+                    e.preventDefault();
+                    let elModalId = $(this).attr('id');
+                    $('#mdlScanQrCodeBatchSearch').modal('show');
+                    $('#txtScanQrCodeBatchSearch').attr('btn-attr-id',elModalId);
+                    $('#txtPartCode').addClass(elModalId);
+                });
+
+                $('#txtScanQrCodeBatchSearch').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        let elBtnId = $(this).attr('btn-attr-id');
+                        let valScanQrCodeBatchSearch = $(this).val();
+                        $(`.${elBtnId}`).val(valScanQrCodeBatchSearch);
+                        $(this).val('');
+                        $('#mdlScanQrCodeBatchSearch').modal('hide');
+                    }
+                });
+
+                $('#modalSaveIqcInspection').on('hidden.bs.modal', function (e) {
                     dataTable.iqcInspection.page.len(10).draw();
                     dataTable.iqcPpdWhsPackaging.page.len(10).draw();
                     $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
@@ -461,7 +486,7 @@
                             console.log('arrSplice_fkid_document',globalVar.arrPkidReceived);
                         });
                     }
-                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`); //nmodify
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
                 });
 
                 $('#checkBulkPpdIqcInspectionSelectAll').on('change', function() {
@@ -519,7 +544,7 @@
                             console.log('arrSplice_fkid_document',globalVar.arrPkidReceived);
                         });
                     }
-                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`); //nmodify
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
                 });
 
                 $('#checkBulkIqcInspectionSelectAll').on('change', function() {
@@ -567,12 +592,12 @@
                     switch (modalId) {
                         case 'ppdWhsDatabase':
                             alert('ppdWhsDatabase')
-                                dataTable.iqcInspection.page.len(-1).draw(); //nmodify 320000424 STAMP001CN
+                                dataTable.iqcInspection.page.len(-1).draw();
                                 dataTable.iqcInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
                             break;
                         case 'ppdWhsPackaging':
                                 alert('ppdWhsPackaging')
-                                dataTable.iqcPpdWhsPackaging.page.len(-1).draw(); //nmodify
+                                dataTable.iqcPpdWhsPackaging.page.len(-1).draw();
                                 dataTable.iqcPpdWhsPackagingInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
                             break;
 
@@ -583,7 +608,7 @@
 
                 });
 
-                dataTable.iqcInspection.on('draw', function () { //nmodify
+                dataTable.iqcInspection.on('draw', function () {
                     globalVar.arrPkidReceived = [];
                     // $('#checkBulkIqcInspectionSelectAll').addClass('d-none');
                     $('#checkBulkIqcInspectionSelectAll').prop('checked',false);
@@ -759,7 +784,7 @@
                     }
                 });
 
-                dataTable.iqcInspection.on('draw', function () { //nmodify
+                dataTable.iqcInspection.on('draw', function () {
                     globalVar.arrPkidReceived = [];
                     // $('#checkBulkIqcInspectionSelectAll').addClass('d-none');
                     $('#checkBulkIqcInspectionSelectAll').prop('checked',false);
