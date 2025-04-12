@@ -2327,7 +2327,7 @@ class CommonController extends Controller
                 $iqcInspectionByDateMaterialGroupBySheet,
                 $iqcInspectionRawSheet
             ),
-            $iqc_dropdown_category_section."    report.xlsx");
+            $iqc_dropdown_category_section."_IQC Inpsection Summary Report.xlsx");
 
         } catch (\Throwable $th) {
             throw $th;

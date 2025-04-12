@@ -127,7 +127,7 @@ class IqcInspectionRawSheet implements
         }
         switch ($data['iqc_category_material_id']) {
             case '37': // TS Packaging
-               $whs_received_date =$data['vw_list_of_received']['date']; // pass an array
+               $whs_received_date =$data['vw_list_of_received']['date'];
                 break;
             case '38': //YEU Packaging
                 $whs_received_date = Carbon::parse($data['yeu_receive']['created_at'])->format('Y-m-d'); // pass an array

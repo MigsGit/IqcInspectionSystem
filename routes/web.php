@@ -1,9 +1,5 @@
 <?php
-
 use App\Models\Department;
-
-// Controllers
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommonController;
@@ -12,10 +8,6 @@ use App\Http\Controllers\IqcInspectionController;
 use App\Http\Controllers\CnIqcInspectionController;
 use App\Http\Controllers\YfIqcInspectionController;
 use App\Http\Controllers\PpdIqcInspectionController;
-
-
-
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,15 +18,8 @@ use App\Http\Controllers\PpdIqcInspectionController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-// Route::get('/link', function () {
-//     return 'link';
-// })->name('link');
-
 Route::view('/','index')->name('index');
-// Route::get('/{any}', function (Request $request) {
-//     return view('dashboard');
-// })->where('any', '.*');
+
 Route::middleware('CheckSessionExist')->group(function(){
     Route::view('/dashboard','dashboard')->name('dashboard');
     // * ADMIN VIEW

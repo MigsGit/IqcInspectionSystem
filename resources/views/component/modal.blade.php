@@ -530,7 +530,8 @@
                             <div class="input-group-prepend w-50">
                                 <span class="input-group-text w-100">InvoiceNo</span>
                             </div>
-                            <input type="text" class="form-control" id="txtInvoiceNo"  name="txtInvoiceNo" required>
+                            <input type="text" btn-attr-id="" class="form-control" id="txtInvoiceNo"  name="txtInvoiceNo" required>
+                            {{-- <button type="button" class="btn btn-primary" id="btnQrBatchSearch1"><i class="fas fa-qrcode"></i></button> --}}
                         </div>
                     </div>
                     <div class="col-sm-12">
@@ -538,7 +539,8 @@
                             <div class="input-group-prepend w-50">
                                 <span class="input-group-text w-100">PartCode</span>
                             </div>
-                            <input type="text" class="form-control" id="txtPartCode"  name="txtPartCode" required>
+                            <input type="text" btn-attr-id="" class="form-control" id="txtPartCode"  name="txtPartCode" required>
+                            {{-- <button type="button" class="btn btn-primary" id="btnQrBatchSearch2"><i class="fas fa-qrcode"></i> </button> --}}
                         </div>
                     </div>
                 </div>
@@ -554,3 +556,22 @@
     </div>
 </div>
 
+  <!-- Start Scan QR mdlScanQrCodeFirstMolding -->
+<div class="modal fade" id="mdlScanQrCodeBatchSearch" tabindex="-1" role="dialog"
+  aria-labelledby="ModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header border-bottom-0 pb-0">
+              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span
+                      aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body pt-0">
+              <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQrCodeBatchSearch"
+                  name="scan_qr_code" autocomplete="off">
+              <div class="text-center text-secondary">Please scan the qr code.<br><br>
+                  <h1><i class="fa fa-qrcode fa-lg"></i></h1>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

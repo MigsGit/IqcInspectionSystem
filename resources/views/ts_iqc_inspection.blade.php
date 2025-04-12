@@ -313,7 +313,7 @@
                             param.lotNum = $('#txtSearchLotNum').val();
                             param.invoiceNo = $('#txtInvoiceNo').val();
                             param.partCode = $('#txtPartCode').val();
-                            //nmodify
+
                             param.categoryMaterial = globalVar.categoryMaterialPackaging;
                         },
                     },
@@ -427,9 +427,33 @@
                 $(tbl.iqcYeuDetails).on('click','#btnEditIqcInspection', editYeuIqcDetails);
                 $(tbl.iqcYeuInspected).on('click','#btnEditIqcInspection', editIqcInspected);
 
-                //=====start nmodify =======
+                $('#btnQrBatchSearch1').click(function (e) { //Invoice No Btn
+                    e.preventDefault();
+                    let elModalId = $(this).attr('id');
+                    $('#mdlScanQrCodeBatchSearch').modal('show');
+                    $('#txtScanQrCodeBatchSearch').attr('btn-attr-id',elModalId);
+                    $('#txtInvoiceNo').addClass(elModalId);
+                });
+                $('#btnQrBatchSearch2').click(function (e) { //PartCode No Btn
+                    e.preventDefault();
+                    let elModalId = $(this).attr('id');
+                    $('#mdlScanQrCodeBatchSearch').modal('show');
+                    $('#txtScanQrCodeBatchSearch').attr('btn-attr-id',elModalId);
+                    $('#txtPartCode').addClass(elModalId);
+                });
+
+                $('#txtScanQrCodeBatchSearch').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        let elBtnId = $(this).attr('btn-attr-id');
+                        let valScanQrCodeBatchSearch = $(this).val();
+                        $(`.${elBtnId}`).val(valScanQrCodeBatchSearch);
+                        $(this).val('');
+                        $('#mdlScanQrCodeBatchSearch').modal('hide');
+                    }
+                });
+
                 //WBS Packaging
-                $('#modalSaveIqcInspection').on('hidden.bs.modal', function (e) { //nmodify
+                $('#modalSaveIqcInspection').on('hidden.bs.modal', function (e) {
                     dataTable.iqcTsWhsPackaging.page.len(10).draw();
                     dataTable.iqcYeuDetails.page.len(10).draw();
                     $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
@@ -452,7 +476,7 @@
                             console.log('arrSplice_fkid_document',globalVar.arrPkidReceived);
                         });
                     }
-                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`); //nmodify
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
                 });
 
                 $('#checkBulkIqcInspectionSelectAll').on('change', function() {
@@ -467,7 +491,7 @@
                         // dataTable.iqcTsWhsPackaging.page.len(10).draw();
                         globalVar.arrPkidReceived = [];
                     }
-                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`); //nmodify
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
                 });
 
                 // Individual row checkbox selection
@@ -498,12 +522,12 @@
                     let categoryMaterial = $('#txtCategoryMaterial').val();
                     switch (modalId) {
                         case 'whseTransaction':
-                                dataTable.iqcTsWhsPackaging.page.len(-1).draw(); //nmodify
+                                dataTable.iqcTsWhsPackaging.page.len(-1).draw();
                                 dataTable.iqcTsWhsPackagingInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                             break;
                         case 'yeu':
                                 // alert('yeu')
-                                dataTable.iqcTsWhsPackaging.page.len(-1).draw(); //nmodify
+                                dataTable.iqcTsWhsPackaging.page.len(-1).draw();
                                 dataTable.iqcYeuInspected.ajax.url("load_iqc_inspection?category_material="+categoryMaterial).draw();
                             break;
 
@@ -511,7 +535,6 @@
                             break;
                     }
                     $('#modalBatchSearch').modal('hide');
-
                 });
 
                 $('#modalBatchSearch').on('hidden.bs.modal', function () {
@@ -537,7 +560,7 @@
                             console.log('arrSplice_fkid_document',globalVar.arrPkidReceived);
                         });
                     }
-                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`); //nmodify
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
                 });
 
                 $('#checkBulkYeuIqcInspectionSelectAll').on('change', function() {
@@ -552,7 +575,7 @@
                     } else {
                         dataTable.iqcTsWhsPackaging.page.len(10).draw();
                     }
-                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`); //nmodify
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
                 });
 
                 // Individual row checkbox selection
@@ -567,7 +590,7 @@
                     }
                 });
 
-                dataTable.iqcTsWhsPackaging.on('draw', function () { //nmodify
+                dataTable.iqcTsWhsPackaging.on('draw', function () {
                     globalVar.arrPkidReceived = [];
                     $('#checkBulkIqcInspectionSelectAll').addClass('d-none');
                     $('#checkBulkIqcInspectionSelectAll').prop('checked',false);
@@ -595,7 +618,6 @@
                     }
                 });
 
-                // ========== end nmodify ===========
                 $('#btnLotNo').click(function (e) {
                     e.preventDefault();
                     $('#modalLotNo').modal('show');

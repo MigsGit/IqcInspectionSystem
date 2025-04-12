@@ -64,7 +64,7 @@
 
 @section('js_content')
 <script>
-    
+
 </script>
 @endsection
 {{-- @endauth --}}
