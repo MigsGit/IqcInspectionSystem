@@ -427,6 +427,7 @@
                 $(tbl.iqcYeuDetails).on('click','#btnEditIqcInspection', editYeuIqcDetails);
                 $(tbl.iqcYeuInspected).on('click','#btnEditIqcInspection', editIqcInspected);
 
+<<<<<<< HEAD
                 form.iqcInspection.find('#ngr_disposition').change(function (e) {
                     e.preventDefault();
                     let ngr_disposition = $(this).val();
@@ -456,6 +457,8 @@
                     // form.iqcInspection.find('#judgment').val(judgment_val);
                 });
 
+=======
+>>>>>>> 47732ec6d566172c10ee2bf6b004ae349b02f192
                 $('#btnQrBatchSearch1').click(function (e) { //Invoice No Btn
                     e.preventDefault();
                     let elModalId = $(this).attr('id');
@@ -463,7 +466,10 @@
                     $('#txtScanQrCodeBatchSearch').attr('btn-attr-id',elModalId);
                     $('#txtInvoiceNo').addClass(elModalId);
                 });
+<<<<<<< HEAD
 
+=======
+>>>>>>> 47732ec6d566172c10ee2bf6b004ae349b02f192
                 $('#btnQrBatchSearch2').click(function (e) { //PartCode No Btn
                     e.preventDefault();
                     let elModalId = $(this).attr('id');
