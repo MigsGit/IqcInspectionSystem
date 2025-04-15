@@ -427,6 +427,35 @@
                 $(tbl.iqcYeuDetails).on('click','#btnEditIqcInspection', editYeuIqcDetails);
                 $(tbl.iqcYeuInspected).on('click','#btnEditIqcInspection', editIqcInspected);
 
+                form.iqcInspection.find('#ngr_disposition').change(function (e) {
+                    e.preventDefault();
+                    let ngr_disposition = $(this).val();
+                    switch (ngr_disposition) {
+                        case '0':
+                            accepted_val = 1;
+                            judgment_val = form.iqcInspection.find('judgment').val();
+                            break;
+                        case '1':
+                        case '2':
+                        case '3':
+                            accepted_val = 1;
+                            judgment_val= 2;
+                            break;
+                        case '4':
+                        case '5':
+                        case '6':
+                            accepted_val = 0;
+                            judgment_val= 1;
+                            break;
+                        default:
+                            accepted_val = '';
+                            break;
+                    }
+                    form.iqcInspection.find('#accepted').val(accepted_val);
+                    divDisplayNoneClass(form.iqcInspection,accepted_val);
+                    // form.iqcInspection.find('#judgment').val(judgment_val);
+                });
+
                 $('#btnQrBatchSearch1').click(function (e) { //Invoice No Btn
                     e.preventDefault();
                     let elModalId = $(this).attr('id');
@@ -434,6 +463,7 @@
                     $('#txtScanQrCodeBatchSearch').attr('btn-attr-id',elModalId);
                     $('#txtInvoiceNo').addClass(elModalId);
                 });
+
                 $('#btnQrBatchSearch2').click(function (e) { //PartCode No Btn
                     e.preventDefault();
                     let elModalId = $(this).attr('id');

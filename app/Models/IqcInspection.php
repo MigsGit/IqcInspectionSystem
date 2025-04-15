@@ -56,7 +56,7 @@ class IqcInspection extends Model
         'judgement',
         'remarks',
         'iqc_coc_file',
-        // 'iqc_inspection_id',
+        'ngr_disposition',
     ];
 
     protected $hidden = [

@@ -279,7 +279,6 @@
                             </div>
                         </div>
                         <div class="col-sm-6 mt-3">
-
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Lot Inspected</span>
@@ -309,12 +308,33 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Judgement</span>
                                 </div>
-                                <select class="form-select form-control-sm" id="judgement" name="judgement" disabled>
+                                <select class="form-select form-control-sm" id="judgement" name="judgement">
                                     <option value="" selected disabled>-Select-</option>
                                     <option value="1">Accept</option>
                                     <option value="2">Reject</option>
-                                    <option value="3">Special Acceptance</option>
                                 </select>
+                            </div>
+                            {{-- Reject and Special Acceptance Only --}}
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">NGR Disposition</span>
+                                </div>
+                                <select class="form-select form-control-sm" id="ngr_disposition" name="ngr_disposition">
+                                    <option value="" selected disabled>-Select-</option>
+                                    <option value="0">N/A</option>
+                                    <option value="1">Cancel</option>
+                                    <option value="2">Ok to use</option>
+                                    <option value="3">Special Acceptance</option>
+                                    <option value="4">For Rework</option>
+                                    <option value="5">For Sorting</option>
+                                    <option value="6">RTV</option>
+                                </select>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">Disposition Date Time (Auto-Generated)</span>
+                                </div>
+                                <input type="date" class="form-control form-control-sm" id="disposition_date_time" name="disposition_date_time" readonly>
                             </div>
                             <div class="input-group input-group-sm mb-3 d-none divMod">
                                 <div class="input-group-prepend w-50">

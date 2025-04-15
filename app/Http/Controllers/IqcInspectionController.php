@@ -439,31 +439,28 @@ class IqcInspectionController extends Controller
                 if( count($is_iqc_inspection ) > 0){
                     if( $is_iqc_inspection[0]->judgement == 2){
                         $create_iqc_inspection_id = IqcInspection::insertGetId($requestValidated);
-                        /*  All not required fields should to be inside the update method below
-                            NOTE: the name of fields must be match in column name
-                        */
                         IqcInspection::where('id', $create_iqc_inspection_id)
                         ->update([
-                            'judgement' => 3,
-                            'no_of_defects' => $arr_sum_mod_lot_qty,
-                            'remarks' => $request->remarks,
-                            'inspector' => session('rapidx_user_id'),
-                            'created_at' => date('Y-m-d H:i:s'),
-                            'shift' => $iqcInspectionShift,
+                            'disposition_date_time' => date('Y-m-d H:i:s'),
                         ]);
-                    }else{
-                        //Update Iqc Inspection if Accepted
-                        IqcInspection::where('id', $iqc_inspections_id)->update($requestValidated); //PO and packinglist number
-                        IqcInspection::where('id', $iqc_inspections_id)
-                        ->update([
-                            // 'judgement' => $request->judgement,
-                            'no_of_defects' => $arr_sum_mod_lot_qty,
-                            'remarks' => $request->remarks,
-                            'inspector' => session('rapidx_user_id'),
-                            'shift' => $iqcInspectionShift
-                        ]);
+
                     }
+                }else{
+                    /*  All not required fields should to be inside the update method below
+                        NOTE: the name of fields must be match in column name
+                    */
+                    IqcInspection::where('id', $iqc_inspections_id)
+                    ->update($requestValidated);
                 }
+                IqcInspection::where('id', $iqc_inspections_id)
+                ->update([
+                    'no_of_defects' => $arr_sum_mod_lot_qty,
+                    'remarks' => $request->remarks,
+                    'inspector' => session('rapidx_user_id'),
+                    'updated_at' => date('Y-m-d H:i:s'),
+                    'shift' => $iqcInspectionShift,
+                    'disposition_date_time' => ( $request->ngr_disposition !=0 ) ? date('Y-m-d H:i:s') : NULL,
+                ]);
             }else{ //Add
                 /* All required fields is the $request validated, check the column is IqcInspectionRequest
                     NOTE: the name of fields must be match in column name
@@ -475,12 +472,12 @@ class IqcInspectionController extends Controller
                 IqcInspection::where('id', $create_iqc_inspection_id)
                 ->update([
                     'app_no_extension' => $appNoExtension,
-                    // 'judgement' => $request->judgement,
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
                     'inspector' => session('rapidx_user_id'),
                     'created_at' => date('Y-m-d H:i:s'),
                     'shift' => $iqcInspectionShift,
+                    'disposition_date_time' => ( $request->ngr_disposition !=0 ) ? date('Y-m-d H:i:s') : NULL,
                 ]);
 
                 $iqc_inspections_id = $create_iqc_inspection_id;
