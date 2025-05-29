@@ -201,8 +201,10 @@ class PpdIqcInspectionController extends Controller
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
-                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
-                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+                    -- AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
+                    -- AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+                    AND (tbl_received.invoiceno IS NOT NULL)
+                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "")
                     '.$whereWhsTransactionId.'
 
 
@@ -216,8 +218,8 @@ class PpdIqcInspectionController extends Controller
                     LEFT JOIN tbl_itemList tbl_itemList ON tbl_itemList.pkid_itemlist = tbl_received.fkid_itemlist
                     WHERE 1=1
                     AND tbl_itemList.is_iqc_inspection = 1
-                    AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
-                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+                    AND (tbl_received.invoiceno IS NOT NULL)
+                    AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "")
                     '.$whereWhsTransactionId.'
 
 

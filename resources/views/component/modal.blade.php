@@ -531,7 +531,7 @@
                                 <span class="input-group-text w-100">InvoiceNo</span>
                             </div>
                             <input type="text" btn-attr-id="" class="form-control" id="txtInvoiceNo"  name="txtInvoiceNo" required>
-                            {{-- <button type="button" class="btn btn-primary" id="btnQrBatchSearch1"><i class="fas fa-qrcode"></i></button> --}}
+                            <button type="button" class="btn btn-primary" id="btnQrBatchSearch1"><i class="fas fa-qrcode"></i></button>
                         </div>
                     </div>
                     <div class="col-sm-12">
@@ -540,7 +540,7 @@
                                 <span class="input-group-text w-100">PartCode</span>
                             </div>
                             <input type="text" btn-attr-id="" class="form-control" id="txtPartCode"  name="txtPartCode" required>
-                            {{-- <button type="button" class="btn btn-primary" id="btnQrBatchSearch2"><i class="fas fa-qrcode"></i> </button> --}}
+                            <button type="button" class="btn btn-primary" id="btnQrBatchSearch2"><i class="fas fa-qrcode"></i> </button>
                         </div>
                     </div>
                 </div>

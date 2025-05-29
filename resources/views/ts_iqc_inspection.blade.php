@@ -445,11 +445,50 @@
                 $('#txtScanQrCodeBatchSearch').on('keyup', function(e){
                     if(e.keyCode == 13){
                         let elBtnId = $(this).attr('btn-attr-id');
-                        let valScanQrCodeBatchSearch = $(this).val();
-                        $(`.${elBtnId}`).val(valScanQrCodeBatchSearch);
+                        let scanQrCodeBatchSearchVal = $(this).val();
+                        //Validate if the type of is Object
+                        if (scanQrCodeBatchSearchVal.startsWith("{") && scanQrCodeBatchSearchVal.endsWith("}")) {
+                            let scanQrCodeBatchSearchObj = JSON.parse(scanQrCodeBatchSearchVal);
+                            let invoiceNo = scanQrCodeBatchSearchObj.invoiceno;
+                            let partcode = scanQrCodeBatchSearchObj.partcode;
+                            switch (elBtnId) {
+                                case "btnQrBatchSearch1":
+                                    $(`.${elBtnId}`).val(invoiceNo);
+                                    break;
+                                case "btnQrBatchSearch2":
+                                    $(`.${elBtnId}`).val(partcode);
+                                    break;
+                                default:
+                                    alert(`Invalid Part Code ${partcode} or invoiceNo: ${invoiceNo}  ! Please scan to the notepad and send to ISS`)
+                                    break;
+                            }
+                        }else{
+                            $(`.${elBtnId}`).val(scanQrCodeBatchSearchVal);
+                        }
                         $(this).val('');
                         $('#mdlScanQrCodeBatchSearch').modal('hide');
                     }
+                });
+
+                $('#mdlScanQrCodeBatchSearch').on('shown.bs.modal', function() {
+                    $('#txtScanQrCodeBatchSearch').focus();
+                    const mdlScanQrCode = document.querySelector("#mdlScanQrCodeBatchSearch");
+                    const inptQrCode = document.querySelector("#txtScanQrCodeBatchSearch");
+                    let focus = false;
+
+                    mdlScanQrCode.addEventListener("mouseover", () => {
+                        if (inptQrCode === document.activeElement) {
+                            focus = true;
+                        } else {
+                            focus = false;
+                        }
+                    });
+
+                    mdlScanQrCode.addEventListener("click", () => {
+                        if (focus) {
+                            inptQrCode.focus()
+                        }
+                    });
                 });
 
                 //WBS Packaging
