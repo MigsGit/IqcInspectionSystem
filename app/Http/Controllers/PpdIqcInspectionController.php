@@ -203,12 +203,13 @@ class PpdIqcInspectionController extends Controller
                     AND tbl_itemList.is_iqc_inspection = 1
                     -- AND (tbl_received.invoiceno IS NOT NULL AND tbl_received.invoiceno != "N/A")
                     -- AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "N/A" AND tbl_received.lot_no != "")
+                    AND tbl_received.invoiceno = "'.$request->invoiceNo.'"
+                    AND tbl_itemList.partcode = "'.$request->partCode.'"
                     AND (tbl_received.invoiceno IS NOT NULL)
                     AND (tbl_received.lot_no IS NOT NULL AND tbl_received.lot_no != "")
                     '.$whereWhsTransactionId.'
-
-
                 ');
+
             }else{
                 $tbl_whs_trasanction = DB::connection('mysql_rapid_ppd_whs_packaging')
                 ->select('SELECT tbl_received.pkid_received as "receiving_detail_id",tbl_received.supplier as "Supplier",tbl_itemList.partcode as "PartNumber",
@@ -224,12 +225,6 @@ class PpdIqcInspectionController extends Controller
 
 
                 ');
-
-                //'.$whereWhsTransactionId.'
-
-
-
-                //  '.$whereWhsTransactionId.'
             }
             return DataTables::of($tbl_whs_trasanction)
             ->addColumn('rawBulkCheckBox', function($row){

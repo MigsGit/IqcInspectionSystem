@@ -507,6 +507,13 @@
                     dataTable.iqcCnWhsPackaging.page.len(10).draw();
                     $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
                 });
+                $('#modalBatchSearch').on('hidden.bs.modal', function (e) {
+                    $('#txtInvoiceNo').val('');
+                    $('#txtPartCode').val('');
+                });
+                $('#mdlScanQrCodeBatchSearch').on('shown.bs.modal', function () {
+                    $('#txtScanQrCodeBatchSearch').focus();
+                });
 
                 $('#btnBatchSearch').attr('el-btn-attr','fixedWhsPackaging');
 

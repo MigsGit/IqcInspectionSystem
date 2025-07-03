@@ -497,6 +497,13 @@
                     dataTable.iqcYeuDetails.page.len(10).draw();
                     $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
                 });
+                $('#modalBatchSearch').on('hidden.bs.modal', function (e) {
+                    $('#txtInvoiceNo').val('');
+                    $('#txtPartCode').val('');
+                });
+                $('#mdlScanQrCodeBatchSearch').on('shown.bs.modal', function () {
+                    $('#txtScanQrCodeBatchSearch').focus();
+                });
 
                 $(tbl.iqcWhsReceivingPackaging).on('click','#checkBulkIqcInspection','tr', function () {
                     let row = $(this).closest('tr'); // Get the parent row of the checkbox

@@ -339,6 +339,13 @@
                     // $('#tblIqcWhsReceivingPackaging tbody tr').attr('style', 'background:white;');
                     // $('#tblIqcYeuDetails tbody tr').attr('style', 'background:white;');
                 });
+                $('#modalBatchSearch').on('hidden.bs.modal', function (e) {
+                    $('#txtInvoiceNo').val('');
+                    $('#txtPartCode').val('');
+                });
+                $('#mdlScanQrCodeBatchSearch').on('shown.bs.modal', function () {
+                    $('#txtScanQrCodeBatchSearch').focus();
+                });
 
                 $('#btnBatchSearch').attr('el-btn-attr','yfWhsPackaging')
 

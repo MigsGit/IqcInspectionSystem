@@ -486,6 +486,13 @@
                     dataTable.iqcPpdWhsPackaging.page.len(10).draw();
                     $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
                 });
+                $('#modalBatchSearch').on('hidden.bs.modal', function (e) {
+                    $('#txtInvoiceNo').val('');
+                    $('#txtPartCode').val('');
+                });
+                $('#mdlScanQrCodeBatchSearch').on('shown.bs.modal', function () {
+                    $('#txtScanQrCodeBatchSearch').focus();
+                });
                 //PPD WHS Packaging
                 $(tbl.iqcPpdWhsPackaging).on('click','#checkBulkPpdIqcInspection','tr', function () {
                     let row = $(this).closest('tr'); // Get the parent row of the checkbox
@@ -507,7 +514,7 @@
                     $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
                 });
 
-                $('#checkBulkPpdIqcInspectionSelectAll').on('change', function() {
+                $('#checkBulkPpdIqcInspectionSelectAll').on('change', function() { //checkBulkIqcInspectionSelectAll
                     let isChecked = this.checked;
                     $('.checkBulkPpdIqcInspection').prop('checked', isChecked).trigger('change');; // Toggle all row checkboxes
                     if (isChecked) {
@@ -519,6 +526,7 @@
                         // dataTable.iqcTsWhsPackaging.page.len(10).draw();
                         globalVar.arrPkidReceived = [];
                     }
+                    $('#countBulkIqcInspection').text(`${globalVar.arrPkidReceived.length}`);
                 });
                 // Individual row checkbox selection
                 $(tbl.iqcPpdWhsPackaging).on('change', '.checkBulkPpdIqcInspection', function() {
@@ -537,7 +545,6 @@
                 $(tbl.iqcInspection).on('change', '.checkBulkIqcInspection', function() {
                     let pkid = $(this).attr('pkid-received'); // Get ID
                     let row = $(this).closest('tr'); // Get the row
-
                     if (this.checked) {
                         row.attr('style', 'background:#90EE90;');
                     } else {
@@ -545,9 +552,10 @@
                     }
                 });
 
-                $(tbl.iqcInspection).on('click','#checkBulkPpdIqcInspection','tr', function () {
+                $(tbl.iqcInspection).on('click','#checkBulkIqcInspection','tr', function () { //tblIqcInspection
                     let row = $(this).closest('tr'); // Get the parent row of the checkbox
                     let pkidReceived = $(this).attr('pkid-received');
+
                     if ($(this).prop('checked')) {
                         row.attr('style', 'background:#90EE90;');
                         $(this).each(function () {
@@ -609,12 +617,12 @@
                     let categoryMaterial = $('#txtCategoryMaterial').val();
                     switch (modalId) {
                         case 'ppdWhsDatabase':
-                            alert('ppdWhsDatabase')
+                            // alert('ppdWhsDatabase')
                                 dataTable.iqcInspection.page.len(-1).draw();
                                 dataTable.iqcInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
                             break;
                         case 'ppdWhsPackaging':
-                                alert('ppdWhsPackaging')
+                                // alert('ppdWhsPackaging')
                                 dataTable.iqcPpdWhsPackaging.page.len(-1).draw();
                                 dataTable.iqcPpdWhsPackagingInspected.ajax.url("load_ppd_iqc_inspection?category_material="+categoryMaterial).draw();
                             break;
@@ -624,20 +632,6 @@
                     }
                     $('#modalBatchSearch').modal('hide');
 
-                });
-
-                dataTable.iqcInspection.on('draw', function () {
-                    globalVar.arrPkidReceived = [];
-                    // $('#checkBulkIqcInspectionSelectAll').addClass('d-none');
-                    $('#checkBulkIqcInspectionSelectAll').prop('checked',false);
-                    if($('#txtInvoiceNo').val() != "" && $('#txtPartCode').val() != ""){
-                        // $('#tblIqcWhsReceivingPackaging tbody #btnEditIqcInspection').each(function(index, tr){
-                        $('#tblIqcInspection tbody #checkBulkIqcInspection').each(function(index, tr){
-                            $(this).removeClass('d-none');
-                        })
-                        $('#checkBulkIqcInspectionSelectAll').removeClass('d-none');
-                        return;
-                    }
                 });
 
                 $('#btnMod').click(function (e) {
@@ -696,15 +690,15 @@
                     // console.log(arrTableMod);
                 });
 
-                $('#btnModalLotNum').click(function (e) {
-                    e.preventDefault();
-                    let elModalAttr = $(this).attr('el-btn-attr');
-                    $('#modalLotNum').attr('el-modal-attr',elModalAttr).modal('show')
-                });
+                // $('#btnLotNum').click(function (e) {
+                //     e.preventDefault();
+                //     let elModalAttr = $(this).attr('el-btn-attr');
+                //     $('#modalLotNum').attr('el-modal-attr',elModalAttr).modal('show')
+                // });
 
                 $('a[href="#menu1"]').click(function (e) {
                     e.preventDefault();
-                    $('#btnModalLotNum').attr('el-btn-attr','ppdWhsDatabase')
+                    $('#btnBatchSearch').attr('el-btn-attr','ppdWhsDatabase')
                     $('#txtSearchLotNum').val('');
                     let categoryMaterial = globalVar.categoryMaterialRapidDatabase;
                     dataTable.iqcInspection.draw();
@@ -714,7 +708,8 @@
 
                 $('a[href="#menu2"]').click(function (e) {
                     e.preventDefault();
-                    $('#btnModalLotNum').attr('el-btn-attr','ppdWhsPackaging')
+                    // alert('ppdWhsPackaging');
+                    $('#btnBatchSearch').attr('el-btn-attr','ppdWhsPackaging')
                     $('#txtSearchLotNum').val('');
                     let categoryMaterial = globalVar.categoryMaterialPackaging;
 
@@ -808,7 +803,7 @@
                     $('#checkBulkIqcInspectionSelectAll').prop('checked',false);
                     if($('#txtInvoiceNo').val() != "" && $('#txtPartCode').val() != ""){
                         // $('#tblIqcWhsReceivingPackaging tbody #btnEditIqcInspection').each(function(index, tr){
-                        $('#tblIqcInspection tbody #checkBulkIqcInspection').each(function(index, tr){
+                        $('#tblIqcInspection tbody #checkBulkIqcInspection').each(function(index, tr){ //tblIqcPpdWhsPackaging
                             $(this).removeClass('d-none');
                         })
                         $('#checkBulkIqcInspectionSelectAll').removeClass('d-none');
@@ -821,8 +816,7 @@
                     // $('#checkBulkPpdIqcInspectionSelectAll').addClass('d-none');
                     $('#checkBulkPpdIqcInspectionSelectAll').prop('checked',false);
                     if($('#txtInvoiceNo').val() != "" && $('#txtPartCode').val() != ""){
-                        // $('#tblIqcWhsReceivingPackaging tbody #btnEditIqcInspection').each(function(index, tr){
-                        $('#tblIqcWhsReceivingPackaging tbody #checkBulkPpdIqcInspection').each(function(index, tr){
+                        $('#tblIqcPpdWhsPackaging tbody #checkBulkPpdIqcInspection').each(function(index, tr){
                             $(this).removeClass('d-none');
                         })
                         $('#checkBulkPpdIqcInspectionSelectAll').removeClass('d-none');

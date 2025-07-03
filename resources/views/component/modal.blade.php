@@ -83,7 +83,7 @@
                                     <span class="input-group-text w-100" id="basic-addon1">Application Ctrl. No.</span>
                                 </div>
                                 <input type="text" class="form-control form-control-sm" id="app_no" name="app_no" readonly>
-                                <input type="text" class="form-control form-control-sm" id="app_no_extension" name="app_no_extension" >
+                                <input type="text" class="form-control form-control-sm" id="app_no_extension" name="app_no_extension" readonly>
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
@@ -203,7 +203,7 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Date Inspected</span>
                                 </div>
-                                <input type="date" class="form-control form-control-sm" id="date_inspected" name="date_inspected" readonly>
+                                <input type="date" class="form-control form-control-sm" id="date_inspected" name="date_inspected" >
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
@@ -219,7 +219,7 @@
                                 <div class="input-group-prepend w-30">
                                     <span class="input-group-text w-100" id="basic-addon1">Time Inspected</span>
                                 </div>
-                                <input type="time" class="form-control form-control-sm" id="time_ins_from" name="time_ins_from" readonly>
+                                <input type="time" class="form-control form-control-sm" id="time_ins_from" name="time_ins_from">
                                 <div class="input-group-prepend w-30">
                                     <span class="input-group-text w-100" id="basic-addon1">-</span>
                                 </div>
