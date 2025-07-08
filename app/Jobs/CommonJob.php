@@ -37,11 +37,14 @@ class CommonJob implements CommonInterface
             WHERE department_id = '".session('rapidx_department_id')."'
         ");
 
-        $division = ($rapidx_user[0]->department_group == "PPS" || $rapidx_user[0]->department_group == "PPD") ? "PPD" :  $rapidx_user[0]->department_group;
+        $division = ($rapidx_user[0]->department_group === "PPS" || $rapidx_user[0]->department_group === "PPD") ? "PPD" :
+        ($rapidx_user[0]->department_group === "LOG" || $rapidx_user[0]->department_group === "ISS") ? "ADMIN" :
+        $rapidx_user[0]->department_group;
         // Check if the Created At & App No / Division / Material Category is exisiting
         // Example:TS-F1-250211-
         $current_app_no = $division."-".date('y').date('m').date('d').'-';
-        $iqc_inspection = $query->orderBy('created_at','desc')->where('app_no',$current_app_no)
+        $iqc_inspection = $query->orderBy('created_at','desc')
+            // ->where('app_no',$current_app_no)
             ->where('iqc_category_material_id',$categoryMaterial)
             ->whereNull('deleted_at')
             ->whereNotNull('created_at')
